@@ -1,14 +1,14 @@
 package graph;
 
-public class Vertex {
+public abstract class Vertex {
     private String name;
 
     public Vertex() {
-        this.name = "";
+
     }
 
-    public Vertex(String label) {
-        this.name = label;
+    public Vertex(String s) {
+        this.name = s;
     }
 
     public String getName() {

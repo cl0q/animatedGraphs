@@ -1,6 +1,7 @@
 package graph;
 
-public class Edge {
+public abstract class Edge {
+
     private String name;
     private Vertex source;
     private Vertex destination;
@@ -11,7 +12,7 @@ public class Edge {
         this.destination = null;
     }
 
-    public Edge(String name, Vertex n1, Vertex n2) {
+    public Edge(final String name, final Vertex n1, final Vertex n2) {
         this.name = name;
         this.source = n1;
         this.destination = n2;
@@ -29,15 +30,15 @@ public class Edge {
         return source;
     }
 
-    public Vertex setDestination(Vertex n) {
+    public Vertex setDestination(final Vertex n) {
         return this.destination = n;
     }
 
-    public void setName(String s) {
+    public void setName(final String s) {
         this.name = s;
     }
 
-    public void setSource(Vertex n) {
+    public void setSource(final Vertex n) {
         this.source = n;
     }
 }

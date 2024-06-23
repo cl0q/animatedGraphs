@@ -1,10 +1,19 @@
 package graph;
 
-public class UndirectedGraph <T extends VertexMarking, U extends EdgeMarking> {
-    String name;
+import graph.marking.EdgeMarking;
+import graph.marking.MarkedVertex;
+import graph.marking.VertexMarking;
+import jdk.jshell.spi.ExecutionControl;
+
+import java.util.Vector;
+
+// TODO: Implement logic for methods
+public class UndirectedGraph <T extends VertexMarking, U extends EdgeMarking> extends Graph<T, U> {
+
+    private String name;
 
     public UndirectedGraph() {
-        this.name = "";
+
     }
 
     public UndirectedGraph(String s) {
@@ -12,6 +21,22 @@ public class UndirectedGraph <T extends VertexMarking, U extends EdgeMarking> {
     }
 
     public int degree(MarkedVertex<T> n) {
-        
+        return -1;
+    }
+
+    public int degree(String s) {
+        return -1;
+    }
+
+    public Vector<MarkedVertex<T>> getNeighbors(MarkedVertex<T> n) {
+        return null;
+    }
+
+    public String toString() {
+        return "";
+    }
+
+    public Vector<MarkedVertex<T>> depthSearchRecursive() {
+        return null;
     }
 }
