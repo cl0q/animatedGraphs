@@ -9,7 +9,7 @@ import java.util.Vector;
 
 // TODO: Check why some method are abstract when UML-Diagram says no abstract class
 // TODO: Implement logic for methods
-public class Graph<T extends VertexMarking, U extends EdgeMarking>  {
+public abstract class Graph<T extends VertexMarking, U extends EdgeMarking>  {
 
     private String name;
     private Vector<MarkedVertex<T>> vertexes;
@@ -30,7 +30,6 @@ public class Graph<T extends VertexMarking, U extends EdgeMarking>  {
     public void addVertex(MarkedVertex<T> n) {
         this.vertexes.add(n);
     }
-
 
     public abstract boolean areAdjacent(MarkedVertex<T> n1, MarkedVertex<T> n2);
 
@@ -53,11 +52,11 @@ public class Graph<T extends VertexMarking, U extends EdgeMarking>  {
     }
 
     public boolean hasEdge(MarkedEdge<U> e) {
-        return false;
+        return edges.contains(e);
     }
 
     public boolean hasEdge(String s) {
-        return false;
+        return edges.stream().anyMatch(e -> e.getName().equals(s));
     }
 
     public boolean hasEdge(MarkedVertex<T> n1, MarkedVertex<T> n2) {
@@ -77,35 +76,35 @@ public class Graph<T extends VertexMarking, U extends EdgeMarking>  {
     }
 
     public boolean hasVertex(MarkedVertex<T> n) {
-        return false;
+        return vertexes.contains(n);
     }
 
     public boolean hasVertex(String s) {
-        return false;
+        return vertexes.stream().anyMatch(v -> v.getName().equals(s));
     }
 
     public int numberOfEdges() {
-        return -1;
+        return edges.size();
     }
 
     public int numberOfVertexes() {
-        return -1;
+        return vertexes.size();
     }
 
     public boolean removeEdge(MarkedEdge<U> e) {
-        return false;
+        return edges.remove(e);
     }
 
     public boolean removeEdge(String s) {
-        return false;
+        return edges.removeIf(e -> e.getName().equals(s));
     }
 
     public boolean removeVertex(MarkedVertex<T> n) {
-        return false;
+        return vertexes.remove(n);
     }
 
     public boolean removeVertex(String s) {
-        return false;
+        return vertexes.removeIf(v -> v.getName().equals(s));
     }
 
     public void setName(String s) {
@@ -113,6 +112,10 @@ public class Graph<T extends VertexMarking, U extends EdgeMarking>  {
     }
 
     public String toString() {
-        return "";
+        return "Graph{" +
+                "name='" + name + '\'' +
+                ", vertexes=" + vertexes +
+                ", edges=" + edges +
+                '}';
     }
 }

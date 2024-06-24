@@ -20,6 +20,16 @@ public class UndirectedGraph <T extends VertexMarking, U extends EdgeMarking> ex
         this.name = s;
     }
 
+    @Override
+    public boolean areAdjacent(MarkedVertex<T> n1, MarkedVertex<T> n2) {
+        return false;
+    }
+
+    @Override
+    public boolean areAdjacent(String s1, String s2) {
+        return false;
+    }
+
     public int degree(MarkedVertex<T> n) {
         return -1;
     }

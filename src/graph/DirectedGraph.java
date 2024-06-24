@@ -13,7 +13,17 @@ public class DirectedGraph<T extends VertexMarking, U extends EdgeMarking> exten
     }
 
     public DirectedGraph(final String s) {
+        super(s);
+    }
 
+    @Override
+    public boolean areAdjacent(MarkedVertex<T> n1, MarkedVertex<T> n2) {
+        return false;
+    }
+
+    @Override
+    public boolean areAdjacent(String s1, String s2) {
+        return false;
     }
 
     public boolean areStrongAdjacent(final MarkedVertex<T> n1, MarkedVertex<T> n2) {
