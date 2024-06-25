@@ -7,10 +7,11 @@ public class MarkedVertex<T extends VertexMarking> extends Vertex {
     private T marking;
 
     public MarkedVertex() {
-
+        super();
     }
 
     public MarkedVertex(String s, T t) {
+        super(s);
         this.marking = t;
     }
 

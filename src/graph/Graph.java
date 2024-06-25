@@ -15,10 +15,12 @@ public abstract class Graph<T extends VertexMarking, U extends EdgeMarking>  {
     private Vector<MarkedEdge<U>> edges;
 
     public Graph() {
-
+        this.vertexes = new Vector<>();
+        this.edges = new Vector<>();
     }
 
     public Graph(String s) {
+        this();
         this.name = s;
     }
 
@@ -35,7 +37,7 @@ public abstract class Graph<T extends VertexMarking, U extends EdgeMarking>  {
     public abstract boolean areAdjacent(String s1, String s2);
 
     public int degree() {
-        return -1;
+        return vertexes.size();
     }
 
     public Vector<MarkedEdge<U>> getAllEdges() {

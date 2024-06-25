@@ -1,13 +1,14 @@
 package graph;
 
 public abstract class Vertex {
+
     private String name;
 
     public Vertex() {
-
+        this.name = "";
     }
 
-    public Vertex(String s) {
+    public Vertex(final String s) {
         this.name = s;
     }
 
@@ -15,7 +16,7 @@ public abstract class Vertex {
         return name;
     }
 
-    public void setName(String label) {
-        this.name = label;
+    public void setName(final String name) {
+        this.name = name;
     }
 }

@@ -8,10 +8,11 @@ public class MarkedEdge<T extends EdgeMarking> extends Edge {
     private T marking;
 
     public MarkedEdge() {
-
+        super();
     }
 
     public MarkedEdge(String s, Vertex n1, Vertex n2, T t) {
+        super(s, n1, n2);
         this.marking = t;
     }
 
