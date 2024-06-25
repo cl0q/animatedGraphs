@@ -1,4 +1,4 @@
-package marking;
+package animate;
 
 import logging.LogElementList;
 import testApplication.*;
