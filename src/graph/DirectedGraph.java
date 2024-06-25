@@ -43,8 +43,12 @@ public class DirectedGraph<T extends VertexMarking, U extends EdgeMarking> exten
         return false;
     }
 
-    public boolean areStrongAdjacent(final MarkedVertex<T> n1, MarkedVertex<T> n2) {
+    public boolean areStrongAdjacent(MarkedVertex<T> n1, MarkedVertex<T> n2) {
         return areAdjacent(n1, n2) && areAdjacent(n2, n1);
+    }
+
+    public boolean areStrongAdjacent(String s1, String s2) {
+        return areAdjacent(s1, s2);
     }
 
     // TODO: Check if logic works correctly with typecast
@@ -75,6 +79,18 @@ public class DirectedGraph<T extends VertexMarking, U extends EdgeMarking> exten
 
     public int outDegree(MarkedVertex<T> n) {
         return getSuccessors(n).size();
+    }
+
+    public int inDegree(String s){
+        MarkedVertex<T> vertex = getAllVertexes()
+                .stream()
+                .filter(v -> v.getName().equals(s))
+                .findFirst()
+                .orElse(null);
+        if(vertex != null) {
+            return inDegree(vertex);
+        }
+        return 0;
     }
 
     public int outDegree(String s) {
