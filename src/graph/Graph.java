@@ -7,7 +7,6 @@ import graph.marking.VertexMarking;
 
 import java.util.Vector;
 
-// TODO: Check why some method are abstract when UML-Diagram says no abstract class
 // TODO: Implement logic for methods
 public abstract class Graph<T extends VertexMarking, U extends EdgeMarking>  {
 
