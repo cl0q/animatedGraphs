@@ -76,6 +76,7 @@ public class UndirectedGraph <T extends VertexMarking, U extends EdgeMarking> ex
         return super.toString();
     }
 
+    // TODO: Add marking logic
     public Vector<MarkedVertex<T>> depthSearchRecursive(MarkedVertex<T> start) {
         Vector<MarkedVertex<T>> visited = new Vector<>();
         Stack<MarkedVertex<T>> stack = new Stack<>();

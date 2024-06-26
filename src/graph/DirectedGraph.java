@@ -109,6 +109,7 @@ public class DirectedGraph<T extends VertexMarking, U extends EdgeMarking> exten
         return 0;
     }
 
+    // TODO: Add marking logic
     public List<MarkedVertex<T>> topSort() {
         List<MarkedVertex<T>> sortedList = new ArrayList<>();
         Set<MarkedVertex<T>> visited = new HashSet<>();
