@@ -75,21 +75,19 @@ public class UndirectedGraph<T extends VertexMarking, U extends EdgeMarking> ext
         return super.toString();
     }
 
-    // TODO: Add marking logic (not recursive currently!)
+    // TODO: Check if logic is correct
     public Vector<MarkedVertex<T>> depthSearchRecursive(MarkedVertex<T> start) {
         Vector<MarkedVertex<T>> visited = new Vector<>();
-        Stack<MarkedVertex<T>> stack = new Stack<>();
-        stack.push(start);
+        depthSearchRecursive(start, visited);
+        return visited;
+    }
 
-        while (!stack.isEmpty()) {
-            MarkedVertex<T> vertex = stack.pop();
-            if (!visited.contains(vertex)) {
-                visited.add(vertex);
-                for (MarkedVertex<T> neighbor : getNeighbours(vertex)) {
-                    stack.push(neighbor);
-                }
+    private void depthSearchRecursive(MarkedVertex<T> vertex, Vector<MarkedVertex<T>> visited) {
+        visited.add(vertex);
+        for (MarkedVertex<T> neighbor : getNeighbours(vertex)) {
+            if (!visited.contains(neighbor)) {
+                depthSearchRecursive(neighbor, visited);
             }
         }
-        return visited;
     }
 }

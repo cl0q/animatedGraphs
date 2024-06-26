@@ -138,7 +138,7 @@ public class DirectedGraph<T extends VertexMarking, U extends EdgeMarking> exten
 
         stack.remove(vertex);
         sortedList.add(vertex);
-        //vertex.getMarking().markVertex(vertex, Color.GREEN); // Mark as fully visited
+        //vertex.getMarking().markVertex(vertex, Color.BLUE); // Mark as fully visited
         return false;
     }
 
