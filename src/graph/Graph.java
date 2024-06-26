@@ -11,8 +11,8 @@ import java.util.Vector;
 public abstract class Graph<T extends VertexMarking, U extends EdgeMarking>  {
 
     private String name;
-    private Vector<MarkedVertex<T>> vertexes;
-    private Vector<MarkedEdge<U>> edges;
+    private final Vector<MarkedVertex<T>> vertexes;
+    private final Vector<MarkedEdge<U>> edges;
 
     public Graph() {
         this.vertexes = new Vector<>();
@@ -61,18 +61,31 @@ public abstract class Graph<T extends VertexMarking, U extends EdgeMarking>  {
     }
 
     public boolean hasEdge(MarkedVertex<T> n1, MarkedVertex<T> n2) {
-        return false;
+        return edges.stream().anyMatch(e -> e.getSource().equals(n1) && e.getDestination().equals(n2));
     }
 
     public boolean hasEdge(String s1, String s2) {
+        MarkedVertex<T> n1 = getVertex(s1);
+        MarkedVertex<T> n2 = getVertex(s2);
+        if (n1 != null && n2 != null) {
+            return hasEdge(n1, n2);
+        }
         return false;
+    }
+
+    public MarkedVertex<T> getVertex(String name) {
+        return vertexes.stream().filter(v -> v.getName().equals(name)).findFirst().orElse(null);
     }
 
     public boolean hasLoop(MarkedVertex<T> n) {
-        return false;
+        return hasEdge(n, n);
     }
 
     public boolean hasLoop(String s) {
+        MarkedVertex<T> n = getVertex(s);
+        if (n != null) {
+            return hasLoop(n);
+        }
         return false;
     }
 

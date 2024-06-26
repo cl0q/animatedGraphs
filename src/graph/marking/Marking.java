@@ -1,16 +1,19 @@
 package graph.marking;
 
-import java.util.List;
+import java.awt.*;
 
+// TODO: Check if implementation is correct/wanted like this
 public abstract class Marking {
 
-    public abstract void mark();
+    private Color color;
 
-    public abstract void unmark();
+    public final Color getColor() {
+        return color;
+    }
 
-    public abstract boolean isMarked();
-
-    public abstract List<?> getMarked();
+    public final void setColor(final Color color) {
+        this.color = color;
+    }
 
     public abstract String toString();
 }

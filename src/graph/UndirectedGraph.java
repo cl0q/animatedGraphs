@@ -6,6 +6,7 @@ import graph.marking.MarkedVertex;
 import graph.marking.VertexMarking;
 import jdk.jshell.spi.ExecutionControl;
 
+import java.util.Stack;
 import java.util.Vector;
 
 // TODO: Implement logic for methods
@@ -32,16 +33,8 @@ public class UndirectedGraph <T extends VertexMarking, U extends EdgeMarking> ex
 
     @Override
     public boolean areAdjacent(String s1, String s2) {
-        MarkedVertex<T> n1 = getAllVertexes()
-                .stream()
-                .filter(n -> n.getName().equals(s1))
-                .findFirst()
-                .orElse(null);
-        MarkedVertex<T> n2 = getAllVertexes()
-                .stream()
-                .filter(n -> n.getName().equals(s2))
-                .findFirst()
-                .orElse(null);
+        MarkedVertex<T> n1 = getVertex(s1);
+        MarkedVertex<T> n2 = getVertex(s2);
         if(n1 != null && n2 != null) {
             return areAdjacent(n1, n2);
         }
@@ -59,11 +52,7 @@ public class UndirectedGraph <T extends VertexMarking, U extends EdgeMarking> ex
     }
 
     public int degree(String s) {
-        MarkedVertex<T> vertex = getAllVertexes()
-                .stream()
-                .filter(n -> n.getName().equals(s))
-                .findFirst()
-                .orElse(null);
+        MarkedVertex<T> vertex = getVertex(s);
         if (vertex != null) {
             return degree(vertex);
         }
@@ -71,7 +60,7 @@ public class UndirectedGraph <T extends VertexMarking, U extends EdgeMarking> ex
     }
 
     // TODO: Check if logic works correctly with typecast
-    public Vector<MarkedVertex<T>> getNeighbors(MarkedVertex<T> n) {
+    public Vector<MarkedVertex<T>> getNeighbours(MarkedVertex<T> n) {
         Vector<MarkedVertex<T>> neighbours = new Vector<>();
         for (MarkedEdge<U> edge : getAllEdges()) {
             if (edge.getSource().equals(n)) {
@@ -84,10 +73,23 @@ public class UndirectedGraph <T extends VertexMarking, U extends EdgeMarking> ex
     }
 
     public String toString() {
-        return "";
+        return super.toString();
     }
 
-    public Vector<MarkedVertex<T>> depthSearchRecursive() {
-        return null;
+    public Vector<MarkedVertex<T>> depthSearchRecursive(MarkedVertex<T> start) {
+        Vector<MarkedVertex<T>> visited = new Vector<>();
+        Stack<MarkedVertex<T>> stack = new Stack<>();
+        stack.push(start);
+
+        while (!stack.isEmpty()) {
+            MarkedVertex<T> vertex = stack.pop();
+            if (!visited.contains(vertex)) {
+                visited.add(vertex);
+                for (MarkedVertex<T> neighbor : getNeighbours(vertex)) {
+                    stack.push(neighbor);
+                }
+            }
+        }
+        return visited;
     }
 }

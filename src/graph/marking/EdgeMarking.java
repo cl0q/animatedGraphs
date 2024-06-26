@@ -2,32 +2,22 @@ package graph.marking;
 
 import graph.Edge;
 
-import java.util.ArrayList;
+import java.awt.*;
 import java.util.List;
 
 public abstract class EdgeMarking extends Marking {
 
-    private final List<Edge> markedEdges = new ArrayList<>();
-
-    public final void mark(final Edge edge) {
-        markedEdges.add(edge);
-    }
+    public abstract void markEdge(final Edge edge, final Color color);
     
-    public final void unmark(final Edge edge) {
-        markedEdges.remove(edge);
-    }
+    public abstract void unmarkEdge(final Edge edge);
     
-    public final boolean isMarked(final Edge edge) {
-        return markedEdges.contains(edge);
-    }
+    public abstract boolean isEdgeMarked(final Edge edge);
 
-    public final List<Edge> getMarked() {
-        return markedEdges;
-    }
+    public abstract List<Edge> getMarkedEdges();
 
     public String toString() {
         return "EdgeMarking{" +
-                "marked='" + getMarked() + '\'' +
+                "marked='" + getMarkedEdges() + '\'' +
                 '}';
     }
 }
