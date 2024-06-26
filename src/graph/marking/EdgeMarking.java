@@ -3,7 +3,7 @@ package graph.marking;
 import graph.Edge;
 
 import java.awt.*;
-import java.util.List;
+import java.util.Set;
 
 public abstract class EdgeMarking extends Marking {
 
@@ -13,7 +13,7 @@ public abstract class EdgeMarking extends Marking {
     
     public abstract boolean isEdgeMarked(final Edge edge);
 
-    public abstract List<Edge> getMarkedEdges();
+    public abstract Set<Edge> getMarkedEdges();
 
     public String toString() {
         return "EdgeMarking{" +

@@ -6,6 +6,7 @@ import graph.marking.MarkedVertex;
 import graph.marking.VertexMarking;
 
 import java.util.*;
+import java.util.List;
 
 // TODO: Implement logic for methods
 public class DirectedGraph<T extends VertexMarking, U extends EdgeMarking> extends Graph<T, U> {
@@ -75,16 +76,6 @@ public class DirectedGraph<T extends VertexMarking, U extends EdgeMarking> exten
         return outgoingEdges;
     }
 
-    public List<MarkedEdge<U>> getIncomingEdges(MarkedVertex<T> vertex) {
-        List<MarkedEdge<U>> incomingEdges = new ArrayList<>();
-        for (MarkedEdge<U> edge : getAllEdges()) {
-            if (edge.getDestination().equals(vertex)) {
-                incomingEdges.add(edge);
-            }
-        }
-        return incomingEdges;
-    }
-
     public int inDegree(MarkedVertex<T> n) {
         return getPredecessors(n).size();
     }
@@ -118,7 +109,7 @@ public class DirectedGraph<T extends VertexMarking, U extends EdgeMarking> exten
         for (MarkedVertex<T> vertex : getAllVertexes()) {
             if (!visited.contains(vertex)) {
                 if (topologicalSortAlgorithm(vertex, visited, stack, sortedList)) {
-                    return null;
+                    return Collections.emptyList();
                 }
             }
         }
@@ -130,10 +121,12 @@ public class DirectedGraph<T extends VertexMarking, U extends EdgeMarking> exten
     private boolean topologicalSortAlgorithm(MarkedVertex<T> vertex, Set<MarkedVertex<T>> visited, Set<MarkedVertex<T>> stack, List<MarkedVertex<T>> sortedList) {
         visited.add(vertex);
         stack.add(vertex);
+        //vertex.getMarking().markVertex(vertex, Color.YELLOW); // Mark as visiting
 
         for (MarkedEdge<U> edge : getOutgoingEdges(vertex)) {
             MarkedVertex<T> neighbor = (MarkedVertex<T>) edge.getDestination();
             if (stack.contains(neighbor)) {
+                System.out.println("Cycle detected!");
                 return true;
             }
             if (!visited.contains(neighbor)) {
@@ -145,6 +138,7 @@ public class DirectedGraph<T extends VertexMarking, U extends EdgeMarking> exten
 
         stack.remove(vertex);
         sortedList.add(vertex);
+        //vertex.getMarking().markVertex(vertex, Color.GREEN); // Mark as fully visited
         return false;
     }
 

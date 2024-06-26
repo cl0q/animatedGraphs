@@ -3,7 +3,7 @@ package graph.marking;
 import graph.Vertex;
 
 import java.awt.*;
-import java.util.List;
+import java.util.Set;
 
 public abstract class VertexMarking extends Marking {
 
@@ -13,7 +13,7 @@ public abstract class VertexMarking extends Marking {
 
     public abstract boolean isVertexMarked(final Vertex vertex);
 
-    public abstract List<Vertex> getMarkedVertexes();
+    public abstract Set<Vertex> getMarkedVertexes();
 
     public String toString() {
         return "VertexMarking{" +

@@ -4,13 +4,12 @@ import graph.marking.EdgeMarking;
 import graph.marking.MarkedEdge;
 import graph.marking.MarkedVertex;
 import graph.marking.VertexMarking;
-import jdk.jshell.spi.ExecutionControl;
 
 import java.util.Stack;
 import java.util.Vector;
 
 // TODO: Implement logic for methods
-public class UndirectedGraph <T extends VertexMarking, U extends EdgeMarking> extends Graph<T, U> {
+public class UndirectedGraph<T extends VertexMarking, U extends EdgeMarking> extends Graph<T, U> {
 
     private String name;
 
@@ -76,7 +75,7 @@ public class UndirectedGraph <T extends VertexMarking, U extends EdgeMarking> ex
         return super.toString();
     }
 
-    // TODO: Add marking logic
+    // TODO: Add marking logic (not recursive currently!)
     public Vector<MarkedVertex<T>> depthSearchRecursive(MarkedVertex<T> start) {
         Vector<MarkedVertex<T>> visited = new Vector<>();
         Stack<MarkedVertex<T>> stack = new Stack<>();

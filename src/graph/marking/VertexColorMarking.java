@@ -3,21 +3,16 @@ package graph.marking;
 import graph.Vertex;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
+// TODO: Refactor logic
 public class VertexColorMarking extends VertexMarking {
 
-    private final List<Vertex> markedVertexes = new ArrayList<>();
-
-    public VertexColorMarking(Color color) {
-        setColor(color);
-    }
+    private final Map<Vertex, Color> markedVertexes = new HashMap<>();
 
     @Override
     public void markVertex(Vertex vertex, Color color) {
-        setColor(color);
-        markedVertexes.add(vertex);
+        markedVertexes.put(vertex, color);
     }
 
     @Override
@@ -27,11 +22,30 @@ public class VertexColorMarking extends VertexMarking {
 
     @Override
     public boolean isVertexMarked(Vertex vertex) {
-        return markedVertexes.contains(vertex);
+        return markedVertexes.containsKey(vertex);
     }
 
     @Override
-    public List<Vertex> getMarkedVertexes() {
-        return markedVertexes;
+    public Set<Vertex> getMarkedVertexes() {
+        return markedVertexes.keySet();
+    }
+
+    @Override
+    public Color getColor(final Object vertex) {
+        if(vertex instanceof Vertex) {
+            return markedVertexes.get(vertex);
+        }
+        return null;
+    }
+
+    @Override
+    public void setColor(final Object vertex, Color color) {
+        if(vertex instanceof Vertex) {
+            markedVertexes.put((Vertex) vertex, color);
+        }
+    }
+
+    public void resetMarkedVertexes() {
+        markedVertexes.clear();
     }
 }

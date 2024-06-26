@@ -3,21 +3,15 @@ package graph.marking;
 import graph.Edge;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class EdgeColorMarking extends EdgeMarking {
 
-    private final List<Edge> markedEdges = new ArrayList<>();
-
-    public EdgeColorMarking(Color color) {
-        setColor(color);
-    }
+    private final Map<Edge, Color> markedEdges = new HashMap<>();
 
     @Override
     public void markEdge(Edge edge, Color color) {
-        setColor(color);
-        markedEdges.add(edge);
+        markedEdges.put(edge, color);
     }
 
     @Override
@@ -27,11 +21,30 @@ public class EdgeColorMarking extends EdgeMarking {
 
     @Override
     public boolean isEdgeMarked(Edge edge) {
-        return markedEdges.contains(edge);
+        return markedEdges.containsKey(edge);
     }
 
     @Override
-    public List<Edge> getMarkedEdges() {
-        return markedEdges;
+    public Set<Edge> getMarkedEdges() {
+        return markedEdges.keySet();
+    }
+
+    @Override
+    public Color getColor(final Object edge) {
+        if(edge instanceof Edge) {
+            return markedEdges.get(edge);
+        }
+        return null;
+    }
+
+    @Override
+    public void setColor(Object edge, Color color) {
+        if(edge instanceof Edge) {
+            markedEdges.put((Edge) edge, color);
+        }
+    }
+
+    public void resetMarkedEdges() {
+        markedEdges.clear();
     }
 }
