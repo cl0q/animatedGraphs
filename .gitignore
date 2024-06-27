@@ -30,4 +30,4 @@ bin/
 .DS_Store
 
 ### Graph.txt ###
-./src/animate/graph.txt
+/src/animate/graph.txt
