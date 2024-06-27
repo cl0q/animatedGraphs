@@ -22,7 +22,7 @@ public class VisualizationFramerwork {
         Algorithm algorithm=new Algorithm(parameterArea);
         LegendArea legendArea=new LegendArea();
         HybridWindow<DrawArea, TextArea, ParameterArea, Algorithm, LogElement, LegendArea> applet=new HybridWindow<DrawArea,TextArea,ParameterArea,Algorithm,LogElement,LegendArea>(drawArea,textArea,parameterArea,algorithm,logList,legendArea);
-
+        GraphDrawer graphDrawer = new GraphDrawer();
 
         JFrame frame=new JFrame("Visualise");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -32,5 +32,7 @@ public class VisualizationFramerwork {
         applet.start();
         frame.setSize(800,600);
         frame.setVisible(true);
+
+        graphDrawer.setVisible(true);
     }
 }
