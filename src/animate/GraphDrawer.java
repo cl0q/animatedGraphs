@@ -6,6 +6,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -109,7 +110,8 @@ public class GraphDrawer extends JFrame {
     }
 
     private void exportGraph() {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("graph.txt"))) {
+        File directory = new File("./src/animate");
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(new File(directory, "graph.txt")))) {
             for (Vertex vertex : vertices) {
                 writer.write(vertex.getName() + ";" + vertex.getX() + ";" + vertex.getY());
                 writer.newLine();
