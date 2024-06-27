@@ -16,7 +16,8 @@ public class VisualizationFramerwork {
     public static void init(){
         LogElementList<LogElement> logList= new LogElementList<>();
         ParameterArea parameterArea=new ParameterArea();
-        DrawArea drawArea=new Draw(logList,"visualization");
+        DrawHelper drawHelper=new DrawHelper();
+        DrawArea drawArea=new DrawArea(logList,"visualization", drawHelper);
         TextArea textArea=new TextArea(logList);
         Algorithm algorithm=new Algorithm(parameterArea);
         LegendArea legendArea=new LegendArea();
