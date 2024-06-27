@@ -1,5 +1,7 @@
 package animate;
 
+import visualizationElements.Vertex;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -84,7 +86,7 @@ public class GraphDrawer extends JFrame {
         private void deleteElement(int x, int y) {
             Vertex v = findVertex(x, y);
             if (v != null) {
-                edges.removeIf(edge -> edge.source == v || edge.destination == v);
+                edges.removeIf(edge -> edge.getSource() == v || edge.getDestination() == v);
                 vertices.remove(v);
                 return;
             }
@@ -98,10 +100,10 @@ public class GraphDrawer extends JFrame {
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
             for (Edge edge : edges) {
-                edge.draw(g);
+                edge.drawHere(g);
             }
             for (Vertex vertex : vertices) {
-                vertex.draw(g);
+                vertex.drawHere(g);
             }
         }
     }
@@ -109,11 +111,11 @@ public class GraphDrawer extends JFrame {
     private void exportGraph() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("graph.txt"))) {
             for (Vertex vertex : vertices) {
-                writer.write(vertex.name + ";" + vertex.x + ";" + vertex.y);
+                writer.write(vertex.getName() + ";" + vertex.getX() + ";" + vertex.getY());
                 writer.newLine();
             }
             for (Edge edge : edges) {
-                writer.write(edge.name + ";" + edge.source.name + ";" + edge.destination.name);
+                writer.write(edge.getName() + ";" + edge.getSource().getName() + ";" + edge.getDestination().getName());
                 writer.newLine();
             }
             JOptionPane.showMessageDialog(this, "Graph exported successfully.");
@@ -122,18 +124,31 @@ public class GraphDrawer extends JFrame {
         }
     }
 
-    private static class Vertex {
-        String name;
-        int x, y;
+    public static class Vertex extends visualizationElements.Vertex {
+        private final String name;
+        private final int x, y;
         private static final int SIZE = 20;
 
         Vertex(String name, int x, int y) {
+            super(x, y, name);
             this.name = name;
             this.x = x;
             this.y = y;
         }
 
-        void draw(Graphics g) {
+        public String getName() {
+            return name;
+        }
+
+        public int getX() {
+            return x;
+        }
+
+        public int getY() {
+            return y;
+        }
+
+        void drawHere(Graphics g) {
             g.setColor(Color.BLACK);
             g.fillOval(x - SIZE / 2, y - SIZE / 2, SIZE, SIZE);
             g.setColor(Color.WHITE);
@@ -146,10 +161,10 @@ public class GraphDrawer extends JFrame {
         }
     }
 
-    private static class Edge {
-        String name;
-        Vertex source;
-        Vertex destination;
+    public static class Edge {
+        private final String name;
+        private final Vertex source;
+        private final Vertex destination;
 
         Edge(String name, Vertex source, Vertex destination) {
             this.name = name;
@@ -157,23 +172,54 @@ public class GraphDrawer extends JFrame {
             this.destination = destination;
         }
 
-        void draw(Graphics g) {
+        public String getName() {
+            return name;
+        }
+
+        public Vertex getSource() {
+            return source;
+        }
+
+        public Vertex getDestination() {
+            return destination;
+        }
+
+        void drawHere(Graphics g) {
             g.setColor(Color.BLACK);
-            g.drawLine(source.x, source.y, destination.x, destination.y);
-            int mx = (source.x + destination.x) / 2;
-            int my = (source.y + destination.y) / 2;
+            g.drawLine(source.getX(), source.getY(), destination.getX(), destination.getY());
+            int mx = (source.getX() + destination.getX()) / 2;
+            int my = (source.getY() + destination.getY()) / 2;
             g.setColor(Color.RED);
             g.drawString(name, mx, my);
         }
 
         boolean contains(int px, int py) {
-            int x1 = source.x;
-            int y1 = source.y;
-            int x2 = destination.x;
-            int y2 = destination.y;
+            int x1 = source.getX();
+            int y1 = source.getY();
+            int x2 = destination.getX();
+            int y2 = destination.getY();
 
             double distance = Math.abs((y2 - y1) * px - (x2 - x1) * py + x2 * y1 - y2 * x1) / Math.sqrt(Math.pow(y2 - y1, 2) + Math.pow(x2 - x1, 2));
             return distance < 5;
         }
+    }
+
+    public ArrayList<Vertex> getVertices() {
+        return vertices;
+    }
+    public ArrayList<Edge> getEdges() {
+        return edges;
+    }
+
+    public int getVertexCount() {
+        return vertexCount;
+    }
+
+    public String[] getVertexNames(){
+        String[] names = new String[vertexCount];
+        for(int i = 0; i < vertexCount; i++){
+            names[i] = "V" + i;
+        }
+        return names;
     }
 }

@@ -16,13 +16,13 @@ public class VisualizationFramerwork {
     public static void init(){
         LogElementList<LogElement> logList= new LogElementList<>();
         ParameterArea parameterArea=new ParameterArea();
-        DrawHelper drawHelper=new DrawHelper();
+        GraphDrawer graphDrawer = new GraphDrawer();
+        DrawHelper drawHelper=new DrawHelper(graphDrawer);
         DrawArea drawArea=new DrawArea(logList,"visualization", drawHelper);
         TextArea textArea=new TextArea(logList);
-        Algorithm algorithm=new Algorithm(parameterArea);
+        Algorithm algorithm=new Algorithm(parameterArea, graphDrawer);
         LegendArea legendArea=new LegendArea();
         HybridWindow<DrawArea, TextArea, ParameterArea, Algorithm, LogElement, LegendArea> applet=new HybridWindow<DrawArea,TextArea,ParameterArea,Algorithm,LogElement,LegendArea>(drawArea,textArea,parameterArea,algorithm,logList,legendArea);
-        GraphDrawer graphDrawer = new GraphDrawer();
 
         JFrame frame=new JFrame("Visualise");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

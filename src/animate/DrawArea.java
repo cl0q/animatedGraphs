@@ -1,7 +1,6 @@
 package animate;
 
 import logging.LogElementList;
-import testApplication.TestLogElement;
 import visualizationElements.*;
 
 import java.awt.*;
@@ -29,19 +28,10 @@ public class DrawArea extends visualization.DrawArea{
 
         // create/add vertexes
         Vector<Vertex> vertexes = new Vector<Vertex>();
-
-        drawHelper.setVertexes(vertexes);
-        vertexes = drawHelper.redraw(logList, vertexes);
-
-
-        // create/add edges
         Vector<Edge> edges = new Vector<Edge>();
 
-        edges.add(new Edge(vertexes.get(0), vertexes.get(1), "a", Color.BLACK));
-        edges.add(new Edge(vertexes.get(1), vertexes.get(3), "b", Color.BLACK));
-        edges.add(new Edge(vertexes.get(2), vertexes.get(3), "c", Color.BLACK));
-        edges.add(new Edge(vertexes.get(0), vertexes.get(2), "d", Color.BLACK));
-
+        drawHelper.setGraph(vertexes, edges);
+        vertexes = drawHelper.redraw(logList, vertexes);
 
         // create graph
         Graph graph = new Graph(vertexes, edges, false, EdgeStyle.Direct);
