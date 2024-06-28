@@ -11,12 +11,17 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class GraphDrawer extends JFrame {
+public class GraphDrawer extends  JFrame {
     private final ArrayList<Vertex> vertices = new ArrayList<>();
     private final ArrayList<Edge> edges = new ArrayList<>();
     private Vertex selectedVertex = null;
     private int vertexCount = 0;
     private int edgeCount = 0;
+
+    private JComboBox<String> vertexComboBox;
+    private JButton searchButton;
+    private JRadioButton algorithm1;
+    private JRadioButton algorithm2;
 
     public GraphDrawer() {
         setTitle("Graph Drawing Application");
@@ -26,6 +31,9 @@ public class GraphDrawer extends JFrame {
 
         DrawingPanel drawingPanel = new DrawingPanel();
         add(drawingPanel, BorderLayout.CENTER);
+
+        JPanel rightPanel = createRightPanel();
+        add(rightPanel, BorderLayout.EAST);
 
         JButton exportButton = new JButton("Export");
         exportButton.addActionListener(e -> exportGraph());
@@ -39,6 +47,75 @@ public class GraphDrawer extends JFrame {
         add(controlPanel, BorderLayout.SOUTH);
     }
 
+    private JPanel createRightPanel() {
+        JPanel rightPanel = new JPanel();
+        rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
+
+        JLabel algorithmLabel = new JLabel("Select Algorithm:");
+        algorithmLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        rightPanel.add(algorithmLabel);
+
+        algorithm1 = new JRadioButton("Algorithm 1");
+        algorithm2 = new JRadioButton("Algorithm 2");
+        algorithm1.setAlignmentX(Component.CENTER_ALIGNMENT);
+        algorithm2.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        ButtonGroup algorithmGroup = new ButtonGroup();
+        algorithmGroup.add(algorithm1);
+        algorithmGroup.add(algorithm2);
+
+        rightPanel.add(algorithm1);
+        rightPanel.add(algorithm2);
+
+        algorithm1.addActionListener(e -> updateSearchButton());
+        algorithm2.addActionListener(e -> updateSearchButton());
+
+        JLabel vertexLabel = new JLabel("Select Vertex:");
+        vertexLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        rightPanel.add(vertexLabel);
+
+        vertexComboBox = new JComboBox<>();
+        vertexComboBox.setMaximumSize(new Dimension(120, 25)); // Set the preferred size of the dropdown menu
+        vertexComboBox.setAlignmentX(Component.CENTER_ALIGNMENT); // Center the dropdown menu
+        updateVertexComboBox();
+        rightPanel.add(vertexComboBox);
+
+        vertexComboBox.addActionListener(e -> updateSearchButton());
+
+        searchButton = new JButton();
+        searchButton.setMaximumSize(new Dimension(200, 25));
+        searchButton.setAlignmentX(Component.CENTER_ALIGNMENT); // Center the button
+        updateSearchButton();
+        searchButton.addActionListener(e -> searchAlgorithm());
+        rightPanel.add(searchButton);
+
+        return rightPanel;
+    }
+
+    private void updateVertexComboBox() {
+        vertexComboBox.removeAllItems();
+        for (Vertex vertex : vertices) {
+            vertexComboBox.addItem(vertex.getName());
+        }
+        updateSearchButton();
+    }
+
+    private void updateSearchButton() {
+        if (searchButton != null) {
+            String selectedAlgorithm = algorithm1.isSelected() ? "Algorithm 1" : algorithm2.isSelected() ? "Algorithm 2" : "Algorithm";
+            String selectedVertex = (String) vertexComboBox.getSelectedItem();
+            searchButton.setText("Search " + (selectedVertex != null ? selectedVertex : "") + " using " + selectedAlgorithm);
+        }
+    }
+
+    private void searchAlgorithm() {
+        String selectedAlgorithm = algorithm1.isSelected() ? "Algorithm 1" : algorithm2.isSelected() ? "Algorithm 2" : "Algorithm";
+        String selectedVertex = (String) vertexComboBox.getSelectedItem();
+        System.out.println("Searching " + selectedVertex + " using " + selectedAlgorithm);
+
+        JOptionPane.showMessageDialog(this, "Searching " + selectedVertex + " using " + selectedAlgorithm);
+    }
+
     private class DrawingPanel extends JPanel {
         public DrawingPanel() {
             addMouseListener(new MouseAdapter() {
@@ -46,6 +123,7 @@ public class GraphDrawer extends JFrame {
                 public void mousePressed(MouseEvent e) {
                     if (SwingUtilities.isLeftMouseButton(e)) {
                         vertices.add(new Vertex("V" + vertexCount++, e.getX(), e.getY()));
+                        updateVertexComboBox();
                         repaint();
                     } else if (SwingUtilities.isRightMouseButton(e)) {
                         Vertex v = findVertex(e.getX(), e.getY());
@@ -60,6 +138,7 @@ public class GraphDrawer extends JFrame {
                         }
                     } else if (SwingUtilities.isMiddleMouseButton(e)) {
                         deleteElement(e.getX(), e.getY());
+                        updateVertexComboBox();
                         repaint();
                     }
                 }
@@ -209,6 +288,7 @@ public class GraphDrawer extends JFrame {
     public ArrayList<Vertex> getVertices() {
         return vertices;
     }
+
     public ArrayList<Edge> getEdges() {
         return edges;
     }
