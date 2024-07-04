@@ -8,7 +8,12 @@ import graph.marking.VertexMarking;
 import java.util.Stack;
 import java.util.Vector;
 
-// TODO: Implement logic for methods
+/**
+ * Implementation eines ungerichteten Graphen.
+ *
+ * @param <T> der Typ der Markierung, die mit den Knoten verbunden ist
+ * @param <U> der Typ der Markierung, die mit den Kanten verbunden ist
+ */
 public class UndirectedGraph<T extends VertexMarking, U extends EdgeMarking> extends Graph<T, U> {
 
     private String name;
@@ -40,6 +45,11 @@ public class UndirectedGraph<T extends VertexMarking, U extends EdgeMarking> ext
         return false;
     }
 
+    /**
+     * Gibt den Grad eines Knotens zurück.
+     * @param n der Knoten
+     * @return der Grad des Knotens
+     */
     public int degree(MarkedVertex<T> n) {
         int degree = 0;
         for(MarkedEdge<U> e : getAllEdges()) {
@@ -50,6 +60,11 @@ public class UndirectedGraph<T extends VertexMarking, U extends EdgeMarking> ext
         return degree;
     }
 
+    /**
+     * Gibt den Grad eines Knotens mit angegebenen Namen zurück.
+     * @param s Name des Knotens
+     * @return der Grad des Knotens
+     */
     public int degree(String s) {
         MarkedVertex<T> vertex = getVertex(s);
         if (vertex != null) {
@@ -58,7 +73,11 @@ public class UndirectedGraph<T extends VertexMarking, U extends EdgeMarking> ext
         return 0;
     }
 
-    // TODO: Check if logic works correctly with typecast
+    /**
+     * Gibt die Nachbarn eines Knotens zurück.
+     * @param n der Knoten
+     * @return eine Liste der Nachbarn
+     */
     public Vector<MarkedVertex<T>> getNeighbours(MarkedVertex<T> n) {
         Vector<MarkedVertex<T>> neighbours = new Vector<>();
         for (MarkedEdge<U> edge : getAllEdges()) {
@@ -75,26 +94,35 @@ public class UndirectedGraph<T extends VertexMarking, U extends EdgeMarking> ext
         return super.toString();
     }
 
-    // TODO: Check if logic is correct
+    /**
+     * Führt eine Tiefensuche rekursiv durch.
+     * @param start der Startknoten
+     * @return eine Liste der besuchten Knoten
+     */
     public Vector<MarkedVertex<T>> depthSearchRecursive(MarkedVertex<T> start) {
         Vector<MarkedVertex<T>> visited = new Vector<>();
         Stack<MarkedVertex<T>> stack = new Stack<>();
-        stack.push(start);
-        depthSearchRecursive(stack, visited);
+        stack.push(start); // Startknoten auf den Stack legen
+        depthSearchRecursive(stack, visited); // Rekursive Tiefensuche starten
         return visited;
     }
 
+    /**
+     * Hilfsmethode für die rekursive Tiefensuche.
+     * @param stack der Stack mit den zu besuchenden Knoten
+     * @param visited die Liste der besuchten Knoten
+     */
     private void depthSearchRecursive(Stack<MarkedVertex<T>> stack, Vector<MarkedVertex<T>> visited) {
-        if (!stack.isEmpty()) {
-            MarkedVertex<T> vertex = stack.pop();
-            if (!visited.contains(vertex)) {
-                visited.add(vertex);
-                for (MarkedVertex<T> neighbor : getNeighbours(vertex)) {
-                    if (!visited.contains(neighbor)) {
-                        stack.push(neighbor);
+        if (!stack.isEmpty()) { // Solange der Stack nicht leer ist
+            MarkedVertex<T> vertex = stack.pop(); // Knoten vom Stack nehmen
+            if (!visited.contains(vertex)) { // Wenn der Knoten noch nicht besucht wurde
+                visited.add(vertex); // Knoten als besucht markieren
+                for (MarkedVertex<T> neighbor : getNeighbours(vertex)) { // Alle Nachbarn des Knotens durchlaufen
+                    if (!visited.contains(neighbor)) { // Wenn der Nachbar noch nicht besucht wurde
+                        stack.push(neighbor); // Nachbar auf den Stack legen
                     }
                 }
-                depthSearchRecursive(stack, visited);
+                depthSearchRecursive(stack, visited); // Rekursiver Aufruf für den nächsten Knoten
             }
         }
     }

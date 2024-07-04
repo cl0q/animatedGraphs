@@ -5,8 +5,12 @@ import graph.Edge;
 import java.awt.*;
 import java.util.*;
 
+/**
+ * Implementation einer Kantenmarkierung.
+ */
 public class EdgeColorMarking extends EdgeMarking {
 
+    // Liste der markierten Kanten
     private final Map<Edge, Color> markedEdges = new HashMap<>();
 
     @Override
@@ -44,6 +48,9 @@ public class EdgeColorMarking extends EdgeMarking {
         }
     }
 
+    /**
+     * Leert die Liste der markierten Kanten.
+     */
     public void resetMarkedEdges() {
         markedEdges.clear();
     }

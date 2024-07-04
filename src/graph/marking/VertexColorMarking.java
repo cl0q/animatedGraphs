@@ -5,9 +5,12 @@ import graph.Vertex;
 import java.awt.*;
 import java.util.*;
 
-// TODO: Refactor logic
+/**
+ * Implementation einer Knotenmarkierung.
+ */
 public class VertexColorMarking extends VertexMarking {
 
+    // Liste der markierten Knoten
     private final Map<Vertex, Color> markedVertexes = new HashMap<>();
 
     @Override
@@ -45,6 +48,9 @@ public class VertexColorMarking extends VertexMarking {
         }
     }
 
+    /**
+     * Leert die Liste der markierten Knoten.
+     */
     public void resetMarkedVertexes() {
         markedVertexes.clear();
     }
