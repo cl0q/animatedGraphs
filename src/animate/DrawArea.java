@@ -30,11 +30,11 @@ public class DrawArea extends visualization.DrawArea{
         Vector<Vertex> vertexes = new Vector<Vertex>();
         Vector<Edge> edges = new Vector<Edge>();
 
-        drawHelper.setGraph(vertexes, edges);
+        boolean isDirected = drawHelper.setGraph(vertexes, edges);
         vertexes = drawHelper.redraw(logList, vertexes);
 
         // create graph
-        Graph graph = new Graph(vertexes, edges, false, EdgeStyle.Direct);
+        Graph graph = new Graph(vertexes, edges, isDirected, EdgeStyle.Direct);
 
         //drawHelper.redraw(logList, vertexes);
         graph.draw(g);

@@ -44,15 +44,16 @@ public class DrawHelper {
         return tempVertex;
     }
 
-    public void setGraph(Vector<Vertex> vertexes, Vector<Edge> edges) {
+    public boolean setGraph(Vector<Vertex> vertexes, Vector<Edge> edges) {
         for (GraphDrawer.Vertex vertex : graphDrawer.getVertices()) {
             vertexes.add(new Vertex(vertex.getX(), vertex.getY(), vertex.getName(), Color.BLACK));
             System.out.println("Vertex " + vertex.getName() + " added" + " at " + vertex.getX() + " " + vertex.getY());
         }
 
-        for(GraphDrawer.Edge edge : graphDrawer.getEdges()){
+        for (GraphDrawer.Edge edge : graphDrawer.getEdges()) {
             edges.add(new Edge(edge.getSource(), edge.getDestination(), edge.getName(), Color.BLACK));
             System.out.println("Vertex " + edge.getName() + " added" + " at " + edge.getSource() + " " + edge.getDestination());
         }
+        return false;
     }
 }

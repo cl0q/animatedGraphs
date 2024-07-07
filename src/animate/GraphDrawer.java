@@ -11,7 +11,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class GraphDrawer extends  JFrame {
+public class GraphDrawer extends JFrame {
+    private ParameterArea parameterArea;
     private final ArrayList<Vertex> vertices = new ArrayList<>();
     private final ArrayList<Edge> edges = new ArrayList<>();
     private Vertex selectedVertex = null;
@@ -22,6 +23,7 @@ public class GraphDrawer extends  JFrame {
     private JButton searchButton;
     private JRadioButton algorithm1;
     private JRadioButton algorithm2;
+    private JComboBox<String> edgeTypeComboBox;
 
     public GraphDrawer() {
         setTitle("Graph Drawing Application");
@@ -43,6 +45,17 @@ public class GraphDrawer extends  JFrame {
 
         JLabel instructions = new JLabel("<html>Left Click: Add Vertex<br>Right Click: Connect Vertices<br>Middle Click: Delete Vertex/Edge</html>");
         controlPanel.add(instructions);
+
+        JLabel edgeTypeLabel = new JLabel("Edge Type:");
+        controlPanel.add(edgeTypeLabel);
+
+        edgeTypeComboBox = new JComboBox<>(new String[]{"Undirected", "Directed"});
+        edgeTypeComboBox.addActionListener(e -> {
+            String selectedType = (String) edgeTypeComboBox.getSelectedItem();
+            System.out.println("Selected Edge Type: " + selectedType);
+            updateEdgeTypes(selectedType.equals("Directed"));
+        });
+        controlPanel.add(edgeTypeComboBox);
 
         add(controlPanel, BorderLayout.SOUTH);
     }
@@ -102,18 +115,25 @@ public class GraphDrawer extends  JFrame {
 
     private void updateSearchButton() {
         if (searchButton != null) {
-            String selectedAlgorithm = algorithm1.isSelected() ? "Algorithm 1" : algorithm2.isSelected() ? "Algorithm 2" : "Algorithm";
+            String selectedAlgorithm = algorithm1.isSelected() ? "Depth First Search" : algorithm2.isSelected() ? "Topological Sort" : "Algorithm";
             String selectedVertex = (String) vertexComboBox.getSelectedItem();
             searchButton.setText("Search " + (selectedVertex != null ? selectedVertex : "") + " using " + selectedAlgorithm);
         }
     }
 
     private void searchAlgorithm() {
-        String selectedAlgorithm = algorithm1.isSelected() ? "Algorithm 1" : algorithm2.isSelected() ? "Algorithm 2" : "Algorithm";
+        String selectedAlgorithm = algorithm1.isSelected() ? "Depth First Search" : algorithm2.isSelected() ? "Topological Sort" : "Algorithm";
         String selectedVertex = (String) vertexComboBox.getSelectedItem();
         System.out.println("Searching " + selectedVertex + " using " + selectedAlgorithm);
 
-        JOptionPane.showMessageDialog(this, "Searching " + selectedVertex + " using " + selectedAlgorithm);
+        //JOptionPane.showMessageDialog(this, "Searching " + selectedVertex + " using " + selectedAlgorithm);
+        if (selectedAlgorithm.equals("Depth First Search")) {
+            AlgorithmDepthSearchRecursive algorithmDepthSearchRecursive = new AlgorithmDepthSearchRecursive(parameterArea, this);
+            VisualizationFramerwork.init(algorithmDepthSearchRecursive, parameterArea);
+        } else if (selectedAlgorithm.equals("Topological Sort")) {
+            AlgorithmTopologicalSort algorithmTopologicalSort = new AlgorithmTopologicalSort(parameterArea, this);
+            VisualizationFramerwork.init(algorithmTopologicalSort, parameterArea);
+        }
     }
 
     private class DrawingPanel extends JPanel {
@@ -131,7 +151,8 @@ public class GraphDrawer extends  JFrame {
                             if (selectedVertex == null) {
                                 selectedVertex = v;
                             } else {
-                                edges.add(new Edge("E" + edgeCount++, selectedVertex, v));
+                                String edgeType = (String) edgeTypeComboBox.getSelectedItem();
+                                edges.add(new Edge("E" + edgeCount++, selectedVertex, v, edgeType.equals("Directed")));
                                 selectedVertex = null;
                                 repaint();
                             }
@@ -188,6 +209,13 @@ public class GraphDrawer extends  JFrame {
         }
     }
 
+    private void updateEdgeTypes(boolean directed) {
+        for (Edge edge : edges) {
+            edge.setDirected(directed);
+        }
+        repaint();
+    }
+
     private void exportGraph() {
         File directory = new File("./src/animate");
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(new File(directory, "graph.txt")))) {
@@ -196,7 +224,7 @@ public class GraphDrawer extends  JFrame {
                 writer.newLine();
             }
             for (Edge edge : edges) {
-                writer.write(edge.getName() + ";" + edge.getSource().getName() + ";" + edge.getDestination().getName());
+                writer.write(edge.getName() + ";" + edge.getSource().getName() + ";" + edge.getDestination().getName() + ";" + (edge.isDirected() ? "Directed" : "Undirected"));
                 writer.newLine();
             }
             JOptionPane.showMessageDialog(this, "Graph exported successfully.");
@@ -246,11 +274,13 @@ public class GraphDrawer extends  JFrame {
         private final String name;
         private final Vertex source;
         private final Vertex destination;
+        private boolean directed;
 
-        Edge(String name, Vertex source, Vertex destination) {
+        Edge(String name, Vertex source, Vertex destination, boolean directed) {
             this.name = name;
             this.source = source;
             this.destination = destination;
+            this.directed = directed;
         }
 
         public String getName() {
@@ -265,6 +295,14 @@ public class GraphDrawer extends  JFrame {
             return destination;
         }
 
+        public boolean isDirected() {
+            return directed;
+        }
+
+        public void setDirected(boolean directed) {
+            this.directed = directed;
+        }
+
         void drawHere(Graphics g) {
             g.setColor(Color.BLACK);
             g.drawLine(source.getX(), source.getY(), destination.getX(), destination.getY());
@@ -272,6 +310,9 @@ public class GraphDrawer extends  JFrame {
             int my = (source.getY() + destination.getY()) / 2;
             g.setColor(Color.RED);
             g.drawString(name, mx, my);
+            if (directed) {
+                drawArrow(g, source.getX(), source.getY(), destination.getX(), destination.getY());
+            }
         }
 
         boolean contains(int px, int py) {
@@ -282,6 +323,17 @@ public class GraphDrawer extends  JFrame {
 
             double distance = Math.abs((y2 - y1) * px - (x2 - x1) * py + x2 * y1 - y2 * x1) / Math.sqrt(Math.pow(y2 - y1, 2) + Math.pow(x2 - x1, 2));
             return distance < 5;
+        }
+
+        private void drawArrow(Graphics g, int x1, int y1, int x2, int y2) {
+            int arrowSize = 10;
+            double angle = Math.atan2(y2 - y1, x2 - x1);
+            int x3 = (int) (x2 - arrowSize * Math.cos(angle + Math.PI / 6));
+            int y3 = (int) (y2 - arrowSize * Math.sin(angle + Math.PI / 6));
+            int x4 = (int) (x2 - arrowSize * Math.cos(angle - Math.PI / 6));
+            int y4 = (int) (y2 - arrowSize * Math.sin(angle - Math.PI / 6));
+            g.drawLine(x2, y2, x3, y3);
+            g.drawLine(x2, y2, x4, y4);
         }
     }
 
@@ -297,11 +349,17 @@ public class GraphDrawer extends  JFrame {
         return vertexCount;
     }
 
-    public String[] getVertexNames(){
+    public String[] getVertexNames() {
         String[] names = new String[vertexCount];
-        for(int i = 0; i < vertexCount; i++){
+        for (int i = 0; i < vertexCount; i++) {
             names[i] = "V" + i;
         }
         return names;
+    }
+
+    public void init() {
+        parameterArea = new ParameterArea();
+
+        setVisible(true);
     }
 }

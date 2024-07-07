@@ -13,26 +13,25 @@ public class VisualizationFramerwork {
         super();
     }
 
-    public static void init(){
-        LogElementList<LogElement> logList= new LogElementList<>();
-        ParameterArea parameterArea=new ParameterArea();
+    public static <T extends logging.Algorithm> void init(T algorithm, ParameterArea parameterArea) {
+        LogElementList<LogElement> logList = new LogElementList<>();
+        //ParameterArea parameterArea = new ParameterArea();
         GraphDrawer graphDrawer = new GraphDrawer();
-        DrawHelper drawHelper=new DrawHelper(graphDrawer);
-        DrawArea drawArea=new DrawArea(logList,"visualization", drawHelper);
-        TextArea textArea=new TextArea(logList);
-        Algorithm algorithm=new Algorithm(parameterArea, graphDrawer);
-        LegendArea legendArea=new LegendArea();
-        HybridWindow<DrawArea, TextArea, ParameterArea, Algorithm, LogElement, LegendArea> applet=new HybridWindow<DrawArea,TextArea,ParameterArea,Algorithm,LogElement,LegendArea>(drawArea,textArea,parameterArea,algorithm,logList,legendArea);
+        DrawHelper drawHelper = new DrawHelper(graphDrawer);
+        DrawArea drawArea = new DrawArea(logList, "visualization", drawHelper);
+        TextArea textArea = new TextArea(logList);
+        LegendArea legendArea = new LegendArea();
+        HybridWindow<DrawArea, TextArea, ParameterArea, T, LogElement, LegendArea> applet = new HybridWindow<>(drawArea, textArea, parameterArea, algorithm, logList, legendArea);
 
-        JFrame frame=new JFrame("Visualise");
+        JFrame frame = new JFrame("Visualise");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.getContentPane().add(applet);
         frame.pack();
         applet.init();
         applet.start();
-        frame.setSize(800,600);
+        frame.setSize(800, 600);
         frame.setVisible(true);
 
-        graphDrawer.setVisible(true);
+        //graphDrawer.setVisible(true);
     }
 }
