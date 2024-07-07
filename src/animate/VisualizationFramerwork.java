@@ -2,7 +2,6 @@ package animate;
 
 import logging.LogElement;
 import logging.LogElementList;
-import testApplication.*;
 import visualization.*;
 
 import javax.swing.*;
@@ -13,10 +12,8 @@ public class VisualizationFramerwork {
         super();
     }
 
-    public static <T extends logging.Algorithm> void init(T algorithm, ParameterArea parameterArea) {
+    public static <T extends logging.Algorithm> void init(T algorithm, ParameterArea parameterArea, GraphDrawer graphDrawer) {
         LogElementList<LogElement> logList = new LogElementList<>();
-        //ParameterArea parameterArea = new ParameterArea();
-        GraphDrawer graphDrawer = new GraphDrawer();
         DrawHelper drawHelper = new DrawHelper(graphDrawer);
         DrawArea drawArea = new DrawArea(logList, "visualization", drawHelper);
         TextArea textArea = new TextArea(logList);
@@ -31,7 +28,5 @@ public class VisualizationFramerwork {
         applet.start();
         frame.setSize(800, 600);
         frame.setVisible(true);
-
-        //graphDrawer.setVisible(true);
     }
 }

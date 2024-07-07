@@ -30,4 +30,5 @@ bin/
 .DS_Store
 
 ### Graph.txt ###
-src/animate/graph.txt
+graph.txt
+src/main/resources/graph.txt

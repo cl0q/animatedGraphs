@@ -16,6 +16,11 @@ public class MarkedEdge<T extends EdgeMarking> extends Edge {
         this.marking = t;
     }
 
+    public MarkedEdge(String s, Vertex n1, Vertex n2, boolean isDirected, T t) {
+        super(s, n1, n2, isDirected);
+        this.marking = t;
+    }
+
     public T getMarking() {
         return marking;
     }

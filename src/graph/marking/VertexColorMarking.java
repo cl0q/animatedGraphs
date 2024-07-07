@@ -8,20 +8,21 @@ import java.util.List;
 
 public class VertexColorMarking extends VertexMarking {
 
-    private final List<Vertex> markedVertexes = new ArrayList<>();
+    private final List<Vertex> markedVertexes;
 
-    public VertexColorMarking(Color color) {
-        setColor(color);
+    public VertexColorMarking() {
+        this.markedVertexes = new ArrayList<>();
     }
 
     @Override
     public void markVertex(Vertex vertex, Color color) {
-        setColor(color);
+        setColor(vertex, color);
         markedVertexes.add(vertex);
     }
 
     @Override
     public void unmarkVertex(Vertex vertex) {
+        setColor(vertex, DEFAULT_COLOR);
         markedVertexes.remove(vertex);
     }
 

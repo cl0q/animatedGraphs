@@ -8,20 +8,21 @@ import java.util.List;
 
 public class EdgeColorMarking extends EdgeMarking {
 
-    private final List<Edge> markedEdges = new ArrayList<>();
+    private final List<Edge> markedEdges;
 
-    public EdgeColorMarking(Color color) {
-        setColor(color);
+    public EdgeColorMarking() {
+        this.markedEdges = new ArrayList<>();
     }
 
     @Override
     public void markEdge(Edge edge, Color color) {
-        setColor(color);
+        setColor(edge, color);
         markedEdges.add(edge);
     }
 
     @Override
     public void unmarkEdge(Edge edge) {
+        setColor(edge, DEFAULT_COLOR);
         markedEdges.remove(edge);
     }
 
