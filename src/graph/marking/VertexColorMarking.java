@@ -4,14 +4,16 @@ import graph.Vertex;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class VertexColorMarking extends VertexMarking {
 
-    private final List<Vertex> markedVertexes;
+    private final Set<Vertex> markedVertexes;
 
     public VertexColorMarking() {
-        this.markedVertexes = new ArrayList<>();
+        this.markedVertexes = new HashSet<>();
     }
 
     @Override
@@ -32,7 +34,7 @@ public class VertexColorMarking extends VertexMarking {
     }
 
     @Override
-    public List<Vertex> getMarkedVertexes() {
+    public Set<Vertex> getMarkedVertexes() {
         return markedVertexes;
     }
 }

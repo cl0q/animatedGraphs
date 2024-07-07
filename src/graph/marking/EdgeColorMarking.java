@@ -4,14 +4,16 @@ import graph.Edge;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class EdgeColorMarking extends EdgeMarking {
 
-    private final List<Edge> markedEdges;
+    private final Set<Edge> markedEdges;
 
     public EdgeColorMarking() {
-        this.markedEdges = new ArrayList<>();
+        this.markedEdges = new HashSet<>();
     }
 
     @Override
@@ -32,7 +34,7 @@ public class EdgeColorMarking extends EdgeMarking {
     }
 
     @Override
-    public List<Edge> getMarkedEdges() {
+    public Set<Edge> getMarkedEdges() {
         return markedEdges;
     }
 }
