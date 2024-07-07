@@ -6,7 +6,7 @@ import visualizationElements.*;
 import java.awt.*;
 import java.util.Vector;
 
-public class DrawArea extends visualization.DrawArea{
+public class DrawArea extends visualization.DrawArea {
     DrawHelper drawHelper;
 
     private static final long serialVersionUID = 1L;
@@ -15,28 +15,31 @@ public class DrawArea extends visualization.DrawArea{
         super();
     }
 
-    public DrawArea(LogElementList<logging.LogElement> logList, String drawAreaName, DrawHelper drawHelper){
+    public DrawArea(LogElementList<logging.LogElement> logList, String drawAreaName, DrawHelper drawHelper) {
         super(logList, drawAreaName);
         this.drawHelper = drawHelper;
     }
 
-    public void draw(Graphics g){
+    public void draw(Graphics g) {
         drawGraph(g);
     }
 
     private void drawGraph(Graphics g) {
-
-        // create/add vertexes
-        Vector<Vertex> vertexes = new Vector<Vertex>();
-        Vector<Edge> edges = new Vector<Edge>();
+        Vector<visualizationElements.Vertex> vertexes = new Vector<>();
+        Vector<visualizationElements.Edge> edges = new Vector<>();
 
         boolean isDirected = drawHelper.setGraph(vertexes, edges);
-        vertexes = drawHelper.redraw(logList, vertexes);
+        System.out.println("Vertices count: " + vertexes.size());
+        System.out.println("Edges count: " + edges.size());
 
-        // create graph
+        if (vertexes.isEmpty()) {
+            System.err.println("No vertices to draw");
+            return;
+        }
+
+        vertexes = drawHelper.redraw(logList);
+
         Graph graph = new Graph(vertexes, edges, isDirected, EdgeStyle.Direct);
-
-        //drawHelper.redraw(logList, vertexes);
         graph.draw(g);
     }
 }

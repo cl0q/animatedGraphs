@@ -1,29 +1,31 @@
 package animate;
 
-import visualizationElements.Vertex;
+import graph.Edge;
+import graph.Vertex;
+import graph.marking.EdgeColorMarking;
+import graph.marking.MarkedEdge;
+import graph.marking.MarkedVertex;
+import graph.marking.VertexColorMarking;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 
 public class GraphDrawer extends JFrame {
     private ParameterArea parameterArea;
-    private final ArrayList<Vertex> vertices = new ArrayList<>();
-    private final ArrayList<Edge> edges = new ArrayList<>();
+    private final VertexColorMarking vertexColorMarking = new VertexColorMarking();
+    private final EdgeColorMarking edgeColorMarking = new EdgeColorMarking();
+    private final ArrayList<MarkedVertex<VertexColorMarking>> markedVertices = new ArrayList<>();
+    private final ArrayList<MarkedEdge<EdgeColorMarking>> markedEdges = new ArrayList<>();
     private Vertex selectedVertex = null;
     private int vertexCount = 0;
     private int edgeCount = 0;
 
     private JComboBox<String> vertexComboBox;
     private JButton searchButton;
-    private JRadioButton algorithm1;
-    private JRadioButton algorithm2;
-    private JComboBox<String> edgeTypeComboBox;
+    private JComboBox<String> algorithmComboBox;
+    JComboBox<String> edgeTypeComboBox; // Changed visibility to package-private for access in DrawHelper
 
     public GraphDrawer() {
         setTitle("Graph Drawing Application");
@@ -37,24 +39,14 @@ public class GraphDrawer extends JFrame {
         JPanel rightPanel = createRightPanel();
         add(rightPanel, BorderLayout.EAST);
 
-        JButton exportButton = new JButton("Export");
-        exportButton.addActionListener(e -> exportGraph());
-
         JPanel controlPanel = new JPanel();
-        controlPanel.add(exportButton);
-
-        JLabel instructions = new JLabel("<html>Left Click: Add Vertex<br>Right Click: Connect Vertices<br>Middle Click: Delete Vertex/Edge</html>");
-        controlPanel.add(instructions);
+        controlPanel.add(new JLabel("<html>Left Click: Add Vertex<br>Right Click: Connect Vertices<br>Middle Click: Delete Vertex/Edge</html>"));
 
         JLabel edgeTypeLabel = new JLabel("Edge Type:");
         controlPanel.add(edgeTypeLabel);
 
         edgeTypeComboBox = new JComboBox<>(new String[]{"Undirected", "Directed"});
-        edgeTypeComboBox.addActionListener(e -> {
-            String selectedType = (String) edgeTypeComboBox.getSelectedItem();
-            System.out.println("Selected Edge Type: " + selectedType);
-            updateEdgeTypes(selectedType.equals("Directed"));
-        });
+        edgeTypeComboBox.addActionListener(e -> updateEdgeTypes(edgeTypeComboBox.getSelectedItem().equals("Directed")));
         controlPanel.add(edgeTypeComboBox);
 
         add(controlPanel, BorderLayout.SOUTH);
@@ -68,37 +60,23 @@ public class GraphDrawer extends JFrame {
         algorithmLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         rightPanel.add(algorithmLabel);
 
-        algorithm1 = new JRadioButton("Algorithm 1");
-        algorithm2 = new JRadioButton("Algorithm 2");
-        algorithm1.setAlignmentX(Component.CENTER_ALIGNMENT);
-        algorithm2.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        ButtonGroup algorithmGroup = new ButtonGroup();
-        algorithmGroup.add(algorithm1);
-        algorithmGroup.add(algorithm2);
-
-        rightPanel.add(algorithm1);
-        rightPanel.add(algorithm2);
-
-        algorithm1.addActionListener(e -> updateSearchButton());
-        algorithm2.addActionListener(e -> updateSearchButton());
+        algorithmComboBox = new JComboBox<>(new String[]{"Depth First Search", "Topological Sort"});
+        algorithmComboBox.setAlignmentX(Component.CENTER_ALIGNMENT);
+        rightPanel.add(algorithmComboBox);
 
         JLabel vertexLabel = new JLabel("Select Vertex:");
         vertexLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         rightPanel.add(vertexLabel);
 
         vertexComboBox = new JComboBox<>();
-        vertexComboBox.setMaximumSize(new Dimension(120, 25)); // Set the preferred size of the dropdown menu
-        vertexComboBox.setAlignmentX(Component.CENTER_ALIGNMENT); // Center the dropdown menu
+        vertexComboBox.setMaximumSize(new Dimension(120, 25));
+        vertexComboBox.setAlignmentX(Component.CENTER_ALIGNMENT);
         updateVertexComboBox();
         rightPanel.add(vertexComboBox);
 
-        vertexComboBox.addActionListener(e -> updateSearchButton());
-
-        searchButton = new JButton();
+        searchButton = new JButton("Search");
         searchButton.setMaximumSize(new Dimension(200, 25));
-        searchButton.setAlignmentX(Component.CENTER_ALIGNMENT); // Center the button
-        updateSearchButton();
+        searchButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         searchButton.addActionListener(e -> searchAlgorithm());
         rightPanel.add(searchButton);
 
@@ -107,32 +85,41 @@ public class GraphDrawer extends JFrame {
 
     private void updateVertexComboBox() {
         vertexComboBox.removeAllItems();
-        for (Vertex vertex : vertices) {
+        for (Vertex vertex : markedVertices) {
             vertexComboBox.addItem(vertex.getName());
-        }
-        updateSearchButton();
-    }
-
-    private void updateSearchButton() {
-        if (searchButton != null) {
-            String selectedAlgorithm = algorithm1.isSelected() ? "Depth First Search" : algorithm2.isSelected() ? "Topological Sort" : "Algorithm";
-            String selectedVertex = (String) vertexComboBox.getSelectedItem();
-            searchButton.setText("Search " + (selectedVertex != null ? selectedVertex : "") + " using " + selectedAlgorithm);
         }
     }
 
     private void searchAlgorithm() {
-        String selectedAlgorithm = algorithm1.isSelected() ? "Depth First Search" : algorithm2.isSelected() ? "Topological Sort" : "Algorithm";
+        String selectedAlgorithm = (String) algorithmComboBox.getSelectedItem();
         String selectedVertex = (String) vertexComboBox.getSelectedItem();
-        System.out.println("Searching " + selectedVertex + " using " + selectedAlgorithm);
 
-        //JOptionPane.showMessageDialog(this, "Searching " + selectedVertex + " using " + selectedAlgorithm);
+        if (selectedVertex == null) {
+            JOptionPane.showMessageDialog(this, "Please select a starting vertex.");
+            return;
+        }
+
+        System.out.println("Searching " + selectedVertex + " using " + selectedAlgorithm);
+        printCurrentState();
+
         if (selectedAlgorithm.equals("Depth First Search")) {
-            AlgorithmDepthSearchRecursive algorithmDepthSearchRecursive = new AlgorithmDepthSearchRecursive(parameterArea, this);
-            VisualizationFramerwork.init(algorithmDepthSearchRecursive, parameterArea);
+            AlgorithmDepthSearchRecursive algorithm = new AlgorithmDepthSearchRecursive(parameterArea, this);
+            VisualizationFramerwork.init(algorithm, parameterArea, this);
         } else if (selectedAlgorithm.equals("Topological Sort")) {
-            AlgorithmTopologicalSort algorithmTopologicalSort = new AlgorithmTopologicalSort(parameterArea, this);
-            VisualizationFramerwork.init(algorithmTopologicalSort, parameterArea);
+            AlgorithmTopologicalSort algorithm = new AlgorithmTopologicalSort(parameterArea, this);
+            VisualizationFramerwork.init(algorithm, parameterArea, this);
+        }
+    }
+
+    private void printCurrentState() {
+        System.out.println("Vertices:");
+        for (Vertex v : markedVertices) {
+            System.out.println(v.getName() + " (" + v.getX() + ", " + v.getY() + ")");
+        }
+
+        System.out.println("Edges:");
+        for (Edge e : markedEdges) {
+            System.out.println(e.getName() + " from " + e.getSource().getName() + " to " + e.getDestination().getName() + " (Directed: " + e.isDirected() + ")");
         }
     }
 
@@ -142,7 +129,10 @@ public class GraphDrawer extends JFrame {
                 @Override
                 public void mousePressed(MouseEvent e) {
                     if (SwingUtilities.isLeftMouseButton(e)) {
-                        vertices.add(new Vertex("V" + vertexCount++, e.getX(), e.getY()));
+                        MarkedVertex<VertexColorMarking> vertex = new MarkedVertex<>("V" + vertexCount++, e.getX(), e.getY(), vertexColorMarking);
+                        vertexColorMarking.setColor(vertex, Color.BLACK);
+                        markedVertices.add(vertex);
+                        System.out.println("Added vertex: " + vertex.getName() + " at (" + vertex.getX() + ", " + vertex.getY() + ")");
                         updateVertexComboBox();
                         repaint();
                     } else if (SwingUtilities.isRightMouseButton(e)) {
@@ -151,8 +141,11 @@ public class GraphDrawer extends JFrame {
                             if (selectedVertex == null) {
                                 selectedVertex = v;
                             } else {
-                                String edgeType = (String) edgeTypeComboBox.getSelectedItem();
-                                edges.add(new Edge("E" + edgeCount++, selectedVertex, v, edgeType.equals("Directed")));
+                                boolean isDirected = edgeTypeComboBox.getSelectedItem().equals("Directed");
+                                MarkedEdge<EdgeColorMarking> edge = new MarkedEdge<>("E" + edgeCount++, selectedVertex, v, isDirected, edgeColorMarking);
+                                edgeColorMarking.setColor(edge, Color.BLACK);
+                                markedEdges.add(edge);
+                                System.out.println("Added edge: " + edge.getName() + " from " + edge.getSource().getName() + " to " + edge.getDestination().getName() + " (Directed: " + edge.isDirected() + ")");
                                 selectedVertex = null;
                                 repaint();
                             }
@@ -167,7 +160,7 @@ public class GraphDrawer extends JFrame {
         }
 
         private Vertex findVertex(int x, int y) {
-            for (Vertex v : vertices) {
+            for (Vertex v : markedVertices) {
                 if (v.contains(x, y)) {
                     return v;
                 }
@@ -176,7 +169,7 @@ public class GraphDrawer extends JFrame {
         }
 
         private Edge findEdge(int x, int y) {
-            for (Edge edge : edges) {
+            for (Edge edge : markedEdges) {
                 if (edge.contains(x, y)) {
                     return edge;
                 }
@@ -187,179 +180,59 @@ public class GraphDrawer extends JFrame {
         private void deleteElement(int x, int y) {
             Vertex v = findVertex(x, y);
             if (v != null) {
-                edges.removeIf(edge -> edge.getSource() == v || edge.getDestination() == v);
-                vertices.remove(v);
+                markedEdges.removeIf(edge -> edge.getSource() == v || edge.getDestination() == v);
+                markedVertices.remove(v);
+                System.out.println("Removed vertex: " + v.getName());
                 return;
             }
             Edge edge = findEdge(x, y);
             if (edge != null) {
-                edges.remove(edge);
+                markedEdges.remove(edge);
+                System.out.println("Removed edge: " + edge.getName());
             }
         }
 
         @Override
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
-            for (Edge edge : edges) {
+            for (Edge edge : markedEdges) {
                 edge.drawHere(g);
             }
-            for (Vertex vertex : vertices) {
+            for (MarkedVertex vertex : markedVertices) {
                 vertex.drawHere(g);
             }
         }
     }
 
     private void updateEdgeTypes(boolean directed) {
-        for (Edge edge : edges) {
+        for (Edge edge : markedEdges) {
             edge.setDirected(directed);
         }
         repaint();
     }
 
-    private void exportGraph() {
-        File directory = new File("./src/animate");
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(new File(directory, "graph.txt")))) {
-            for (Vertex vertex : vertices) {
-                writer.write(vertex.getName() + ";" + vertex.getX() + ";" + vertex.getY());
-                writer.newLine();
-            }
-            for (Edge edge : edges) {
-                writer.write(edge.getName() + ";" + edge.getSource().getName() + ";" + edge.getDestination().getName() + ";" + (edge.isDirected() ? "Directed" : "Undirected"));
-                writer.newLine();
-            }
-            JOptionPane.showMessageDialog(this, "Graph exported successfully.");
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(this, "Error exporting graph: " + e.getMessage());
-        }
+    public ArrayList<MarkedVertex<VertexColorMarking>> getMarkedVertices() {
+        return markedVertices;
     }
 
-    public static class Vertex extends visualizationElements.Vertex {
-        private final String name;
-        private final int x, y;
-        private static final int SIZE = 20;
-
-        Vertex(String name, int x, int y) {
-            super(x, y, name);
-            this.name = name;
-            this.x = x;
-            this.y = y;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public int getX() {
-            return x;
-        }
-
-        public int getY() {
-            return y;
-        }
-
-        void drawHere(Graphics g) {
-            g.setColor(Color.BLACK);
-            g.fillOval(x - SIZE / 2, y - SIZE / 2, SIZE, SIZE);
-            g.setColor(Color.WHITE);
-            g.drawString(name, x - SIZE / 2 + 4, y + 4);
-        }
-
-        boolean contains(int px, int py) {
-            int radius = SIZE / 2;
-            return Math.pow(px - x, 2) + Math.pow(py - y, 2) <= Math.pow(radius, 2);
-        }
-    }
-
-    public static class Edge {
-        private final String name;
-        private final Vertex source;
-        private final Vertex destination;
-        private boolean directed;
-
-        Edge(String name, Vertex source, Vertex destination, boolean directed) {
-            this.name = name;
-            this.source = source;
-            this.destination = destination;
-            this.directed = directed;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public Vertex getSource() {
-            return source;
-        }
-
-        public Vertex getDestination() {
-            return destination;
-        }
-
-        public boolean isDirected() {
-            return directed;
-        }
-
-        public void setDirected(boolean directed) {
-            this.directed = directed;
-        }
-
-        void drawHere(Graphics g) {
-            g.setColor(Color.BLACK);
-            g.drawLine(source.getX(), source.getY(), destination.getX(), destination.getY());
-            int mx = (source.getX() + destination.getX()) / 2;
-            int my = (source.getY() + destination.getY()) / 2;
-            g.setColor(Color.RED);
-            g.drawString(name, mx, my);
-            if (directed) {
-                drawArrow(g, source.getX(), source.getY(), destination.getX(), destination.getY());
-            }
-        }
-
-        boolean contains(int px, int py) {
-            int x1 = source.getX();
-            int y1 = source.getY();
-            int x2 = destination.getX();
-            int y2 = destination.getY();
-
-            double distance = Math.abs((y2 - y1) * px - (x2 - x1) * py + x2 * y1 - y2 * x1) / Math.sqrt(Math.pow(y2 - y1, 2) + Math.pow(x2 - x1, 2));
-            return distance < 5;
-        }
-
-        private void drawArrow(Graphics g, int x1, int y1, int x2, int y2) {
-            int arrowSize = 10;
-            double angle = Math.atan2(y2 - y1, x2 - x1);
-            int x3 = (int) (x2 - arrowSize * Math.cos(angle + Math.PI / 6));
-            int y3 = (int) (y2 - arrowSize * Math.sin(angle + Math.PI / 6));
-            int x4 = (int) (x2 - arrowSize * Math.cos(angle - Math.PI / 6));
-            int y4 = (int) (y2 - arrowSize * Math.sin(angle - Math.PI / 6));
-            g.drawLine(x2, y2, x3, y3);
-            g.drawLine(x2, y2, x4, y4);
-        }
-    }
-
-    public ArrayList<Vertex> getVertices() {
-        return vertices;
-    }
-
-    public ArrayList<Edge> getEdges() {
-        return edges;
+    public ArrayList<MarkedEdge<EdgeColorMarking>> getMarkedEdges() {
+        return markedEdges;
     }
 
     public int getVertexCount() {
-        return vertexCount;
+        return markedVertices.size();
     }
 
     public String[] getVertexNames() {
-        String[] names = new String[vertexCount];
-        for (int i = 0; i < vertexCount; i++) {
-            names[i] = "V" + i;
+        String[] names = new String[markedVertices.size()];
+        for (int i = 0; i < markedVertices.size(); i++) {
+            names[i] = markedVertices.get(i).getName();
         }
         return names;
     }
 
     public void init() {
         parameterArea = new ParameterArea();
-
         setVisible(true);
     }
 }
