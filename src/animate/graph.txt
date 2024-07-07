@@ -1,0 +1,5 @@
+V0;155;325
+V1;226;192
+V2;297;304
+E0;V0;V1;Directed
+E1;V0;V2;Directed

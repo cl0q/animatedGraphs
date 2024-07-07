@@ -1,13 +1,12 @@
 package animate;
 
 import logging.LogElementList;
-import testApplication.TestLogElement;
 import visualizationElements.*;
 
 import java.awt.*;
 import java.util.Vector;
 
-public class DrawArea extends visualization.DrawArea{
+public class DrawArea extends visualization.DrawArea {
     DrawHelper drawHelper;
 
     private static final long serialVersionUID = 1L;
@@ -16,37 +15,31 @@ public class DrawArea extends visualization.DrawArea{
         super();
     }
 
-    public DrawArea(LogElementList<logging.LogElement> logList, String drawAreaName, DrawHelper drawHelper){
+    public DrawArea(LogElementList<logging.LogElement> logList, String drawAreaName, DrawHelper drawHelper) {
         super(logList, drawAreaName);
         this.drawHelper = drawHelper;
     }
 
-    public void draw(Graphics g){
+    public void draw(Graphics g) {
         drawGraph(g);
     }
 
     private void drawGraph(Graphics g) {
+        Vector<visualizationElements.Vertex> vertexes = new Vector<>();
+        Vector<visualizationElements.Edge> edges = new Vector<>();
 
-        // create/add vertexes
-        Vector<Vertex> vertexes = new Vector<Vertex>();
+        boolean isDirected = drawHelper.setGraph(vertexes, edges);
+        System.out.println("Vertices count: " + vertexes.size());
+        System.out.println("Edges count: " + edges.size());
 
-        drawHelper.setVertexes(vertexes);
-        vertexes = drawHelper.redraw(logList, vertexes);
+        if (vertexes.isEmpty()) {
+            System.err.println("No vertices to draw");
+            return;
+        }
 
+        vertexes = drawHelper.redraw(logList);
 
-        // create/add edges
-        Vector<Edge> edges = new Vector<Edge>();
-
-        edges.add(new Edge(vertexes.get(0), vertexes.get(1), "a", Color.BLACK));
-        edges.add(new Edge(vertexes.get(1), vertexes.get(3), "b", Color.BLACK));
-        edges.add(new Edge(vertexes.get(2), vertexes.get(3), "c", Color.BLACK));
-        edges.add(new Edge(vertexes.get(0), vertexes.get(2), "d", Color.BLACK));
-
-
-        // create graph
-        Graph graph = new Graph(vertexes, edges, false, EdgeStyle.Direct);
-
-        //drawHelper.redraw(logList, vertexes);
+        Graph graph = new Graph(vertexes, edges, isDirected, EdgeStyle.Direct);
         graph.draw(g);
     }
 }

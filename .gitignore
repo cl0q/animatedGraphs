@@ -28,3 +28,7 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+
+### Graph.txt ###
+graph.txt
+src/main/resources/graph.txt

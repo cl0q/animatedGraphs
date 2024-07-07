@@ -3,48 +3,36 @@ package graph.marking;
 import graph.Edge;
 
 import java.awt.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class EdgeColorMarking extends EdgeMarking {
 
-    private final Map<Edge, Color> markedEdges = new HashMap<>();
+    private final List<Edge> markedEdges;
+
+    public EdgeColorMarking() {
+        this.markedEdges = new ArrayList<>();
+    }
 
     @Override
     public void markEdge(Edge edge, Color color) {
-        markedEdges.put(edge, color);
+        setColor(edge, color);
+        markedEdges.add(edge);
     }
 
     @Override
     public void unmarkEdge(Edge edge) {
+        setColor(edge, DEFAULT_COLOR);
         markedEdges.remove(edge);
     }
 
     @Override
     public boolean isEdgeMarked(Edge edge) {
-        return markedEdges.containsKey(edge);
+        return markedEdges.contains(edge);
     }
 
     @Override
-    public Set<Edge> getMarkedEdges() {
-        return markedEdges.keySet();
-    }
-
-    @Override
-    public Color getColor(final Object edge) {
-        if(edge instanceof Edge) {
-            return markedEdges.get(edge);
-        }
-        return null;
-    }
-
-    @Override
-    public void setColor(Object edge, Color color) {
-        if(edge instanceof Edge) {
-            markedEdges.put((Edge) edge, color);
-        }
-    }
-
-    public void resetMarkedEdges() {
-        markedEdges.clear();
+    public List<Edge> getMarkedEdges() {
+        return markedEdges;
     }
 }
