@@ -26,7 +26,7 @@ public class DrawHelper {
 
         System.out.println("Log list size: " + loglist.size());
         for (int i = 0; i < loglist.size(); i++) {
-            LogElement logElement = (LogElement) loglist.get(i);
+            VertexLogElement logElement = (VertexLogElement) loglist.get(i);
             Vertex graphVertex = graphDrawer.getMarkedVertices().get(i);
             int posX = graphVertex.getX();
             int posY = graphVertex.getY();

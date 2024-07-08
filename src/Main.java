@@ -1,5 +1,8 @@
 import animate.VisualizationFramerwork;
 import animate.GraphDrawer;
+import graph.Vertex;
+import graph.marking.MarkedVertex;
+import graph.marking.VertexColorMarking;
 
 public class Main {
 

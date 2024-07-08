@@ -13,11 +13,18 @@ public abstract class Graph<T extends VertexMarking, U extends EdgeMarking>  {
     private final Vector<MarkedVertex<T>> vertexes;
     private final Vector<MarkedEdge<U>> edges;
 
+    /**
+     * Erstellt einen neuen Graphen.
+     */
     public Graph() {
         this.vertexes = new Vector<>();
         this.edges = new Vector<>();
     }
 
+    /**
+     * Erstellt einen neuen Graphen mit einem Namen.
+     * @param s der Name des Graphen
+     */
     public Graph(String s) {
         this();
         this.name = s;

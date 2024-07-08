@@ -8,7 +8,7 @@ import graph.Vertex;
  *
  * @param <T> der Typ der Markierung, die mit der Kante verbunden ist
  */
-public final class MarkedEdge<T extends EdgeMarking> extends Edge {
+public final class MarkedEdge<T extends EdgeMarking> extends Edge implements Cloneable {
 
     private T marking;
 
@@ -55,7 +55,14 @@ public final class MarkedEdge<T extends EdgeMarking> extends Edge {
         this.marking = marking;
     }
 
-    public String toString() {
-        return "";
+    /**
+     * @return eine Kopie der markierten Kante
+     */
+    @Override
+    public MarkedEdge<T> clone() {
+        MarkedEdge<T> cloneObj = new MarkedEdge<>(getName(), getSource(), getDestination(), isDirected(), marking);
+        marking.markEdge(cloneObj, marking.getColor(this));
+        return cloneObj;
     }
+
 }

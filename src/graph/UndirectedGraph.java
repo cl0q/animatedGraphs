@@ -1,9 +1,11 @@
 package graph;
 
+import animate.VertexLogElement;
 import graph.marking.EdgeMarking;
 import graph.marking.MarkedEdge;
 import graph.marking.MarkedVertex;
 import graph.marking.VertexMarking;
+import logging.LogElementList;
 
 import java.util.Stack;
 import java.util.Vector;
@@ -17,14 +19,19 @@ import java.util.Vector;
 public class UndirectedGraph<T extends VertexMarking, U extends EdgeMarking> extends Graph<T, U> {
 
     private String name;
+    private int stepCounter;
+
+    public static final LogElementList<VertexLogElement> LOG = new LogElementList<>();
 
     public UndirectedGraph() {
         super();
+        this.stepCounter = 1;
     }
 
     public UndirectedGraph(String s) {
         super(s);
         this.name = s;
+        this.stepCounter = 1;
     }
 
     @Override
@@ -103,6 +110,7 @@ public class UndirectedGraph<T extends VertexMarking, U extends EdgeMarking> ext
         Vector<MarkedVertex<T>> visited = new Vector<>();
         Stack<MarkedVertex<T>> stack = new Stack<>();
         stack.push(start); // Startknoten auf den Stack legen
+        LOG.add(new VertexLogElement(0, "[ Vector ] Start: " + start.getName(), 0, start.clone()));
         depthSearchRecursive(stack, visited); // Rekursive Tiefensuche starten
         return visited;
     }
@@ -116,14 +124,30 @@ public class UndirectedGraph<T extends VertexMarking, U extends EdgeMarking> ext
         if (!stack.isEmpty()) { // Solange der Stack nicht leer ist
             MarkedVertex<T> vertex = stack.pop(); // Knoten vom Stack nehmen
             if (!visited.contains(vertex)) { // Wenn der Knoten noch nicht besucht wurde
-                visited.add(vertex); // Knoten als besucht markieren
+                LOG.add(new VertexLogElement(getStepCounter(), "[ Vector ] Visited: " + vertex.getName(), 0, vertex.clone()));
+
+                visited.add(vertex);// Knoten als besucht markieren
                 for (MarkedVertex<T> neighbor : getNeighbours(vertex)) { // Alle Nachbarn des Knotens durchlaufen
                     if (!visited.contains(neighbor)) { // Wenn der Nachbar noch nicht besucht wurde
                         stack.push(neighbor); // Nachbar auf den Stack legen
+                        LOG.add(new VertexLogElement(getStepCounter(), "[ Vector ] Neighbor: " + vertex.getName(), 0, vertex.clone()));
+                        countStep();
                     }
                 }
                 depthSearchRecursive(stack, visited); // Rekursiver Aufruf für den nächsten Knoten
             }
         }
+    }
+
+    private int getStepCounter() {
+        return stepCounter;
+    }
+
+    private void resetStepCounter(int stepCounter) {
+        this.stepCounter = 1;
+    }
+
+    private void countStep() {
+        stepCounter++;
     }
 }

@@ -9,7 +9,7 @@ import java.awt.*;
  *
  * @param <T> der Typ der Markierung, die mit dem Knoten verbunden ist
  */
-public final class MarkedVertex<T extends VertexMarking> extends Vertex {
+public final class MarkedVertex<T extends VertexMarking> extends Vertex implements Cloneable {
 
     private T marking;
 
@@ -53,13 +53,19 @@ public final class MarkedVertex<T extends VertexMarking> extends Vertex {
         this.marking = marking;
     }
 
-    public String toString() {
-        return "";
+    /**
+     * @return eine Kopie des markierten Knotens
+     */
+    @Override
+    public MarkedVertex<T> clone() {
+        MarkedVertex<T> clonedMarkedVertex = new MarkedVertex<T>(getName(), getX(), getY(), marking);
+        marking.markVertex(clonedMarkedVertex, marking.getColor(this));
+        return clonedMarkedVertex;
     }
 
     public void drawHere(Graphics g) {
-        g.setColor(marking.getColor(this)); // Convert string color to Color
-        g.fillOval(getX() - 10, getY() - 10, 20, 20);  // Assuming a fixed size for the vertex
+        g.setColor(marking.getColor(this));
+        g.fillOval(getX() - 10, getY() - 10, 20, 20);
         g.setColor(Color.WHITE);
         g.drawString(getName(), getX() - 10 + 4, getY() + 4);
     }

@@ -18,7 +18,7 @@ public class AlgorithmDepthSearchRecursive extends logging.Algorithm {
         LogElementList<TestLogElement> logList = new LogElementList<>();
 
         for (int i = 0; i < graphDrawer.getVertexCount(); i++) {
-            logList.add(new LogElement(i, graphDrawer.getVertexNames()[i], randomNumber(0, 3)));
+            logList.add(new VertexLogElement(i, graphDrawer.getVertexNames()[i], randomNumber(0, 3), graphDrawer.getMarkedVertices().get(i)));
             System.out.println(logList.get(i));
         }
         return logList;
