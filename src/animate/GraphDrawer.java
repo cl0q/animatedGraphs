@@ -1,10 +1,8 @@
 package animate;
 
-import graph.Edge;
-import graph.Vertex;
-import graph.marking.EdgeColorMarking;
 import graph.marking.MarkedEdge;
 import graph.marking.MarkedVertex;
+import graph.marking.EdgeColorMarking;
 import graph.marking.VertexColorMarking;
 
 import javax.swing.*;
@@ -18,8 +16,9 @@ public class GraphDrawer extends JFrame {
     private final EdgeColorMarking edgeColorMarking = new EdgeColorMarking();
     private final ArrayList<MarkedVertex<VertexColorMarking>> markedVertices = new ArrayList<>();
     private final ArrayList<MarkedEdge<EdgeColorMarking>> markedEdges = new ArrayList<>();
-    private Vertex selectedVertex = null;
+    private MarkedVertex<VertexColorMarking> selectedVertex = null;
     private int vertexCount = 0;
+    private int nextVertexIndex = 0;  // Keep track of the next vertex index
     private int edgeCount = 0;
 
     private JComboBox<String> vertexComboBox;
@@ -47,6 +46,7 @@ public class GraphDrawer extends JFrame {
 
         edgeTypeComboBox = new JComboBox<>(new String[]{"Undirected", "Directed"});
         edgeTypeComboBox.addActionListener(e -> updateEdgeTypes(edgeTypeComboBox.getSelectedItem().equals("Directed")));
+        controlPanel.add(edgeTypeLabel);
         controlPanel.add(edgeTypeComboBox);
 
         add(controlPanel, BorderLayout.SOUTH);
@@ -85,7 +85,7 @@ public class GraphDrawer extends JFrame {
 
     private void updateVertexComboBox() {
         vertexComboBox.removeAllItems();
-        for (Vertex vertex : markedVertices) {
+        for (MarkedVertex<VertexColorMarking> vertex : markedVertices) {
             vertexComboBox.addItem(vertex.getName());
         }
     }
@@ -113,12 +113,12 @@ public class GraphDrawer extends JFrame {
 
     private void printCurrentState() {
         System.out.println("Vertices:");
-        for (Vertex v : markedVertices) {
+        for (MarkedVertex<VertexColorMarking> v : markedVertices) {
             System.out.println(v.getName() + " (" + v.getX() + ", " + v.getY() + ")");
         }
 
         System.out.println("Edges:");
-        for (Edge e : markedEdges) {
+        for (MarkedEdge<EdgeColorMarking> e : markedEdges) {
             System.out.println(e.getName() + " from " + e.getSource().getName() + " to " + e.getDestination().getName() + " (Directed: " + e.isDirected() + ")");
         }
     }
@@ -129,14 +129,15 @@ public class GraphDrawer extends JFrame {
                 @Override
                 public void mousePressed(MouseEvent e) {
                     if (SwingUtilities.isLeftMouseButton(e)) {
-                        MarkedVertex<VertexColorMarking> vertex = new MarkedVertex<>("V" + vertexCount++, e.getX(), e.getY(), vertexColorMarking);
+                        MarkedVertex<VertexColorMarking> vertex = new MarkedVertex<>("V" + nextVertexIndex++, e.getX(), e.getY(), vertexColorMarking);
                         vertexColorMarking.setColor(vertex, Color.BLACK);
                         markedVertices.add(vertex);
+                        selectedVertex = null; // Reset selectedVertex if new vertex is added
                         System.out.println("Added vertex: " + vertex.getName() + " at (" + vertex.getX() + ", " + vertex.getY() + ")");
                         updateVertexComboBox();
                         repaint();
                     } else if (SwingUtilities.isRightMouseButton(e)) {
-                        Vertex v = findVertex(e.getX(), e.getY());
+                        MarkedVertex<VertexColorMarking> v = findVertex(e.getX(), e.getY());
                         if (v != null) {
                             if (selectedVertex == null) {
                                 selectedVertex = v;
@@ -152,6 +153,7 @@ public class GraphDrawer extends JFrame {
                         }
                     } else if (SwingUtilities.isMiddleMouseButton(e)) {
                         deleteElement(e.getX(), e.getY());
+                        selectedVertex = null; // Reset selectedVertex if deletion occurs
                         updateVertexComboBox();
                         repaint();
                     }
@@ -159,8 +161,8 @@ public class GraphDrawer extends JFrame {
             });
         }
 
-        private Vertex findVertex(int x, int y) {
-            for (Vertex v : markedVertices) {
+        private MarkedVertex<VertexColorMarking> findVertex(int x, int y) {
+            for (MarkedVertex<VertexColorMarking> v : markedVertices) {
                 if (v.contains(x, y)) {
                     return v;
                 }
@@ -168,8 +170,8 @@ public class GraphDrawer extends JFrame {
             return null;
         }
 
-        private Edge findEdge(int x, int y) {
-            for (Edge edge : markedEdges) {
+        private MarkedEdge<EdgeColorMarking> findEdge(int x, int y) {
+            for (MarkedEdge<EdgeColorMarking> edge : markedEdges) {
                 if (edge.contains(x, y)) {
                     return edge;
                 }
@@ -178,14 +180,15 @@ public class GraphDrawer extends JFrame {
         }
 
         private void deleteElement(int x, int y) {
-            Vertex v = findVertex(x, y);
+            MarkedVertex<VertexColorMarking> v = findVertex(x, y);
             if (v != null) {
                 markedEdges.removeIf(edge -> edge.getSource() == v || edge.getDestination() == v);
                 markedVertices.remove(v);
                 System.out.println("Removed vertex: " + v.getName());
+                renameVertices(); // Ensure consistent vertex naming
                 return;
             }
-            Edge edge = findEdge(x, y);
+            MarkedEdge<EdgeColorMarking> edge = findEdge(x, y);
             if (edge != null) {
                 markedEdges.remove(edge);
                 System.out.println("Removed edge: " + edge.getName());
@@ -195,19 +198,28 @@ public class GraphDrawer extends JFrame {
         @Override
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
-            for (Edge edge : markedEdges) {
+            for (MarkedEdge<EdgeColorMarking> edge : markedEdges) {
                 edge.drawHere(g);
             }
-            for (MarkedVertex vertex : markedVertices) {
+            for (MarkedVertex<VertexColorMarking> vertex : markedVertices) {
                 vertex.drawHere(g);
             }
         }
     }
 
     private void updateEdgeTypes(boolean directed) {
-        for (Edge edge : markedEdges) {
+        for (MarkedEdge<EdgeColorMarking> edge : markedEdges) {
             edge.setDirected(directed);
         }
+        repaint();
+    }
+
+    private void renameVertices() {
+        nextVertexIndex = 0; // Reset vertex index
+        for (int i = 0; i < markedVertices.size(); i++) {
+            markedVertices.get(i).setName("V" + nextVertexIndex++);
+        }
+        updateVertexComboBox();
         repaint();
     }
 
