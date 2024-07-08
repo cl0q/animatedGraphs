@@ -1,12 +1,10 @@
 package graph;
 
 import animate.VertexLogElement;
-import graph.marking.EdgeMarking;
-import graph.marking.MarkedEdge;
-import graph.marking.MarkedVertex;
-import graph.marking.VertexMarking;
+import graph.marking.*;
 import logging.LogElementList;
 
+import java.awt.*;
 import java.util.*;
 import java.util.List;
 
@@ -18,8 +16,8 @@ import java.util.List;
  */
 public class DirectedGraph<T extends VertexMarking, U extends EdgeMarking> extends Graph<T, U> {
 
-    private int stepCounter = 1;
-    public static final LogElementList<VertexLogElement> LOG = new LogElementList<>();
+    private int stepCounter = 0;
+    public final LogElementList<VertexLogElement> vertexLogElementList = new LogElementList<>();
 
     /**
      * Erzeugt einen neuen gerichteten Graphen.
@@ -184,7 +182,7 @@ public class DirectedGraph<T extends VertexMarking, U extends EdgeMarking> exten
         for (MarkedVertex<T> vertex : getAllVertexes()) {
             if (!visited.contains(vertex)) { // Wenn der Knoten noch nicht besucht wurde
                 if (topologicalSortAlgorithm(vertex, visited, stack, sortedList)) { // Topologische Sortierung starten
-                    return Collections.emptyList(); // Leere Liste zurückgeben, wenn ein Zyklus gefunden wurde
+                    return null; // Leere Liste zurückgeben, wenn ein Zyklus gefunden wurde
                 }
             }
         }
@@ -205,15 +203,11 @@ public class DirectedGraph<T extends VertexMarking, U extends EdgeMarking> exten
     private boolean topologicalSortAlgorithm(MarkedVertex<T> vertex, Set<MarkedVertex<T>> visited, Set<MarkedVertex<T>> stack, List<MarkedVertex<T>> sortedList) {
         visited.add(vertex); // Knoten als besucht markieren
         stack.add(vertex); // Knoten auf den Stack legen
-        vertex.getMarking().markVertex(vertex, VertexMarking.CURRENT_COLOR); // Mark as visiting
-        LOG.add(new VertexLogElement(getStepCounter(), "[ Vector ] Visited: " + vertex.getName(), 0, vertex.clone()));
-        countStep();
+        markVertex(vertex, VertexMarking.CURRENT_COLOR, "Visiting");
 
         for (MarkedEdge<U> edge : getOutgoingEdges(vertex)) { // Alle ausgehenden Kanten des Knotens durchlaufen
             MarkedVertex<T> neighbor = (MarkedVertex<T>) edge.getDestination();
-            vertex.getMarking().markVertex(neighbor, VertexMarking.NEIGHBOR_COLOR);
-            LOG.add(new VertexLogElement(getStepCounter(), "[ Vector ] Neighbor: " + neighbor.getName(), 0, neighbor.clone()));
-            countStep();
+            markVertex(neighbor, VertexMarking.NEIGHBOR_COLOR, "Neighbor");
             if (stack.contains(neighbor)) { // Wenn der Nachbar bereits auf dem Stack ist, wurde ein Zyklus gefunden
                 // TODO: Add cycle marking for edges
                 System.out.println("Cycle detected!");
@@ -228,8 +222,7 @@ public class DirectedGraph<T extends VertexMarking, U extends EdgeMarking> exten
 
         stack.remove(vertex); // Knoten vom Stack entfernen
         sortedList.add(vertex); // Knoten zur sortierten Liste hinzufügen
-        vertex.getMarking().markVertex(vertex, VertexMarking.FINISHED_COLOR);
-        LOG.add(new VertexLogElement(getStepCounter(), "[ Vector ] Neighbor: " + vertex.getName(), 0, vertex.clone()));
+        markVertex(vertex, VertexMarking.FINISHED_COLOR, "Finished");
         countStep();
         return false;
     }
@@ -241,6 +234,30 @@ public class DirectedGraph<T extends VertexMarking, U extends EdgeMarking> exten
      */
     public boolean hasCycle() {
         return topSort() == null;
+    }
+
+    /**
+     * Markiert einen Knoten mit einer Farbe und fügt ihn der Log-Liste mit seinem Zustand hinzu.
+     *
+     * @param vertex der zu markierende Knoten
+     * @param color die Farbe, mit der der Knoten markiert werden soll
+     * @param desc der Zustand des Knotens
+     */
+    private void markVertex(MarkedVertex<T> vertex, Color color, String desc) {
+        vertex.getMarking().markVertex(vertex, color);
+        vertexLogElementList.add(new VertexLogElement(getStepCounter(),
+                "[ Vector ] " + desc + ": " + vertex.getName(), 0, vertex.clone()));
+        countStep();
+    }
+
+    /**
+     * Liefert eine LogElementList. In dieser befinden sich die VertexLogElemente, welche die verschiedenen Schritte im TopologicalSort-Algorithmus
+     * mit ihren dazugehörigen Knoten und deren Attributen dokumentiert haben.
+     *
+     * @return die LogElementList mit den VertexLogElementen
+     */
+    public LogElementList<VertexLogElement> getVertexLogElementList() {
+        return vertexLogElementList;
     }
 
     /**

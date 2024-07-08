@@ -17,9 +17,9 @@ import java.util.Vector;
 public class UndirectedGraph<T extends VertexMarking, U extends EdgeMarking> extends Graph<T, U> {
 
     private String name;
-    private int stepCounter = 1; // Zähler der Schritte für das LogElement
+    private int stepCounter = 0; // Zähler der Schritte für das LogElement
 
-    public static final LogElementList<VertexLogElement> LOG = new LogElementList<>();
+    public final LogElementList<VertexLogElement> vertexLogElementList = new LogElementList<>();
 
     public UndirectedGraph() {
         super();
@@ -110,9 +110,7 @@ public class UndirectedGraph<T extends VertexMarking, U extends EdgeMarking> ext
         Vector<MarkedVertex<T>> visited = new Vector<>();
         Stack<MarkedVertex<T>> stack = new Stack<>();
         stack.push(start); // Startknoten auf den Stack legen
-        start.getMarking().markVertex(start, Marking.STARTING_COLOR);
-        LOG.add(new VertexLogElement(0, "[ Vector ] Start: " + start.getName(), 0, start.clone()));
-        countStep();
+        markVertex(start, VertexMarking.STARTING_COLOR, "Start");
         depthSearchRecursive(stack, visited); // Rekursive Tiefensuche starten
         return visited;
     }
@@ -127,25 +125,43 @@ public class UndirectedGraph<T extends VertexMarking, U extends EdgeMarking> ext
         if (!stack.isEmpty()) { // Solange der Stack nicht leer ist
             MarkedVertex<T> vertex = stack.pop(); // Knoten vom Stack nehmen
             if (!visited.contains(vertex)) { // Wenn der Knoten noch nicht besucht wurde
-                vertex.getMarking().markVertex(vertex, Marking.CURRENT_COLOR);
-                LOG.add(new VertexLogElement(getStepCounter(), "[ Vector ] Visited: " + vertex.getName(), 0, vertex.clone()));
-                countStep();
+                markVertex(vertex, VertexMarking.CURRENT_COLOR, "Visiting");
 
                 visited.add(vertex);// Knoten als besucht markieren
                 for (MarkedVertex<T> neighbor : getNeighbours(vertex)) { // Alle Nachbarn des Knotens durchlaufen
                     if (!visited.contains(neighbor)) { // Wenn der Nachbar noch nicht besucht wurde
                         stack.push(neighbor); // Nachbar auf den Stack legen
-                        neighbor.getMarking().markVertex(vertex, Marking.NEIGHBOR_COLOR);
-                        LOG.add(new VertexLogElement(getStepCounter(), "[ Vector ] Neighbor: " + vertex.getName(), 0, neighbor.clone()));
-                        countStep();
+                        markVertex(neighbor, VertexMarking.NEIGHBOR_COLOR, "Neighbor");
                     }
                 }
-                vertex.getMarking().markVertex(vertex, Marking.FINISHED_COLOR);
-                LOG.add(new VertexLogElement(getStepCounter(), "[ Vector ] Visited: " + vertex.getName(), 0, vertex.clone()));
-                countStep();
+                markVertex(vertex, VertexMarking.FINISHED_COLOR, "Finished");
                 depthSearchRecursive(stack, visited); // Rekursiver Aufruf für den nächsten Knoten
             }
         }
+    }
+
+    /**
+     * Markiert einen Knoten mit einer Farbe und fügt ihn der Log-Liste mit seinem Zustand hinzu.
+     *
+     * @param vertex der zu markierende Knoten
+     * @param color die Farbe, mit der der Knoten markiert werden soll
+     * @param desc der Zustand des Knotens
+     */
+    private void markVertex(MarkedVertex<T> vertex, Color color, String desc) {
+        vertex.getMarking().markVertex(vertex, color);
+        vertexLogElementList.add(new VertexLogElement(getStepCounter(),
+                "[ Vector ] " + desc + ": " + vertex.getName(), 0, vertex.clone()));
+        countStep();
+    }
+
+    /**
+     * Liefert eine LogElementList. In dieser befinden sich die VertexLogElemente, welche die verschiedenen Schritte im Tiefensuche-Algorithmus
+     * mit ihren dazugehörigen Knoten und deren Attributen dokumentiert haben.
+     *
+     * @return die LogElementList mit den VertexLogElementen
+     */
+    public LogElementList<VertexLogElement> getVertexLogElementList() {
+        return vertexLogElementList;
     }
 
     /**
