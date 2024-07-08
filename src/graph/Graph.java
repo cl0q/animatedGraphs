@@ -7,6 +7,12 @@ import graph.marking.VertexMarking;
 
 import java.util.Vector;
 
+/**
+ * Abstrakte Klasse, die einen Graphen darstellt.
+ *
+ * @param <T> implementierende Klasse der Knotenmarkierung
+ * @param <U> implementierende Klasse der Kantenmarkierung
+ */
 public abstract class Graph<T extends VertexMarking, U extends EdgeMarking>  {
 
     private String name;
@@ -14,7 +20,7 @@ public abstract class Graph<T extends VertexMarking, U extends EdgeMarking>  {
     private final Vector<MarkedEdge<U>> edges;
 
     /**
-     * Erstellt einen neuen Graphen.
+     * Erzeugt einen neuen Graphen.
      */
     public Graph() {
         this.vertexes = new Vector<>();
@@ -22,7 +28,8 @@ public abstract class Graph<T extends VertexMarking, U extends EdgeMarking>  {
     }
 
     /**
-     * Erstellt einen neuen Graphen mit einem Namen.
+     * Erzeugt einen neuen Graphen mit einem Namen.
+     *
      * @param s der Name des Graphen
      */
     public Graph(String s) {
@@ -220,6 +227,7 @@ public abstract class Graph<T extends VertexMarking, U extends EdgeMarking>  {
 
     /**
      * Entfernt die Kante mit dem angegebenen Namen aus dem Graphen.
+     *
      * @param s der Name der zu entfernenden Kante
      * @return true, wenn die Kante entfernt wurde, andernfalls false
      */
@@ -229,6 +237,7 @@ public abstract class Graph<T extends VertexMarking, U extends EdgeMarking>  {
 
     /**
      * Entfernt den Knoten aus dem Graphen.
+     *
      * @param n der zu entfernende Knoten
      * @return true, wenn der Knoten entfernt wurde, andernfalls false
      */
@@ -238,6 +247,7 @@ public abstract class Graph<T extends VertexMarking, U extends EdgeMarking>  {
 
     /**
      * Entfernt den Knoten mit dem angegebenen Namen aus dem Graphen.
+     *
      * @param s der Name des zu entfernenden Knotens
      * @return true, wenn der Knoten entfernt wurde, andernfalls false
      */

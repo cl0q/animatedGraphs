@@ -10,7 +10,8 @@ import java.util.Map;
 import java.util.Vector;
 
 public class DrawHelper {
-    private GraphDrawer graphDrawer;
+
+    private final GraphDrawer graphDrawer;
 
     public DrawHelper(GraphDrawer graphDrawer) {
         this.graphDrawer = graphDrawer;

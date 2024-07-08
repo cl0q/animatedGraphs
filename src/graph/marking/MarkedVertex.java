@@ -11,13 +11,19 @@ import java.awt.*;
  */
 public final class MarkedVertex<T extends VertexMarking> extends Vertex implements Cloneable {
 
+    // Die mit dem Knoten verbundene Markierungs-Implementation
     private T marking;
 
+    /**
+     * Erzeugt einen neuen markierten Knoten.
+     */
     public MarkedVertex() {
         super();
     }
 
     /**
+     * Erzeugt einen neuen markierten Knoten mit Namen und Markierung.
+     *
      * @param s der Name des Knotens
      * @param t die mit dem Knoten verbundene Markierung
      */
@@ -27,6 +33,8 @@ public final class MarkedVertex<T extends VertexMarking> extends Vertex implemen
     }
 
     /**
+     * Erzeugt einen neuen markierten Knoten mit Namen, x-Koordinate, y-Koordinate und Markierung.
+     *
      * @param name der Name des Knotens
      * @param x Koordinate des Knotens im Graphen
      * @param y Koordinate des Knotens im Graphen
@@ -58,7 +66,7 @@ public final class MarkedVertex<T extends VertexMarking> extends Vertex implemen
      */
     @Override
     public MarkedVertex<T> clone() {
-        MarkedVertex<T> clonedMarkedVertex = new MarkedVertex<T>(getName(), getX(), getY(), marking);
+        MarkedVertex<T> clonedMarkedVertex = new MarkedVertex<>(getName(), getX(), getY(), marking);
         marking.markVertex(clonedMarkedVertex, marking.getColor(this));
         return clonedMarkedVertex;
     }
