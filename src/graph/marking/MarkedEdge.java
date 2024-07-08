@@ -17,6 +17,8 @@ public final class MarkedEdge<T extends EdgeMarking> extends Edge implements Clo
     }
 
     /**
+     * Erzeugt eine neue markierte Kante mit Namen, Ursprungsknoten, Zielknoten und Markierung.
+     *
      * @param s der Name der Kante
      * @param n1 der erste Knoten
      * @param n2 der zweite Knoten
@@ -28,6 +30,8 @@ public final class MarkedEdge<T extends EdgeMarking> extends Edge implements Clo
     }
 
     /**
+     * Erzeugt eine neue markierte Kante mit Namen, Ursprungsknoten, Zielknoten und Markierung, die gerichtet sein kann.
+     *
      * @param s der Name der Kante
      * @param n1 der erste Knoten
      * @param n2 der zweite Knoten

@@ -21,7 +21,7 @@ public abstract class EdgeMarking extends Marking {
     /**
      * Entfernt die Markierung der angegebenen Kante.
      *
-     * @param edge die zu entmarkierende Kante
+     * @param edge die Kante dessen Markierung entfernt werden soll
      */
     public abstract void unmarkEdge(final Edge edge);
 

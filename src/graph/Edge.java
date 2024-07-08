@@ -23,6 +23,7 @@ public abstract class Edge {
 
     /**
      * Erzeugt eine neue Kante mit Namen und Knoten.
+     *
      * @param name der Name der Kante
      * @param n1 der erste Knoten
      * @param n2 der zweite Knoten
@@ -36,6 +37,7 @@ public abstract class Edge {
 
     /**
      * Erzeugt eine neue Kante mit Namen und Knoten die gerichtet sein kann.
+     *
      * @param name der Name der Kante
      * @param source der erste Knoten
      * @param destination der zweite Knoten
@@ -71,6 +73,7 @@ public abstract class Edge {
 
     /**
      * Setzt den Zielknoten der Kante.
+     *
      * @param n der neue Zielknoten
      * @return den Zielknoten
      */
@@ -80,6 +83,7 @@ public abstract class Edge {
 
     /**
      * Setzt den Namen der Kante.
+     *
      * @param s der neue Name
      */
     public void setName(final String s) {
@@ -88,20 +92,34 @@ public abstract class Edge {
 
     /**
      * Setzt den Startknoten der Kante.
+     *
      * @param n der neue Startknoten
      */
     public void setSource(final Vertex n) {
         this.source = n;
     }
 
+    /**
+     * @return ob die Kante gerichtet ist
+     */
     public boolean isDirected() {
         return directed;
     }
 
+    /**
+     * Setzt, ob die Kante gerichtet ist.
+     * @param directed ob die Kante gerichtet ist
+     */
     public void setDirected(boolean directed) {
         this.directed = directed;
     }
 
+    /**
+     *
+     * @param px
+     * @param py
+     * @return
+     */
     public boolean contains(int px, int py) {
         int x1 = source.getX();
         int y1 = source.getY();

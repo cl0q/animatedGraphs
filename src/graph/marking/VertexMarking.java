@@ -21,7 +21,7 @@ public abstract class VertexMarking extends Marking {
     /**
      * Entfernt die Markierung des angegebenen Knotens.
      *
-     * @param vertex der zu entmarkierende Knoten
+     * @param vertex der Knoten dessen Markierung entfernt werden soll
      */
     public abstract void unmarkVertex(final Vertex vertex);
 

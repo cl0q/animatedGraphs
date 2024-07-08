@@ -1,9 +1,11 @@
 package graph;
 
+import animate.VertexLogElement;
 import graph.marking.EdgeMarking;
 import graph.marking.MarkedEdge;
 import graph.marking.MarkedVertex;
 import graph.marking.VertexMarking;
+import logging.LogElementList;
 
 import java.util.*;
 import java.util.List;
@@ -11,15 +13,25 @@ import java.util.List;
 /**
  * Implementation eines gerichteten Graphen.
  *
- * @param <T> der Typ der Markierung, die mit den Knoten verbunden ist
- * @param <U> der Typ der Markierung, die mit den Kanten verbunden ist
+ * @param <T> implementierende Klasse der Knotenmarkierung
+ * @param <U> implementierende Klasse der Kantenmarkierung
  */
 public class DirectedGraph<T extends VertexMarking, U extends EdgeMarking> extends Graph<T, U> {
 
+    private int stepCounter = 1;
+    public static final LogElementList<VertexLogElement> LOG = new LogElementList<>();
+
+    /**
+     * Erzeugt einen neuen gerichteten Graphen.
+     */
     public DirectedGraph() {
         super();
     }
 
+    /**
+     * Erzeugt einen neuen gerichteten Graphen mit einem Namen.
+     * @param s der Name des Graphen
+     */
     public DirectedGraph(final String s) {
         super(s);
     }
@@ -43,6 +55,7 @@ public class DirectedGraph<T extends VertexMarking, U extends EdgeMarking> exten
 
     /**
      * Überprüft, ob zwei Knoten stark benachbart sind.
+     *
      * @param n1 der erste Knoten
      * @param n2 der zweite Knoten
      * @return true, wenn die Knoten stark benachbart sind, andernfalls false
@@ -53,6 +66,7 @@ public class DirectedGraph<T extends VertexMarking, U extends EdgeMarking> exten
 
     /**
      * Überprüft, ob zwei Knoten mit den angegebenen Namen stark benachbart sind.
+     *
      * @param s1 Name des ersten Knotens
      * @param s2 Name des zweiten Knotens
      * @return true, wenn die Knoten stark benachbart sind, andernfalls false
@@ -63,6 +77,7 @@ public class DirectedGraph<T extends VertexMarking, U extends EdgeMarking> exten
 
     /**
      * Gibt die Vorgänger eines Knotens zurück.
+     *
      * @param n der Knoten
      * @return eine Liste der Vorgänger
      */
@@ -78,6 +93,7 @@ public class DirectedGraph<T extends VertexMarking, U extends EdgeMarking> exten
 
     /**
      * Gibt die Nachfolger eines Knotens zurück.
+     *
      * @param n der Knoten
      * @return eine Liste der Nachfolger
      */
@@ -93,6 +109,7 @@ public class DirectedGraph<T extends VertexMarking, U extends EdgeMarking> exten
 
     /**
      * Gibt die ausgehenden Kanten eines Knotens zurück.
+     *
      * @param vertex der Knoten
      * @return eine Liste der ausgehenden Kanten
      */
@@ -108,6 +125,7 @@ public class DirectedGraph<T extends VertexMarking, U extends EdgeMarking> exten
 
     /**
      * Gibt den Eingangsgrad eines Knotens zurück.
+     *
      * @param n der Knoten
      * @return der Eingangsgrad
      */
@@ -117,6 +135,7 @@ public class DirectedGraph<T extends VertexMarking, U extends EdgeMarking> exten
 
     /**
      * Gibt den Ausgangsgrad eines Knotens zurück.
+     *
      * @param n der Knoten
      * @return der Ausgangsgrad
      */
@@ -126,6 +145,7 @@ public class DirectedGraph<T extends VertexMarking, U extends EdgeMarking> exten
 
     /**
      * Gibt den Eingangsgrad eines Knotens mit angegebenen Namen zurück.
+     *
      * @param s Namen des Knotens
      * @return der Eingangsgrad
      */
@@ -139,6 +159,7 @@ public class DirectedGraph<T extends VertexMarking, U extends EdgeMarking> exten
 
     /**
      * Gibt den Ausgangsgrad eines Knotens mit angegebenen Namen zurück.
+     *
      * @param s Namen des Knotens
      * @return der Ausgangsgrad
      */
@@ -152,6 +173,7 @@ public class DirectedGraph<T extends VertexMarking, U extends EdgeMarking> exten
 
     /**
      * Führt eine topologische Sortierung des Graphen durch.
+     *
      * @return eine Liste der Knoten in topologischer Reihenfolge
      */
     public List<MarkedVertex<T>> topSort() {
@@ -172,7 +194,8 @@ public class DirectedGraph<T extends VertexMarking, U extends EdgeMarking> exten
     }
 
     /**
-     * Hilfsmethode für die topologische Sortierung.
+     * Rekursive Hilfsmethode für die topologische Sortierung.
+     *
      * @param vertex der aktuelle Knoten
      * @param visited die Menge der besuchten Knoten
      * @param stack der aktuelle Stack
@@ -182,11 +205,17 @@ public class DirectedGraph<T extends VertexMarking, U extends EdgeMarking> exten
     private boolean topologicalSortAlgorithm(MarkedVertex<T> vertex, Set<MarkedVertex<T>> visited, Set<MarkedVertex<T>> stack, List<MarkedVertex<T>> sortedList) {
         visited.add(vertex); // Knoten als besucht markieren
         stack.add(vertex); // Knoten auf den Stack legen
-        //vertex.getMarking().markVertex(vertex, Color.YELLOW); // Mark as visiting
+        vertex.getMarking().markVertex(vertex, VertexMarking.CURRENT_COLOR); // Mark as visiting
+        LOG.add(new VertexLogElement(getStepCounter(), "[ Vector ] Visited: " + vertex.getName(), 0, vertex.clone()));
+        countStep();
 
         for (MarkedEdge<U> edge : getOutgoingEdges(vertex)) { // Alle ausgehenden Kanten des Knotens durchlaufen
             MarkedVertex<T> neighbor = (MarkedVertex<T>) edge.getDestination();
+            vertex.getMarking().markVertex(neighbor, VertexMarking.NEIGHBOR_COLOR);
+            LOG.add(new VertexLogElement(getStepCounter(), "[ Vector ] Neighbor: " + neighbor.getName(), 0, neighbor.clone()));
+            countStep();
             if (stack.contains(neighbor)) { // Wenn der Nachbar bereits auf dem Stack ist, wurde ein Zyklus gefunden
+                // TODO: Add cycle marking for edges
                 System.out.println("Cycle detected!");
                 return true;
             }
@@ -199,15 +228,31 @@ public class DirectedGraph<T extends VertexMarking, U extends EdgeMarking> exten
 
         stack.remove(vertex); // Knoten vom Stack entfernen
         sortedList.add(vertex); // Knoten zur sortierten Liste hinzufügen
-        //vertex.getMarking().markVertex(vertex, Color.BLUE); // Mark as fully visited
+        vertex.getMarking().markVertex(vertex, VertexMarking.FINISHED_COLOR);
+        LOG.add(new VertexLogElement(getStepCounter(), "[ Vector ] Neighbor: " + vertex.getName(), 0, vertex.clone()));
+        countStep();
         return false;
     }
 
     /**
      * Überprüft, ob der Graph einen Zyklus enthält.
+     *
      * @return true, wenn der Graph einen Zyklus enthält, andernfalls false
      */
     public boolean hasCycle() {
         return topSort() == null;
+    }
+
+    // TODO: comment javadoc
+    private int getStepCounter() {
+        return stepCounter;
+    }
+
+    private void resetStepCounter(int stepCounter) {
+        this.stepCounter = 1;
+    }
+
+    private void countStep() {
+        stepCounter++;
     }
 }

@@ -14,8 +14,7 @@ public class VertexLogElement extends logging.LogElement{
     }
 
     public VertexLogElement(int step, String description, long value, Vertex vertex){
-        this.step=step;
-        this.description=description;
+        super(step, description);
         this.value=value;
         this.vertex = vertex;
     }
