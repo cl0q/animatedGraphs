@@ -1,9 +1,11 @@
 package graph;
 
+import animate.LogElement;
 import graph.marking.EdgeMarking;
 import graph.marking.MarkedEdge;
 import graph.marking.MarkedVertex;
 import graph.marking.VertexMarking;
+import logging.LogElementList;
 
 import java.util.Stack;
 import java.util.Vector;
@@ -12,6 +14,8 @@ import java.util.Vector;
 public class UndirectedGraph<T extends VertexMarking, U extends EdgeMarking> extends Graph<T, U> {
 
     private String name;
+
+    public static final LogElementList<LogElement> LOG = new LogElementList<>();
 
     public UndirectedGraph() {
         super();
@@ -75,11 +79,14 @@ public class UndirectedGraph<T extends VertexMarking, U extends EdgeMarking> ext
         return super.toString();
     }
 
+    int i = 1;
+
     // TODO: Check if logic is correct
     public Vector<MarkedVertex<T>> depthSearchRecursive(MarkedVertex<T> start) {
         Vector<MarkedVertex<T>> visited = new Vector<>();
         Stack<MarkedVertex<T>> stack = new Stack<>();
         stack.push(start);
+        LOG.add(new LogElement(0, "[ Vector ] Start: " + start.getName(), 0));
         depthSearchRecursive(stack, visited);
         return visited;
     }
@@ -88,10 +95,14 @@ public class UndirectedGraph<T extends VertexMarking, U extends EdgeMarking> ext
         if (!stack.isEmpty()) {
             MarkedVertex<T> vertex = stack.pop();
             if (!visited.contains(vertex)) {
+                LOG.add(new LogElement(i, "[ Vector ] Visited: " + vertex.getName(), 0));
+                i++;
                 visited.add(vertex);
                 for (MarkedVertex<T> neighbor : getNeighbours(vertex)) {
                     if (!visited.contains(neighbor)) {
                         stack.push(neighbor);
+                        LOG.add(new LogElement(i, "[ Vector ] Neighbor: " + vertex.getName(), 0));
+                        i++;
                     }
                 }
                 depthSearchRecursive(stack, visited);
