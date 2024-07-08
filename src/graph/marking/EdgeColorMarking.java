@@ -3,18 +3,15 @@ package graph.marking;
 import graph.Edge;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
-public class EdgeColorMarking extends EdgeMarking {
+/**
+ * Implementation einer Kantenmarkierung.
+ */
+public final class EdgeColorMarking extends EdgeMarking {
 
-    private final Set<Edge> markedEdges;
-
-    public EdgeColorMarking() {
-        this.markedEdges = new HashSet<>();
-    }
+    // Set der markierten Kanten
+    private final Set<Edge> markedEdges = new HashSet<>();
 
     @Override
     public void markEdge(Edge edge, Color color) {
@@ -36,5 +33,12 @@ public class EdgeColorMarking extends EdgeMarking {
     @Override
     public Set<Edge> getMarkedEdges() {
         return markedEdges;
+    }
+
+    /**
+     * Leert die Liste der markierten Kanten.
+     */
+    public void resetMarkedEdges() {
+        markedEdges.clear();
     }
 }

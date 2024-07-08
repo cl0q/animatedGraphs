@@ -2,13 +2,45 @@ package graph;
 
 import java.awt.*;
 
-public class Edge {
+/**
+ * Implementation einer Kante.
+ */
+public abstract class Edge {
 
     private String name;
     private Vertex source;
     private Vertex destination;
     private boolean directed;
 
+    /**
+     * Erzeugt eine neue Kante.
+     */
+    public Edge() {
+        this.name = "";
+        this.source = null;
+        this.destination = null;
+    }
+
+    /**
+     * Erzeugt eine neue Kante mit Namen und Knoten.
+     * @param name der Name der Kante
+     * @param n1 der erste Knoten
+     * @param n2 der zweite Knoten
+     */
+    public Edge(final String name, final Vertex n1, final Vertex n2) {
+        this.name = name;
+        this.source = n1;
+        this.destination = n2;
+        this.directed = false;
+    }
+
+    /**
+     * Erzeugt eine neue Kante mit Namen und Knoten die gerichtet sein kann.
+     * @param name der Name der Kante
+     * @param source der erste Knoten
+     * @param destination der zweite Knoten
+     * @param directed ob die Kante gerichtet ist
+     */
     public Edge(String name, Vertex source, Vertex destination, boolean directed) {
         this.name = name;
         this.source = source;
@@ -16,35 +48,50 @@ public class Edge {
         this.directed = directed;
     }
 
-    public Edge() {
-        
-    }
-
-    public Edge(String s, Vertex n1, Vertex n2) {
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Vertex getSource() {
-        return source;
-    }
-
-    public void setSource(Vertex source) {
-        this.source = source;
-    }
-
+    /**
+     * @return den Zielknoten der Kante
+     */
     public Vertex getDestination() {
         return destination;
     }
 
-    public void setDestination(Vertex destination) {
-        this.destination = destination;
+    /**
+     * @return den Namen der Kante
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * @return den Startknoten der Kante
+     */
+    public Vertex getSource() {
+        return source;
+    }
+
+    /**
+     * Setzt den Zielknoten der Kante.
+     * @param n der neue Zielknoten
+     * @return den Zielknoten
+     */
+    public Vertex setDestination(final Vertex n) {
+        return this.destination = n;
+    }
+
+    /**
+     * Setzt den Namen der Kante.
+     * @param s der neue Name
+     */
+    public void setName(final String s) {
+        this.name = s;
+    }
+
+    /**
+     * Setzt den Startknoten der Kante.
+     * @param n der neue Startknoten
+     */
+    public void setSource(final Vertex n) {
+        this.source = n;
     }
 
     public boolean isDirected() {

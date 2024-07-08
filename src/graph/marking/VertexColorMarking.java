@@ -3,13 +3,14 @@ package graph.marking;
 import graph.Vertex;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
-public class VertexColorMarking extends VertexMarking {
+/**
+ * Implementation einer Knotenmarkierung.
+ */
+public final class VertexColorMarking extends VertexMarking {
 
+    // Liste der markierten Knoten
     private final Set<Vertex> markedVertexes;
 
     public VertexColorMarking() {
@@ -36,5 +37,12 @@ public class VertexColorMarking extends VertexMarking {
     @Override
     public Set<Vertex> getMarkedVertexes() {
         return markedVertexes;
+    }
+
+    /**
+     * Leert die Liste der markierten Knoten.
+     */
+    public void resetMarkedVertexes() {
+        markedVertexes.clear();
     }
 }
