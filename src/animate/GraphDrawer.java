@@ -57,8 +57,6 @@ public class GraphDrawer extends JFrame {
         add(controlPanel, BorderLayout.SOUTH);
     }
 
-
-
     private JPanel createRightPanel() {
         JPanel rightPanel = new JPanel();
         rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
@@ -126,9 +124,6 @@ public class GraphDrawer extends JFrame {
         return rightPanel;
     }
 
-
-
-
     private void updateVertexComboBox() {
         vertexComboBox.removeAllItems();
         for (MarkedVertex<VertexColorMarking> vertex : markedVertices) {
@@ -145,6 +140,13 @@ public class GraphDrawer extends JFrame {
             JOptionPane.showMessageDialog(this, "Please select a starting vertex.");
             return;
         }
+
+        // Check if topological sort is selected and the graph is undirected
+        if (Objects.equals(selectedAlgorithm, "Topological Sort") && Objects.equals(edgeTypeComboBox.getSelectedItem(), "Undirected")) {
+            JOptionPane.showMessageDialog(this, "Topologische Sortierung wird für ungerichtete Graphen nicht unterstützt.", "Fehler", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
         System.out.println("///     SEARCH      ///");
         System.out.println("Searching " + (selectedVertex != null ? selectedVertex.getName() : "N/A") + " using " + selectedAlgorithm);
         System.out.println();
@@ -341,7 +343,6 @@ public class GraphDrawer extends JFrame {
             vertexComboBox.setBackground(Color.WHITE);
         }
     }
-
 
     public void init() {
         parameterArea = new ParameterArea();
