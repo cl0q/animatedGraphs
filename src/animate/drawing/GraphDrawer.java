@@ -184,7 +184,7 @@ public class GraphDrawer extends JFrame {
             VisualizationFramework.init(algorithm, parameterArea, this);
         }
 
-        exportGraphToFile("./src/animate/graph.txt");
+        exportGraphToFile("./src/animate/resources/graph.txt");
     }
 
     /**
@@ -484,7 +484,7 @@ public class GraphDrawer extends JFrame {
      * Lädt den zuletzt gespeicherten Graphen.
      */
     private void loadLastGraph() {
-        String filePath = "./src/animate/graph.txt";
+        String filePath = "./src/animate/resources/graph.txt";
         loadGraphFromFile(filePath);
     }
 
