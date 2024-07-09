@@ -3,14 +3,12 @@ package animate.drawing;
 import animate.VisualizationFramework;
 import animate.algorithm.AlgorithmDepthSearchRecursive;
 import animate.algorithm.AlgorithmTopologicalSort;
-import animate.drawing.ParameterArea;
 import graph.marking.edge.EdgeColorMarking;
 import graph.marking.edge.MarkedEdge;
 import graph.marking.vertex.MarkedVertex;
 import graph.marking.vertex.VertexColorMarking;
 import graph.structure.graph.DirectedGraph;
 import graph.structure.graph.UndirectedGraph;
-
 
 import javax.swing.*;
 import java.awt.*;
@@ -36,9 +34,9 @@ public class GraphDrawer extends JFrame {
     private int nextVertexIndex = 0;  // Behalte den nächsten Vertex-Index im Auge
     private int edgeCount = 0;
 
-    private JComboBox<String> vertexComboBox;
+    private final JComboBox<String> vertexComboBox;
     private JButton searchButton;
-    private JComboBox<String> algorithmComboBox;
+    private final JComboBox<String> algorithmComboBox;
     protected final JComboBox<String> edgeTypeComboBox; // Sichtbarkeit auf package-private geändert für den Zugriff in DrawHelper
 
     /**
@@ -144,9 +142,9 @@ public class GraphDrawer extends JFrame {
      */
     private void updateVertexComboBox() {
         vertexComboBox.removeAllItems();
-        for (MarkedVertex<VertexColorMarking> vertex : markedVertices) {
-            vertexComboBox.addItem(vertex.getName());
-        }
+        markedVertices.forEach(v ->
+                vertexComboBox.addItem(v.getName())
+        );
     }
 
     /**
@@ -157,7 +155,7 @@ public class GraphDrawer extends JFrame {
         System.out.println("SelectedItem: " + vertexComboBox.getSelectedItem());
         selectedVertex = getSelectedMarkedVertex();
 
-        if (selectedVertex == null && !selectedAlgorithm.equals("Topological Sort")) {
+        if (selectedVertex == null &! Objects.equals(selectedAlgorithm, "Topological Sort")) {
             JOptionPane.showMessageDialog(this, "Please select a starting vertex.");
             return;
         }
@@ -260,12 +258,12 @@ public class GraphDrawer extends JFrame {
          * @return der gefundene Knoten oder null, falls keiner gefunden wird
          */
         private MarkedVertex<VertexColorMarking> findVertex(int x, int y) {
-            for (MarkedVertex<VertexColorMarking> v : markedVertices) {
-                if (v.contains(x, y)) {
-                    return v;
-                }
-            }
-            return null;
+            return markedVertices
+                    .stream()
+                    .filter(v ->
+                            v.contains(x, y))
+                    .findFirst()
+                    .orElse(null);
         }
 
         /**
@@ -276,12 +274,12 @@ public class GraphDrawer extends JFrame {
          * @return die gefundene Kante oder null, falls keine gefunden wird
          */
         private MarkedEdge<EdgeColorMarking> findEdge(int x, int y) {
-            for (MarkedEdge<EdgeColorMarking> edge : markedEdges) {
-                if (edge.contains(x, y)) {
-                    return edge;
-                }
-            }
-            return null;
+            return markedEdges
+                    .stream()
+                    .filter(e ->
+                            e.contains(x,y))
+                    .findFirst()
+                    .orElse(null);
         }
 
         /**
@@ -321,7 +319,7 @@ public class GraphDrawer extends JFrame {
     /**
      * Aktualisiert den Typ der Kanten (gerichtet oder ungerichtet).
      *
-     * @param directed true, wenn die Kanten gerichtet sein sollen, sonst false
+     * @param directed true, wenn die Kanten gerichtet sein sollen, andernfalls false
      */
     private void updateEdgeTypes(boolean directed) {
         for (MarkedEdge<EdgeColorMarking> edge : markedEdges) {
@@ -390,7 +388,13 @@ public class GraphDrawer extends JFrame {
                 return vertex;
             }
         }
-        return null;
+        return markedVertices.isEmpty() ? null : markedVertices.
+                stream()
+                .filter(v ->
+                        v.getName().equals(vertexComboBox.getSelectedItem()))
+                .findFirst()
+                .orElse(null);
+
     }
 
     /**
@@ -424,7 +428,7 @@ public class GraphDrawer extends JFrame {
      */
     private void updateAlgorithmSelection() {
         String selectedAlgorithm = (String) algorithmComboBox.getSelectedItem();
-        if ("Topological Sort".equals(selectedAlgorithm)) {
+        if (Objects.equals(selectedAlgorithm, "Topological Sort")) {
             vertexComboBox.setEnabled(false);
             vertexComboBox.setBackground(Color.GRAY);
         } else {
@@ -438,8 +442,8 @@ public class GraphDrawer extends JFrame {
      */
     public void init() {
         parameterArea = new ParameterArea();
-        undirectedGraph = new UndirectedGraph<VertexColorMarking, EdgeColorMarking>();
-        directedGraph = new DirectedGraph<VertexColorMarking, EdgeColorMarking>();
+        undirectedGraph = new UndirectedGraph<>();
+        directedGraph = new DirectedGraph<>();
 
         setVisible(true);
     }
@@ -476,7 +480,7 @@ public class GraphDrawer extends JFrame {
             }
             writer.flush();
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println(e.getMessage());
         }
     }
 
@@ -535,7 +539,7 @@ public class GraphDrawer extends JFrame {
             updateVertexComboBox();
             repaint();
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println(e.getMessage());
         }
     }
 
@@ -546,12 +550,11 @@ public class GraphDrawer extends JFrame {
      * @return der gefundene Knoten oder null, falls keiner gefunden wird
      */
     private MarkedVertex<VertexColorMarking> getVertexByName(String name) {
-        for (MarkedVertex<VertexColorMarking> vertex : markedVertices) {
-            if (vertex.getName().equals(name)) {
-                return vertex;
-            }
-        }
-        return null;
+        return markedVertices.stream()
+                .filter(v ->
+                        v.getName().equals(name))
+                .findFirst()
+                .orElse(null);
     }
 }
 

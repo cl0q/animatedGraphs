@@ -68,16 +68,24 @@ public final class MarkedEdge<T extends EdgeMarking> extends Edge implements Clo
     }
 
     /**
+     * Erzeugt eine Kopie der markierten Kante, welche die gleichen Attribute hat
+     * und für die dieselbe Markierung gespeichert wurde.
+     *
      * @return eine Kopie der markierten Kante
      */
     @Override
     public MarkedEdge<T> clone() {
-        MarkedEdge<T> cloneObj = new MarkedEdge<>(getName(), getSource(), getDestination(), isDirected(), marking);
-        marking.markEdge(cloneObj, marking.getColor(this));
-        return cloneObj;
+        MarkedEdge<T> clonedMarkedEdge = (MarkedEdge<T>)super.clone();
+        clonedMarkedEdge.setMarking(marking);
+        clonedMarkedEdge.getMarking().markEdge(clonedMarkedEdge, marking.getColor(this));
+        return clonedMarkedEdge;
     }
 
-    // TODO: comment
+    /**
+     * Zeichnet die markierte Kante.
+     *
+     * @param g Graphics-Objekt zur Zeichnung
+     */
     public void drawHere(Graphics g) {
         g.setColor(marking.getColor(this));
         if (getSource() == getDestination()) {
@@ -87,7 +95,15 @@ public final class MarkedEdge<T extends EdgeMarking> extends Edge implements Clo
         }
     }
 
-    // TODO: comment
+    /**
+     * Zeichnet einen Pfeil zur darstellung von gerichteten Kanten.
+     *
+     * @param g Graphics-Objekt zur Zeichnung
+     * @param x1 x-Koordinate des Ursprungsknotens
+     * @param y1 y-Koordinate des Ursprungsknotens
+     * @param x2 x-Koordinate des Zielknotens
+     * @param y2 y-Koordinate des Zielknotens
+     */
     private void drawArrow(Graphics g, int x1, int y1, int x2, int y2) {
         int arrowSize = 10;
         double angle = Math.atan2(y2 - y1, x2 - x1);
@@ -104,7 +120,11 @@ public final class MarkedEdge<T extends EdgeMarking> extends Edge implements Clo
         g.drawLine(x2, y2, arrowX2, arrowY2);
     }
 
-    // TODO: comment
+    /**
+     * Zeichnet eine Kante zwischen dem Ursprungs- und Zielknoten.
+     *
+     * @param g Graphics-Objekt zur Zeichnung
+     */
     private void drawEdge(Graphics g) {
         int sourceX = getSource().getX();
         int sourceY = getSource().getY();
@@ -126,7 +146,11 @@ public final class MarkedEdge<T extends EdgeMarking> extends Edge implements Clo
         }
     }
 
-    // TODO: comment
+    /**
+     * Zeichnet eine Schlinge um den Ursprungsknoten.
+     *
+     * @param g Graphics-Objekt zur Zeichnung
+     */
     private void drawLoop(Graphics g) {
         int loopSize = 30;
         int loopX = getSource().getX() - 10;
@@ -155,7 +179,15 @@ public final class MarkedEdge<T extends EdgeMarking> extends Edge implements Clo
         }
     }
 
-    // TODO: comment
+    /**
+     * Zeichnet eine gerichtete Schlinge an den angegebenen Koordinaten
+     * und mit der angegebenen Größe.
+     *
+     * @param g Graphics-Objekt zur Zeichnung
+     * @param loopX x-Koordinate der Schlinge
+     * @param loopY y-Koordinate der Schlinge
+     * @param loopSize Größe der Schlinge
+     */
     private void drawLoopArrow(Graphics g, int loopX, int loopY, int loopSize) {
         int arrowSize = 10;
         double angle = 190;

@@ -27,10 +27,18 @@ public class UndirectedGraph<T extends VertexMarking, U extends EdgeMarking> ext
 
     public final LogElementList<GraphLogElement<T, U>> graphLogElementList = new LogElementList<>();
 
+    /**
+     * Erzeugt einen ungerichteten Graphen.
+     */
     public UndirectedGraph() {
         super();
     }
 
+    /**
+     * Erzeugt einen ungerichteten Graphen mit einem Namen.
+     *
+     * @param s der Name des Graphen
+     */
     public UndirectedGraph(String s) {
         super(s);
         this.name = s;
@@ -78,10 +86,7 @@ public class UndirectedGraph<T extends VertexMarking, U extends EdgeMarking> ext
      */
     public int degree(String s) {
         MarkedVertex<T> vertex = getVertex(s);
-        if (vertex != null) {
-            return degree(vertex);
-        }
-        return 0;
+        return vertex != null ? degree(vertex) : 0;
     }
 
     /**
@@ -125,18 +130,24 @@ public class UndirectedGraph<T extends VertexMarking, U extends EdgeMarking> ext
             workingOrderArray.add(vertex.getName());
             for (MarkedVertex<T> neighbor : getNeighbours(vertex)) {
                 if(!visited.contains(neighbor)) {
-                    markEdge((MarkedEdge<U>) vertex.getEdges()
-                            .stream()
-                                    .filter(e -> e.getSource().equals(vertex) && e.getDestination().equals(neighbor)
-                                    || e.getSource().equals(neighbor) && e.getDestination().equals(vertex)).findFirst().get(),
+                    /*
+                        * Markierung der Kante zwischen Knoten und Nachbarknoten
+                        * sowie des Nachbarknotens als besucht
+                     */
+                    markEdge(getEdgeBetweenNeighbors(vertex, neighbor),
                             Marking.EDGE_VISISTED_COLOR);
-                    markVertex(neighbor, vertex, Marking.NEIGHBOR_COLOR);
+                    markVertex(neighbor,
+                            Marking.NEIGHBOR_COLOR);
                     logGraph("[ " + vertex.getName() + " ] :  Neighbor " + neighbor.getName());
-                    // Alle Nachbarn des Knotens durchlaufen
+
                     visited.add(neighbor); // Nachbar als besucht markieren
                     stack.push(neighbor); // Nachbar auf den Stack legen
-                    markVertex(neighbor, vertex, Marking.FINISHED_COLOR);
-                    logGraph("[ " + vertex.getName() + " ] : Finished neighbor " + neighbor.getName());
+
+                    // Markierung des Nachbarknotens als fertig bearbeitet
+                    markVertex(neighbor,
+                            Marking.FINISHED_COLOR);
+                    logGraph("[ " + vertex.getName() + " ] : Finished neighbor "
+                            + neighbor.getName());
                 }
             }
         }
@@ -166,23 +177,30 @@ public class UndirectedGraph<T extends VertexMarking, U extends EdgeMarking> ext
     }
 
     /**
-     * Markiert einen Knoten mit einer Farbe.
+     * Liefert die Kante zwischen zwei benachbarten Knoten
+     * oder erzeugt eine neue leere Kante, falls keine Kante zwischen den Knoten existiert.
      *
-     * @param vertex der zu markierende Knoten
-     * @param color die Farbe, mit der der Knoten markiert werden soll
+     * @param vertex der erste Knoten
+     * @param neighbor ein Nachbar des ersten Knotens
+     * @return Kante zwischen den beiden Knoten, falls eine existiert. Andernfalls eine leere Kante
      */
-    private void markVertex(MarkedVertex<T> vertex, Color color) {
-        vertex.getMarking().markVertex(vertex, color);
+    private MarkedEdge<U> getEdgeBetweenNeighbors(MarkedVertex<T> vertex, MarkedVertex<T> neighbor) {
+        return (MarkedEdge<U>) vertex.getEdges()
+                .stream()
+                .filter(e ->
+                        e.getSource().equals(vertex) && e.getDestination().equals(neighbor)
+                                || e.getSource().equals(neighbor) && e.getDestination().equals(vertex))
+                .findFirst()
+                .orElse(new MarkedEdge<U>());
     }
 
     /**
      * Markiert einen Knoten mit einer Farbe.
      *
      * @param vertex der zu markierende Knoten
-     * @param predecessor der Vorgänger des Knotens
      * @param color die Farbe, mit der der Knoten markiert werden soll
      */
-    private void markVertex(MarkedVertex<T> vertex, MarkedVertex<T> predecessor, Color color) {
+    private void markVertex(MarkedVertex<T> vertex, Color color) {
         vertex.getMarking().markVertex(vertex, color);
     }
 
@@ -241,8 +259,8 @@ public class UndirectedGraph<T extends VertexMarking, U extends EdgeMarking> ext
     private void printWorkingOrderArray() {
         System.out.println("///     Working Order DepthFirstSearch     ///");
         if(workingOrderArray.size() == markedVertexCounter)
-            for(int i=0; i<workingOrderArray.size(); i++) {
-                System.out.print(workingOrderArray.get(i) + ", ");
+            for (String s : workingOrderArray) {
+                System.out.print(s + ", ");
             }
         System.out.println();
     }

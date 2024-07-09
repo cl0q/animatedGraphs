@@ -381,15 +381,30 @@ public class DirectedGraph<T extends VertexMarking, U extends EdgeMarking> exten
         return sb.toString();
     }
 
+    /**
+     * Überschreibt den valueCache.
+     *
+     * @param valueCache der neue valueCache
+     */
     private void setValueCache(List<Pair<MarkedVertex<T>, Integer>> valueCache) {
         this.valueCache = valueCache;
     }
 
+    /**
+     * Erzeugt eine Kopie des gerichteten Graphen mit Kopien seiner markierten Kanten und Knoten
+     * sowie einer Kopie seines valueCaches.
+     *
+     * @return eine Kopie des gerichteten Graphen
+     */
     public DirectedGraph<T, U> clone() {
         super.clone();
         DirectedGraph<T, U> clonedGraph = (DirectedGraph<T, U>) super.clone();;
 
-        clonedGraph.setValueCache(this.valueCache);
+        clonedGraph.setValueCache(this.valueCache
+                .stream()
+                .map(p ->
+                        new Pair<>(p.getFirst(), p.getSecond()))
+                .toList());
         return clonedGraph;
     }
 }

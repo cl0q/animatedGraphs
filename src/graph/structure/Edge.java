@@ -5,7 +5,7 @@ import java.awt.*;
 /**
  * Implementation einer Kante.
  */
-public abstract class Edge {
+public abstract class Edge implements Cloneable {
 
     private String name;
     private Vertex source;
@@ -179,5 +179,24 @@ public abstract class Edge {
     private int adjustCoordinateForVertex(int from, int to) {
         double theta = Math.atan2(to - from, to - from);
         return from + (int) (10 * Math.cos(theta));
+    }
+
+    /**
+     * Erzeugt eine Kopie der Kante mit ihren Attributen.
+     *
+     * @return Kopie der Kante
+     */
+    @Override
+    public Edge clone() {
+        try {
+            Edge clonedVertex = (Edge)super.clone();
+            clonedVertex.setName(name);
+            clonedVertex.setSource(source);
+            clonedVertex.setDestination(destination);
+            clonedVertex.setDirected(directed);
+            return clonedVertex;
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
     }
 }

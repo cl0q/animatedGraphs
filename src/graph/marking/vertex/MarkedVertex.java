@@ -70,30 +70,46 @@ public final class MarkedVertex<T extends VertexMarking> extends Vertex implemen
     }
 
     /**
-     * Erzeut eine Kopie des markierten Knotens zurück, welche die gleichen Attribute hat
+     * Erzeugt eine Kopie des markierten Knotens, welche die gleichen Attribute hat
      * und für den dieselbe Markierung gespeichert wurde.
      *
      * @return eine Kopie des markierten Knotens
      */
     @Override
     public MarkedVertex<T> clone() {
-        MarkedVertex<T> clonedMarkedVertex = new MarkedVertex<>(getName(), getX(), getY(), marking);
+        MarkedVertex<T> clonedMarkedVertex = (MarkedVertex<T>)super.clone();
+        clonedMarkedVertex.setMarking(marking);
         marking.markVertex(clonedMarkedVertex, marking.getColor(this));
         return clonedMarkedVertex;
     }
 
+    /**
+     * @return eine Liste der Kanten, die mit dem Knoten verbunden sind
+     */
     public List<Edge> getEdges() {
         return edges;
     }
 
+    /**
+     * Fügt eine Kante zu den Kanten hinzu, die mit dem Knoten verbunden sind.
+     * @param edge die Kante, welche hinzugefügt werden soll
+     */
     public void addEdge(Edge edge) {
         edges.add(edge);
     }
 
+    /**
+     * Entfernt eine Kante aus den Kanten, die mit dem Knoten verbunden sind.
+     * @param edge die Kante, welche entfernt werden soll
+     */
     public void removeEdge(Edge edge) {
         edges.remove(edge);
     }
 
+    /**
+     * Zeichnet den markierten Knoten.
+     * @param g Graphics-Objekt zur Zeichnung
+     */
     public void drawHere(Graphics g) {
         g.setColor(marking.getColor(this));
         g.fillOval(getX() - 10, getY() - 10, 20, 20);

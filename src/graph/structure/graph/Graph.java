@@ -129,7 +129,11 @@ public abstract class Graph<T extends VertexMarking, U extends EdgeMarking>  {
      * @return true, wenn der Graph die Kante enthält, andernfalls false
      */
     public boolean hasEdge(MarkedVertex<T> n1, MarkedVertex<T> n2) {
-        return edges.stream().anyMatch(e -> e.getSource().equals(n1) && e.getDestination().equals(n2));
+        return edges
+                .stream()
+                .anyMatch(e ->
+                        e.getSource().equals(n1)
+                        && e.getDestination().equals(n2));
     }
 
     /**
