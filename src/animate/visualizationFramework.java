@@ -20,7 +20,7 @@ public class visualizationFramework {
         LegendArea legendArea = new LegendArea();
         HybridWindow<DrawArea, TextArea, ParameterArea, T, LogElement, LegendArea> applet = new HybridWindow<>(drawArea, textArea, parameterArea, algorithm, logList, legendArea);
 
-        JFrame frame = new JFrame("Visualise");
+        JFrame frame = new JFrame("Visualize " + algorithm.getTitle());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.getContentPane().add(applet);
         frame.pack();
