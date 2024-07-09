@@ -2,10 +2,6 @@ package animate;
 
 import graph.Edge;
 import graph.Vertex;
-import graph.marking.MarkedVertex;
-import graph.marking.VertexColorMarking;
-import graph.marking.VertexMarking;
-import logging.LogElementList;
 
 import java.awt.*;
 import java.util.HashMap;

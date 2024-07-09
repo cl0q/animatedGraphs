@@ -96,10 +96,6 @@ public class UndirectedGraph<T extends VertexMarking, U extends EdgeMarking> ext
         return neighbours;
     }
 
-    public String toString() {
-        return super.toString();
-    }
-
     /**
      * Führt eine Tiefensuche rekursiv durch.
      *

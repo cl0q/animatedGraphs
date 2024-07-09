@@ -133,7 +133,7 @@ public final class MarkedEdge<T extends EdgeMarking> extends Edge implements Clo
         int loopY = getSource().getY() - loopSize;
 
         ArrayList<Edge> loops = new ArrayList<>();
-        for (Edge edge : ((MarkedVertex<VertexColorMarking>) getSource()).getEdges()) {
+        for (Edge edge : (getSource()).getEdges()) {
             if (edge != this && edge.getSource() == edge.getDestination()) {
                 loops.add(edge);
             }

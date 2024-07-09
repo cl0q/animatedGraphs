@@ -4,16 +4,12 @@ import graph.UndirectedGraph;
 import graph.marking.EdgeColorMarking;
 import graph.marking.MarkedVertex;
 import graph.marking.VertexColorMarking;
-import logging.LogElement;
 import logging.LogElementList;
-import visualizationElements.Vertex;
-
-import java.util.Random;
 
 public class AlgorithmDepthSearchRecursive extends logging.Algorithm {
 
-    GraphDrawer graphDrawer;
-    UndirectedGraph<VertexColorMarking, EdgeColorMarking>  undirectedGraph;
+    final GraphDrawer graphDrawer;
+    final UndirectedGraph<VertexColorMarking, EdgeColorMarking>  undirectedGraph;
     MarkedVertex<VertexColorMarking> selectedVertexFromComboBox;
 
     public AlgorithmDepthSearchRecursive(visualization.ParameterArea parameterArea,

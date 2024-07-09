@@ -6,6 +6,7 @@ import util.Pair;
 import visualizationElements.*;
 
 import java.awt.*;
+import java.io.Serial;
 import java.util.Vector;
 
 public class DrawArea extends visualization.DrawArea {
@@ -13,6 +14,7 @@ public class DrawArea extends visualization.DrawArea {
     DrawHelper drawHelper;
     Algorithm algorithm;
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private final Vector<Vertex> vertexes = new Vector<>();

@@ -5,11 +5,11 @@ import graph.marking.EdgeColorMarking;
 import graph.marking.MarkedVertex;
 import graph.marking.VertexColorMarking;
 import logging.LogElementList;
-import visualization.ParameterArea;
 
 public class AlgorithmTopologicalSort extends logging.Algorithm {
-    GraphDrawer graphDrawer;
-    DirectedGraph<VertexColorMarking, EdgeColorMarking> directedGraph;
+
+    final GraphDrawer graphDrawer;
+    final DirectedGraph<VertexColorMarking, EdgeColorMarking> directedGraph;
     MarkedVertex<VertexColorMarking> selectedVertexFromComboBox;
 
     public AlgorithmTopologicalSort(visualization.ParameterArea parameterArea,

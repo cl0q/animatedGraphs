@@ -6,9 +6,9 @@ import visualization.*;
 
 import javax.swing.*;
 
-public class VisualizationFramerwork {
+public class visualizationFramework {
 
-    public VisualizationFramerwork() {
+    public visualizationFramework() {
         super();
     }
 
