@@ -11,10 +11,10 @@ public abstract class Marking {
 
     public static final Color DEFAULT_COLOR = Color.BLACK;
     public static final Color STARTING_COLOR = Color.RED;
-    public static final Color CURRENT_COLOR = Color.YELLOW;
+    public static final Color CURRENT_COLOR = Color.ORANGE;
     public static final Color NEIGHBOR_COLOR = Color.BLUE;
     public static final Color CYCLE_COLOR = Color.MAGENTA;
-    public static final Color EDGE_VISISTED_COLOR = Color.ORANGE;
+    public static final Color EDGE_VISISTED_COLOR = Color.getHSBColor(96f, 88f, 51f);
     public static final Color FINISHED_COLOR = Color.GREEN;
 
     // Mapping der Knoten/Kanten (Vertex/Edge) mit ihrer dazugehörigen Farbe

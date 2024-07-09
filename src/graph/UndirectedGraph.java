@@ -5,10 +5,8 @@ import graph.marking.*;
 import logging.LogElementList;
 
 import java.awt.*;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
-import java.util.Stack;
-import java.util.Vector;
 
 /**
  * Implementation eines ungerichteten Graphen.
@@ -109,25 +107,31 @@ public class UndirectedGraph<T extends VertexMarking, U extends EdgeMarking> ext
     public Vector<MarkedVertex<T>> depthSearchRecursive(MarkedVertex<T> start) {
         Vector<MarkedVertex<T>> visited = new Vector<>();
         Stack<MarkedVertex<T>> stack = new Stack<>();
+        logGraph("Base Graph");
         visited.add(start); // Startknoten als besucht markieren
         stack.push(start); // Startknoten auf den Stack legen
-        markVertex(start, VertexMarking.STARTING_COLOR);
+        markVertex(start, Marking.STARTING_COLOR);
         logGraph("[ " + start.getName() +" ] : Start");
 
         while(!stack.empty()) {
             MarkedVertex<T> vertex = stack.pop(); // Knoten vom Stack nehmen
-            markVertex(vertex, VertexMarking.FINISHED_COLOR);
+            markVertex(vertex, Marking.FINISHED_COLOR);
             logGraph("[ " + vertex.getName() + " ] : Finished");
             markedVertexCounter++;
             workingOrderArray.add(vertex.getName());
             for (MarkedVertex<T> neighbor : getNeighbours(vertex)) {
                 if(!visited.contains(neighbor)) {
-                    markVertex(neighbor, vertex, VertexMarking.NEIGHBOR_COLOR);
+                    markEdge((MarkedEdge<U>) vertex.getEdges()
+                            .stream()
+                                    .filter(e -> e.getSource().equals(vertex) && e.getDestination().equals(neighbor)
+                                    || e.getSource().equals(neighbor) && e.getDestination().equals(vertex)).findFirst().get(),
+                            Marking.EDGE_VISISTED_COLOR);
+                    markVertex(neighbor, vertex, Marking.NEIGHBOR_COLOR);
                     logGraph("[ " + vertex.getName() + " ] :  Neighbor " + neighbor.getName());
                     // Alle Nachbarn des Knotens durchlaufen
                     visited.add(neighbor); // Nachbar als besucht markieren
                     stack.push(neighbor); // Nachbar auf den Stack legen
-                    markVertex(neighbor, vertex, VertexMarking.FINISHED_COLOR);
+                    markVertex(neighbor, vertex, Marking.FINISHED_COLOR);
                     logGraph("[ " + vertex.getName() + " ] : Finished neighbor " + neighbor.getName());
                 }
             }
@@ -145,12 +149,12 @@ public class UndirectedGraph<T extends VertexMarking, U extends EdgeMarking> ext
     private void depthSearchRecursiveAlgo(MarkedVertex<T> vertex, Vector<MarkedVertex<T>> visited) {
         if(!visited.contains(vertex)) {
             visited.add(vertex);
-            markVertex(vertex, VertexMarking.CURRENT_COLOR);
+            markVertex(vertex, Marking.CURRENT_COLOR);
             logGraph("[ " + vertex.getName() + " ] : Visiting");
             markedVertexCounter++;
             workingOrderArray.add(vertex.getName());
             for (MarkedVertex<T> neighbor : getNeighbours(vertex)) { // Alle Nachbarn des Knotens durchlaufen
-                markVertex(neighbor, VertexMarking.NEIGHBOR_COLOR);
+                markVertex(neighbor, Marking.NEIGHBOR_COLOR);
                 logGraph("[ " + vertex.getName() + " ] :  Neighbor " + neighbor.getName());
                 depthSearchRecursiveAlgo(neighbor, visited);
             }
@@ -176,6 +180,16 @@ public class UndirectedGraph<T extends VertexMarking, U extends EdgeMarking> ext
      */
     private void markVertex(MarkedVertex<T> vertex, MarkedVertex<T> predecessor, Color color) {
         vertex.getMarking().markVertex(vertex, color);
+    }
+
+    /**
+     * Markiert eine Kante mit einer Farbe.
+     *
+     * @param edge  die zu markierende Kante
+     * @param color die Farbe, mit der die Kante markiert werden soll
+     */
+    private void markEdge(MarkedEdge<U> edge, Color color) {
+        edge.getMarking().markEdge(edge, color);
     }
 
     /**
