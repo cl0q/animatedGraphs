@@ -10,7 +10,7 @@ import java.util.ArrayList;
 /**
  * Klasse, die eine markierte Kante in einem Graphen darstellt.
  *
- * @param <T> der Typ der Markierung, die mit der Kante verbunden ist
+ * @param <T> die Implementation der Markierung, die mit der Kante verbunden ist
  */
 public final class MarkedEdge<T extends EdgeMarking> extends Edge implements Cloneable {
 
@@ -21,7 +21,7 @@ public final class MarkedEdge<T extends EdgeMarking> extends Edge implements Clo
     }
 
     /**
-     * Erzeugt eine neue markierte Kante mit Namen, Ursprungsknoten, Zielknoten und Markierung.
+     * Erzeugt eine markierte Kante mit Namen, Ursprungsknoten, Zielknoten und Markierung.
      *
      * @param s  der Name der Kante
      * @param n1 der erste Knoten
@@ -36,7 +36,7 @@ public final class MarkedEdge<T extends EdgeMarking> extends Edge implements Clo
     }
 
     /**
-     * Erzeugt eine neue markierte Kante mit Namen, Ursprungsknoten, Zielknoten und Markierung, die gerichtet sein kann.
+     * Erzeugt eine markierte Kante mit Namen, Ursprungsknoten, Zielknoten und Markierung, die gerichtet sein kann.
      *
      * @param s          der Name der Kante
      * @param n1         der erste Knoten

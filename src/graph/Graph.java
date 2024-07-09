@@ -20,7 +20,7 @@ public abstract class Graph<T extends VertexMarking, U extends EdgeMarking>  {
     private final Vector<MarkedEdge<U>> edges;
 
     /**
-     * Erzeugt einen neuen Graphen.
+     * Erzeugt einen Graphen.
      */
     public Graph() {
         this.vertexes = new Vector<>();
@@ -28,7 +28,7 @@ public abstract class Graph<T extends VertexMarking, U extends EdgeMarking>  {
     }
 
     /**
-     * Erzeugt einen neuen Graphen mit einem Namen.
+     * Erzeugt einen Graphen mit einem Namen.
      *
      * @param s der Name des Graphen
      */
@@ -264,6 +264,28 @@ public abstract class Graph<T extends VertexMarking, U extends EdgeMarking>  {
         this.name = s;
     }
 
+    /**
+     * Erzeugt eine Kopie des gerichteten Graphen. Es werden Kopien der Knoten/Kanten erzeugt sowie des ValueCaches
+     * und in den erzeugten Graphen eingefügt.
+     *
+     * @return einen Klon des gerichteten Graphen
+     */
+    public Graph<T, U> clone() {
+        DirectedGraph<T, U> clonedGraph = new DirectedGraph<>();
+
+        clonedGraph.setName(getName());
+        this.getAllVertexes()
+                .forEach(v ->
+                        clonedGraph.addVertex(v.clone())); // Clone, da wir den jetzigen Zustand (Farbe) speichern wollen
+        this.getAllEdges()
+                .forEach(e ->
+                        clonedGraph.addEdge(e.clone())); // Clone, da wir den jetzigen Zustand (Farbe) speichern wollen
+        return clonedGraph;
+    }
+
+    /**
+     * @return eine String-Repräsentation des Graphen
+     */
     public String toString() {
         return "Graph{" +
                 "name='" + name + '\'' +

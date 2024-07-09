@@ -1,17 +1,14 @@
 package animate;
 
-import graph.DirectedGraph;
-import graph.marking.*;
+import graph.marking.EdgeColorMarking;
+import graph.marking.VertexColorMarking;
 import logging.Algorithm;
-import logging.LogElement;
 import logging.LogElementList;
-import util.Pair;
 import visualizationElements.*;
 
 import java.awt.*;
 import java.io.Serial;
 import java.util.Vector;
-import java.util.stream.Collectors;
 
 public class DrawArea extends visualization.DrawArea {
 
@@ -23,7 +20,6 @@ public class DrawArea extends visualization.DrawArea {
 
     private final Vector<Vertex> vertexes = new Vector<>();
     private final Vector<Edge> edges = new Vector<>();
-    private Pair<VertexLogElement<?>, Color> previousVertexColors = new Pair<>();
 
     private boolean isInitialized = false;
     private boolean isDirected;
@@ -84,150 +80,56 @@ public class DrawArea extends visualization.DrawArea {
             System.err.println("No vertices to draw");
             return;
         }
-        if(getSelectedAlgorithm().equals("AlgorithmDepthSearchRecursive"))
-            redrawUndirectedGraph(g);
-        else
-            redrawDirectedGraph(g);
+        redraw(g,
+                ((GraphLogElement<VertexColorMarking, EdgeColorMarking>) this.logList.get())
+                .getGraph());
     }
 
     /**
-     * Zeichnet den ungerichteten Graphen neu.
+     * Zeichnet den Graphen neu.
      *
      * @param g Graphics-Objekt zur Zeichnung
+     * @param graph der gezeichnet werden soll
      */
-    private void redrawUndirectedGraph(Graphics g) {
-        VertexLogElement<?> vertexLogElement = (VertexLogElement<?>) this.logList.get();
-        Vertex vertex = vertexLogElement.getVertex();
+    private void redraw(Graphics g, graph.Graph<?, ?> graph) {
+        resetGraph();
 
-        tryResetVertex(vertexLogElement);
-
-        updateVertex(vertex);
-
-        previousVertexColors = new Pair<>(vertexLogElement, vertex.getColor());
-
-        Graph graph = new Graph(vertexes, edges, isDirected, EdgeStyle.Direct);
-        graph.draw(g);
+        vertexes.addAll(graph.getAllVertexes()
+                .stream()
+                .map(v ->
+                        new Vertex(v.getX(),
+                                v.getY(),
+                                v.getName(),
+                                v.getMarking().getColor(v)))
+                .toList());
+        edges.addAll(graph.getAllEdges()
+                .stream()
+                .map(e ->
+                        new Edge(convertVertex(e.getSource()),
+                                convertVertex(e.getDestination()),
+                                e.getName(),
+                                e.getMarking().getColor(e)))
+                .toList());
+        Graph drawGraph = new Graph(vertexes, edges, isDirected, EdgeStyle.Direct);
+        drawGraph.draw(g);
     }
 
     /**
-     * Zeichnet den gerichteten Graphen neu.
+     * Konvertiert einen graph.Vertex in einen visualizationElements.Vertex.
      *
-     * @param g Graphics-Objekt zur Zeichnung
+     * @param vertex der zu konvertierende Vertex
+     * @return der konvertierte Vertex
      */
-    private void redrawDirectedGraph(Graphics g) {
-        Object obj = this.logList.get();
-        if(obj instanceof VertexLogElement<?> vertexLogElement) {
-            Vertex vertex = vertexLogElement.getVertex();
-
-            tryResetVertex(vertexLogElement);
-
-            updateVertex(vertex);
-
-            previousVertexColors = new Pair<>(vertexLogElement, vertex.getColor());
-
-            Graph graph = new Graph(vertexes, edges, isDirected, EdgeStyle.Direct);
-            graph.draw(g);
-        } else if(obj instanceof EdgeLogElement<?> edgeLogElement) {
-            Edge edge = edgeLogElement.getEdge();
-
-            // TODO: Add draw of number (and check if correct)
-            updateEdge(edge);
-
-            Graph graph = new Graph(vertexes, edges, isDirected, EdgeStyle.Direct);
-            graph.draw(g);
-        } else if(obj instanceof DirectedGraphLogElement<?,?> directedGraphLogElement) {
-            DirectedGraph<?,?> directedGraph = directedGraphLogElement.getDirectedGraph();
-
-            vertexes.clear();
-            edges.clear();
-
-            vertexes.addAll(directedGraph.getAllVertexes()
-                    .stream()
-                    .map(v -> new Vertex(v.getX(), v.getY(), v.getMarking().getColor(v)))
-                    .toList());
-            edges.addAll(directedGraph.getAllEdges()
-                    .stream()
-                    .map(e -> new Edge(convertVertex(e.getSource()), convertVertex(e.getDestination()), e.getName(), e.getMarking().getColor(e)))
-                    .toList());
-
-            Graph graph = new Graph(vertexes, edges, isDirected, EdgeStyle.Direct);
-            graph.draw(g);
-        }
-    }
-
     private visualizationElements.Vertex convertVertex(graph.Vertex vertex) {
         return new visualizationElements.Vertex(vertex.getX(), vertex.getY(), vertex.getName());
     }
 
     /**
-     * Überprüft, ob der Knoten zurückgesetzt werden muss in seinen
-     * Ursprungszustand bei einem Rückwärts durchlauf der LogElementList.
-     *
-     * @param logElement das aktuelle LogElement
+     * Setzt den Graphen zurück durch Löschen der Listen.
      */
-    private void tryResetVertex(final VertexLogElement<?> logElement) {
-        if(previousVertexColors.getFirst() == null) {
-            return;
-        }
-        if(logList.indexOf(logElement) >= logList.indexOf(previousVertexColors.getFirst())) {
-            return;
-        }
-        if (previousVertexColors.getSecond() != Color.BLUE) {
-            return;
-        }
-
-        Vertex previousVertex = previousVertexColors.getFirst().getVertex();
-        previousVertex.setColor(Color.BLACK);
-
-        updateVertex(previousVertex);
-    }
-
-    /**
-     * Aktualisiert den Knoten in der Liste der Knoten.
-     * Entfernt den Knoten, wenn er bereits existiert und fügt ihn dann mit aktualisierter Farbe wieder hinzu.
-     *
-     * @param vertex der zu aktualisierende Knoten
-     */
-    private void updateVertex(Vertex vertex) {
-        removeIfVertexExists(vertex);
-        vertexes.add(vertex);
-    }
-
-    /**
-     * Aktualisiert die Kante in der Liste der Kanten.
-     * Entfernt die Kante, wenn sie bereits existiert und fügt sie dann mit aktualisierter Farbe wieder hinzu.
-     *
-     * @param edge die zu aktualisierende Kante
-     */
-    private void updateEdge(Edge edge) {
-        removeIfEdgeExists(edge);
-        edges.add(edge);
-    }
-
-    /**
-     * Entfernt den Knoten aus der Liste der Knoten, wenn er bereits mit denselben Attributen, exkludiert der Farbe,
-     * in der Liste existiert.
-     *
-     * @param vertex der zu überprüfende Knoten
-     */
-    private void removeIfVertexExists(Vertex vertex) {
-        vertexes.removeIf(v ->
-                v.getXpos() == vertex.getXpos()
-                        && v.getYpos() == vertex.getYpos()
-                        && v.getMarking().equals(vertex.getMarking()));
-    }
-
-    /**
-     * Entfernt die Kante aus der Liste der Kanten, wenn sie bereits mit denselben Attributen, exkludiert der Farbe,
-     * in der Liste existiert.
-     *
-     * @param edge die zu überprüfende Kante
-     */
-    private void removeIfEdgeExists(Edge edge) {
-        edges.removeIf(v ->
-                v.getSource() == edge.getSource()
-                        && v.getDestination() == edge.getDestination()
-                        && v.getMarking().equals(edge.getMarking()));
+    private void resetGraph() {
+        vertexes.clear();
+        edges.clear();
     }
 
     /**

@@ -13,7 +13,7 @@ public abstract class Edge {
     private boolean directed;
 
     /**
-     * Erzeugt eine neue Kante.
+     * Erzeugt eine Kante.
      */
     public Edge() {
         this.name = "";
@@ -22,7 +22,7 @@ public abstract class Edge {
     }
 
     /**
-     * Erzeugt eine neue Kante mit Namen und Knoten.
+     * Erzeugt eine Kante mit Namen und Knoten.
      *
      * @param name der Name der Kante
      * @param n1 der erste Knoten
@@ -36,7 +36,7 @@ public abstract class Edge {
     }
 
     /**
-     * Erzeugt eine neue Kante mit Namen und Knoten die gerichtet sein kann.
+     * Erzeugt eine Kante mit Namen und Knoten die gerichtet sein kann.
      *
      * @param name der Name der Kante
      * @param source der erste Knoten
