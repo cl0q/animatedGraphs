@@ -21,18 +21,23 @@ public class AlgorithmDepthSearchRecursive extends logging.Algorithm {
     }
 
     @Override
-    public LogElementList<VertexLogElement<VertexColorMarking>> run() {
-        LogElementList<VertexLogElement<VertexColorMarking>> logList;
+    public LogElementList<?> run() {
+        LogElementList<?> logList;
 
         selectedVertexFromComboBox = graphDrawer.getSelectedVertex();
 
         undirectedGraph.depthSearchRecursive(selectedVertexFromComboBox);
 
-        logList = undirectedGraph.getVertexLogElementList();
-        undirectedGraph.vertexLogElementList.add(new VertexLogElement<>(9999, "[" + title + " done!] : " + undirectedGraph.workingOrderArrayToString(),
-                0,
-                ((VertexLogElement<VertexColorMarking>)logList.getLast()).getMarkedVertex().clone()));
+        logList = undirectedGraph.getGraphLogElement();
 
+        undirectedGraph.getGraphLogElement()
+                .add(new GraphLogElement<>(9999,
+                "[" + title + " done!] : " + undirectedGraph.workingOrderArrayToString(),
+                0,
+                ((GraphLogElement<VertexColorMarking, EdgeColorMarking>)logList
+                        .getLast())
+                        .getGraph()
+                        .clone()));
         return logList;
     }
 }

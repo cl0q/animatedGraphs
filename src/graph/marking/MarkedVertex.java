@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * Klasse, die einen markierten Knoten in einem Graphen darstellt.
  *
- * @param <T> der Typ der Markierung, die mit dem Knoten verbunden ist
+ * @param <T> die Implementation der Markierung, die mit dem Knoten verbunden ist
  */
 public final class MarkedVertex<T extends VertexMarking> extends Vertex implements Cloneable {
 
@@ -19,14 +19,14 @@ public final class MarkedVertex<T extends VertexMarking> extends Vertex implemen
     private final List<Edge> edges = new ArrayList<>();  // List to store edges connected to this vertex
 
     /**
-     * Erzeugt einen neuen markierten Knoten.
+     * Erzeugt einen markierten Knoten.
      */
     public MarkedVertex() {
         super();
     }
 
     /**
-     * Erzeugt einen neuen markierten Knoten mit Namen und Markierung.
+     * Erzeugt einen markierten Knoten mit Namen und Markierung.
      *
      * @param s der Name des Knotens
      * @param t die mit dem Knoten verbundene Markierung
@@ -37,7 +37,7 @@ public final class MarkedVertex<T extends VertexMarking> extends Vertex implemen
     }
 
     /**
-     * Erzeugt einen neuen markierten Knoten mit Namen, x-Koordinate, y-Koordinate und Markierung.
+     * Erzeugt einen markierten Knoten mit Namen, x-Koordinate, y-Koordinate und Markierung.
      *
      * @param name der Name des Knotens
      * @param x Koordinate des Knotens im Graphen
@@ -70,7 +70,7 @@ public final class MarkedVertex<T extends VertexMarking> extends Vertex implemen
     }
 
     /**
-     * Gibt eine Kopie des markierten Knotens zurück, welche die gleichen Attribute hat
+     * Erzeut eine Kopie des markierten Knotens zurück, welche die gleichen Attribute hat
      * und für den dieselbe Markierung gespeichert wurde.
      *
      * @return eine Kopie des markierten Knotens
@@ -82,11 +82,6 @@ public final class MarkedVertex<T extends VertexMarking> extends Vertex implemen
         return clonedMarkedVertex;
     }
 
-    /**
-     * Zeichnet den markierten Knoten.
-     *
-     * @param g Graphics-Objekt zur Zeichnung
-     */
     public List<Edge> getEdges() {
         return edges;
     }

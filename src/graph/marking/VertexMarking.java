@@ -38,6 +38,9 @@ public abstract class VertexMarking extends Marking {
      */
     public abstract Set<Vertex> getMarkedVertexes();
 
+    /**
+     * @return eine String-Repräsentation des Knotenmarkierens
+     */
     public String toString() {
         return "VertexMarking{" +
                 "marked='" + getMarkedVertexes() + '\'' +
