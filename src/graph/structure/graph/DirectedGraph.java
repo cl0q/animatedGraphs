@@ -225,16 +225,25 @@ public class DirectedGraph<T extends VertexMarking, U extends EdgeMarking> exten
         markVertex(vertex, Marking.CURRENT_COLOR);
         logGraph("[ " + vertex.getName() + " ] : Traverse");
 
-
         for (MarkedEdge<U> edge : getOutgoingEdges(vertex)) { // Alle ausgehenden Kanten des Knotens durchlaufen
             MarkedVertex<T> neighbor = (MarkedVertex<T>) edge.getDestination();
             markEdge(edge, Marking.EDGE_VISISTED_COLOR);
             logGraph("[ " + edge.getName() + " ] : Traverse");
             if (stack.contains(neighbor)) { // Wenn der Nachbar bereits auf dem Stack ist, wurde ein Zyklus gefunden
+                boolean marking = false; // Wird benötigt, um nur die Kanten im Zyklus einzufärben
                 for (MarkedVertex<T> v : stack) {
-                    markVertex(v, Marking.CYCLE_COLOR);
-                    getOutgoingEdges(v)
-                            .forEach(e -> markEdge(e, Marking.CYCLE_COLOR));
+                    if (v.equals(neighbor)) {
+                        marking = true;
+                    }
+                    if (marking) {
+                        markVertex(v, Marking.CYCLE_COLOR);
+                        // Mark edges in the cycle
+                        for (MarkedEdge<U> cycleEdge : getOutgoingEdges(v)) {
+                            if (stack.contains(cycleEdge.getDestination())) {
+                                markEdge(cycleEdge, Marking.CYCLE_COLOR);
+                            }
+                        }
+                    }
                 }
                 logGraph("Cycle detected!");
                 System.out.println("Cycle detected!");
