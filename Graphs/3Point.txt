@@ -1,0 +1,5 @@
+V0;152;204
+V1;262;144
+V2;219;253
+E0;V0;V2;Undirected
+E1;V2;V1;Undirected
