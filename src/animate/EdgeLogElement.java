@@ -61,7 +61,7 @@ public class EdgeLogElement<U extends EdgeMarking> extends logging.LogElement{
      * @return die markierte Kante als konvertierte visualizationElements.Edge
      */
     public Edge getEdge() {
-        return new Edge(convertVertex(edge.getSource()), convertVertex(edge.getDestination()), edge.getName() + ": " + value, edge.getMarking().getColor(edge));
+        return new Edge(convertVertex(edge.getSource()), convertVertex(edge.getDestination()), edge.getName(), edge.getMarking().getColor(edge));
     }
 
     /**

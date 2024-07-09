@@ -132,7 +132,7 @@ public class UndirectedGraph<T extends VertexMarking, U extends EdgeMarking> ext
                 for (MarkedVertex<T> neighbor : getNeighbours(vertex)) { // Alle Nachbarn des Knotens durchlaufen
                     if (!visited.contains(neighbor)) { // Wenn der Nachbar noch nicht besucht wurde
                         stack.push(neighbor); // Nachbar auf den Stack legen
-                        markVertex(neighbor, VertexMarking.NEIGHBOR_COLOR, "Neighbor");
+                        markVertex(neighbor, vertex, VertexMarking.NEIGHBOR_COLOR, "Neighbor");
                     }
                 }
                 markVertex(vertex, VertexMarking.FINISHED_COLOR, "Finished");
@@ -149,6 +149,21 @@ public class UndirectedGraph<T extends VertexMarking, U extends EdgeMarking> ext
      * @param state der Zustand des Knotens
      */
     private void markVertex(MarkedVertex<T> vertex, Color color, String state) {
+        vertex.getMarking().markVertex(vertex, color);
+        vertexLogElementList.add(new VertexLogElement<>(getStepCounter(),
+                "[ Vector ] " + state + ": " + vertex.getName(), 0, vertex.clone()));
+        countStep();
+    }
+
+    /**
+     * Markiert einen Knoten mit einer Farbe und fügt ihn der Log-Liste mit seinem Zustand hinzu.
+     *
+     * @param vertex der zu markierende Knoten
+     * @param predecessor der Vorgänger des Knotens
+     * @param color die Farbe, mit der der Knoten markiert werden soll
+     * @param state der Zustand des Knotens
+     */
+    private void markVertex(MarkedVertex<T> vertex, MarkedVertex<T> predecessor, Color color, String state) {
         vertex.getMarking().markVertex(vertex, color);
         vertexLogElementList.add(new VertexLogElement<>(getStepCounter(),
                 "[ Vector ] " + state + ": " + vertex.getName(), 0, vertex.clone()));
