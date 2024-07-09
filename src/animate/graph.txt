@@ -1,5 +1,6 @@
-V0;152;204
-V1;262;144
-V2;219;253
-E0;V0;V2;Undirected
-E1;V2;V1;Undirected
+graph
+V0;225;222
+V1;342;159
+V2;368;263
+E0;V2;V1;Undirected
+E1;V1;V0;Undirected

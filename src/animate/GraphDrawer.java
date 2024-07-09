@@ -364,6 +364,8 @@ public class GraphDrawer extends JFrame {
 
     private void exportGraphToFile(String filePath) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
+            writer.write("graph");
+            writer.newLine();
             for (MarkedVertex<VertexColorMarking> vertex : markedVertices) {
                 writer.write(vertex.getName() + ";" + vertex.getX() + ";" + vertex.getY());
                 writer.newLine();
@@ -395,7 +397,12 @@ public class GraphDrawer extends JFrame {
 
     private void loadGraphFromFile(String filePath) {
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
-            String line;
+            String line = reader.readLine();
+            if (line == null || !line.trim().equals("graph")) {
+                JOptionPane.showMessageDialog(this, "Ungültige Datei: Die Datei muss mit 'graph' beginnen.", "Fehler", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
             markedVertices.clear();
             markedEdges.clear();
             while ((line = reader.readLine()) != null) {
