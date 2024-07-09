@@ -188,9 +188,11 @@ public class DirectedGraph<T extends VertexMarking, U extends EdgeMarking> exten
         // Initialisierung der Kantennummern
         vertexCounter = getAllVertexes().size();
 
+        logGraph("Base Graph");
+
         for (MarkedVertex<T> vertex : getAllVertexes()) {
             if (getAllVertexes().indexOf(vertex) == 0) {
-                markVertex(vertex, VertexMarking.STARTING_COLOR);
+                markVertex(vertex, Marking.STARTING_COLOR);
                 logGraph("[ " + vertex.getName() + " ] : Start");
             }
             if (!visited.contains(vertex)) { // Wenn der Knoten noch nicht besucht wurde
@@ -216,26 +218,26 @@ public class DirectedGraph<T extends VertexMarking, U extends EdgeMarking> exten
     private boolean topologicalSortAlgorithm(MarkedVertex<T> vertex, Set<MarkedVertex<T>> visited, Stack<MarkedVertex<T>> stack, List<MarkedVertex<T>> sortedList) {
         visited.add(vertex); // Knoten als besucht markieren
         stack.push(vertex); // Knoten auf den Stack legen
-        markVertex(vertex, VertexMarking.CURRENT_COLOR);
+        markVertex(vertex, Marking.CURRENT_COLOR);
         logGraph("[ " + vertex.getName() + " ] : Traverse");
 
 
         for (MarkedEdge<U> edge : getOutgoingEdges(vertex)) { // Alle ausgehenden Kanten des Knotens durchlaufen
             MarkedVertex<T> neighbor = (MarkedVertex<T>) edge.getDestination();
-            markEdge(edge, EdgeMarking.EDGE_VISISTED_COLOR);
+            markEdge(edge, Marking.EDGE_VISISTED_COLOR);
             logGraph("[ " + edge.getName() + " ] : Traverse");
             if (stack.contains(neighbor)) { // Wenn der Nachbar bereits auf dem Stack ist, wurde ein Zyklus gefunden
                 for (MarkedVertex<T> v : stack) {
-                    markVertex(v, VertexMarking.CYCLE_COLOR);
+                    markVertex(v, Marking.CYCLE_COLOR);
                     getOutgoingEdges(v)
-                            .forEach(e -> markEdge(e, EdgeMarking.CYCLE_COLOR));
-                    logGraph("Cycle detected!");
+                            .forEach(e -> markEdge(e, Marking.CYCLE_COLOR));
                 }
+                logGraph("Cycle detected!");
                 System.out.println("Cycle detected!");
                 return true;
             }
             if (!visited.contains(neighbor)) { // Wenn der Nachbar noch nicht besucht wurde
-                markVertex(neighbor, VertexMarking.NEIGHBOR_COLOR);
+                markVertex(neighbor, Marking.NEIGHBOR_COLOR);
                 logGraph("[ " + vertex.getName() + " ] : Neighbor " + neighbor.getName());
                 if (topologicalSortAlgorithm(neighbor, visited, stack, sortedList)) { // Rekursiver Aufruf für den Nachbarn
                     return true;
@@ -245,7 +247,7 @@ public class DirectedGraph<T extends VertexMarking, U extends EdgeMarking> exten
 
         stack.remove(vertex); // Knoten vom Stack entfernen
         sortedList.add(vertex); // Knoten zur sortierten Liste hinzufügen
-        markVertex(vertex, VertexMarking.FINISHED_COLOR, vertexCounter--);
+        markVertex(vertex, Marking.FINISHED_COLOR, vertexCounter--);
         logGraph("[ " + vertex.getName() + " ] : Finished");
         workingOrderArray.add(vertex.getName());
         countStep();
