@@ -108,6 +108,7 @@ public abstract class Edge {
 
     /**
      * Setzt, ob die Kante gerichtet ist.
+     *
      * @param directed ob die Kante gerichtet ist
      */
     public void setDirected(boolean directed) {
@@ -115,10 +116,11 @@ public abstract class Edge {
     }
 
     /**
+     * Überprüft, ob der Punkt mit angegebenen Koordinaten auf der Kante liegt.
      *
-     * @param px
-     * @param py
-     * @return
+     * @param px x-Koordinate des zu prüfenden Punktes
+     * @param py y-Koordinate des zu prüfenden Punktes
+     * @return ob die Kante den Punkt enthält
      */
     public boolean contains(int px, int py) {
         int x1 = source.getX();
@@ -130,6 +132,11 @@ public abstract class Edge {
         return distance < 5;
     }
 
+    /**
+     * Zeichnet die Kante mit dem Graphics-Objekt.
+     *
+     * @param g Graphics-Objekt zur Zeichnung
+     */
     public void drawHere(Graphics g) {
         g.setColor(Color.BLACK);
         int adjustedX1 = adjustCoordinateForVertex(source.getX(), destination.getX());
@@ -146,6 +153,15 @@ public abstract class Edge {
         }
     }
 
+    /**
+     * Zeichnet einen Pfeil zwischen zwei Punkten.
+     *
+     * @param g Graphics-Objekt zur Zeichnung
+     * @param x1 x-Koordinate des Ursprungspunktes
+     * @param y1 y-Koordinate des Ursprungspunktes
+     * @param x2 x-Koordinate des Zielpunktes
+     * @param y2 y-Koordinate des Zielpunktes
+     */
     private void drawArrow(Graphics g, int x1, int y1, int x2, int y2) {
         int arrowSize = 10;
         double angle = Math.atan2(y2 - y1, x2 - x1);
@@ -159,6 +175,7 @@ public abstract class Edge {
         g.drawLine(x2, y2, arrowX2, arrowY2);
     }
 
+    // TODO: comment
     private int adjustCoordinateForVertex(int from, int to) {
         double theta = Math.atan2(to - from, to - from);
         return from + (int) (10 * Math.cos(theta));

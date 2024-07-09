@@ -70,6 +70,9 @@ public final class MarkedVertex<T extends VertexMarking> extends Vertex implemen
     }
 
     /**
+     * Gibt eine Kopie des markierten Knotens zurück, welche die gleichen Attribute hat
+     * und für den dieselbe Markierung gespeichert wurde.
+     *
      * @return eine Kopie des markierten Knotens
      */
     @Override
@@ -79,6 +82,11 @@ public final class MarkedVertex<T extends VertexMarking> extends Vertex implemen
         return clonedMarkedVertex;
     }
 
+    /**
+     * Zeichnet den markierten Knoten.
+     *
+     * @param g Graphics-Objekt zur Zeichnung
+     */
     public List<Edge> getEdges() {
         return edges;
     }

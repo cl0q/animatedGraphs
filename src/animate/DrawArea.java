@@ -11,6 +11,7 @@ import java.awt.*;
 import java.util.Vector;
 
 public class DrawArea extends visualization.DrawArea {
+
     DrawHelper drawHelper;
     Algorithm algorithm;
 
@@ -49,6 +50,11 @@ public class DrawArea extends visualization.DrawArea {
         }
     }
 
+    /**
+     * Initialisiert den Graphen.
+     *
+     * @param g Graphics-Objekt zur Zeichnung
+     */
     private void initGraph(Graphics g) {
         isInitialized = true;
         isDirected = drawHelper.setGraph(vertexes, edges);
@@ -64,6 +70,11 @@ public class DrawArea extends visualization.DrawArea {
         graph.draw(g);
     }
 
+    /**
+     * Zeichnet den Graphen neu.
+     *
+     * @param g Graphics-Objekt zur Zeichnung
+     */
     private void redrawGraph(Graphics g) {
         if (vertexes.isEmpty()) {
             System.err.println("No vertices to draw");
@@ -75,6 +86,11 @@ public class DrawArea extends visualization.DrawArea {
             redrawDirectedGraph(g);
     }
 
+    /**
+     * Zeichnet den ungerichteten Graphen neu.
+     *
+     * @param g Graphics-Objekt zur Zeichnung
+     */
     private void redrawUndirectedGraph(Graphics g) {
         VertexLogElement<?> vertexLogElement = (VertexLogElement<?>) this.logList.get();
         Vertex vertex = vertexLogElement.getVertex();
@@ -89,6 +105,11 @@ public class DrawArea extends visualization.DrawArea {
         graph.draw(g);
     }
 
+    /**
+     * Zeichnet den gerichteten Graphen neu.
+     *
+     * @param g Graphics-Objekt zur Zeichnung
+     */
     private void redrawDirectedGraph(Graphics g) {
         Object obj = this.logList.get();
         if(obj instanceof VertexLogElement<?> vertexLogElement) {
@@ -105,6 +126,7 @@ public class DrawArea extends visualization.DrawArea {
         } else if(obj instanceof EdgeLogElement<?> edgeLogElement) {
             Edge edge = edgeLogElement.getEdge();
 
+            // TODO: Add draw of number (and check if correct)
             updateEdge(edge);
 
             Graph graph = new Graph(vertexes, edges, isDirected, EdgeStyle.Direct);
@@ -112,6 +134,12 @@ public class DrawArea extends visualization.DrawArea {
         }
     }
 
+    /**
+     * Überprüft, ob der Knoten zurückgesetzt werden muss in seinen
+     * Ursprungszustand bei einem Rückwärts durchlauf der LogElementList.
+     *
+     * @param logElement das aktuelle LogElement
+     */
     private void tryResetVertex(final VertexLogElement<?> logElement) {
         if(previousVertexColors.getFirst() == null) {
             return;
@@ -129,16 +157,34 @@ public class DrawArea extends visualization.DrawArea {
         updateVertex(previousVertex);
     }
 
+    /**
+     * Aktualisiert den Knoten in der Liste der Knoten.
+     * Entfernt den Knoten, wenn er bereits existiert und fügt ihn dann mit aktualisierter Farbe wieder hinzu.
+     *
+     * @param vertex der zu aktualisierende Knoten
+     */
     private void updateVertex(Vertex vertex) {
         removeIfVertexExists(vertex);
         vertexes.add(vertex);
     }
 
+    /**
+     * Aktualisiert die Kante in der Liste der Kanten.
+     * Entfernt die Kante, wenn sie bereits existiert und fügt sie dann mit aktualisierter Farbe wieder hinzu.
+     *
+     * @param edge die zu aktualisierende Kante
+     */
     private void updateEdge(Edge edge) {
         removeIfEdgeExists(edge);
         edges.add(edge);
     }
 
+    /**
+     * Entfernt den Knoten aus der Liste der Knoten, wenn er bereits mit denselben Attributen, exkludiert der Farbe,
+     * in der Liste existiert.
+     *
+     * @param vertex der zu überprüfende Knoten
+     */
     private void removeIfVertexExists(Vertex vertex) {
         vertexes.removeIf(v ->
                 v.getXpos() == vertex.getXpos()
@@ -146,6 +192,12 @@ public class DrawArea extends visualization.DrawArea {
                         && v.getMarking().equals(vertex.getMarking()));
     }
 
+    /**
+     * Entfernt die Kante aus der Liste der Kanten, wenn sie bereits mit denselben Attributen, exkludiert der Farbe,
+     * in der Liste existiert.
+     *
+     * @param edge die zu überprüfende Kante
+     */
     private void removeIfEdgeExists(Edge edge) {
         edges.removeIf(v ->
                 v.getSource() == edge.getSource()
@@ -153,6 +205,9 @@ public class DrawArea extends visualization.DrawArea {
                         && v.getMarking().equals(edge.getMarking()));
     }
 
+    /**
+     * @return der Name des derzeitig ausgewählten Algorithmus
+     */
     private String getSelectedAlgorithm() {
         return algorithm.getTitle();
     }

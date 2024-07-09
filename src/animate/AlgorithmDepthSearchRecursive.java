@@ -4,12 +4,14 @@ import graph.UndirectedGraph;
 import graph.marking.EdgeColorMarking;
 import graph.marking.MarkedVertex;
 import graph.marking.VertexColorMarking;
+import logging.LogElement;
 import logging.LogElementList;
 import visualizationElements.Vertex;
 
 import java.util.Random;
 
 public class AlgorithmDepthSearchRecursive extends logging.Algorithm {
+
     GraphDrawer graphDrawer;
     UndirectedGraph<VertexColorMarking, EdgeColorMarking>  undirectedGraph;
     MarkedVertex<VertexColorMarking> selectedVertexFromComboBox;
@@ -29,9 +31,6 @@ public class AlgorithmDepthSearchRecursive extends logging.Algorithm {
         selectedVertexFromComboBox = graphDrawer.getSelectedVertex();
 
         undirectedGraph.depthSearchRecursive(selectedVertexFromComboBox);
-
-        undirectedGraph.vertexLogElementList.add(new VertexLogElement<>(9999, "[" + title + " done!] : " + undirectedGraph.workingOrderArrayToString(), 0,
-                new MarkedVertex<>()));
 
         logList = undirectedGraph.getVertexLogElementList();
 

@@ -5,6 +5,7 @@ import graph.marking.EdgeColorMarking;
 import graph.marking.MarkedVertex;
 import graph.marking.VertexColorMarking;
 import logging.LogElementList;
+import visualization.ParameterArea;
 
 public class AlgorithmTopologicalSort extends logging.Algorithm {
     GraphDrawer graphDrawer;
@@ -23,7 +24,8 @@ public class AlgorithmTopologicalSort extends logging.Algorithm {
     public LogElementList<?> run() {
         LogElementList<?> logList;
 
-        selectedVertexFromComboBox = graphDrawer.getSelectedVertex();
+        // TODO: Check if necessary since topSort() is a void method
+        selectedVertexFromComboBox = graphDrawer.getSelectedVertex(); // Wählt den Knoten aus, von dem aus der Algorithmus starten soll
 
         directedGraph.topSort();
 
