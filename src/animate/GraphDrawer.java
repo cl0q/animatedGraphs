@@ -10,6 +10,8 @@ import graph.marking.VertexColorMarking;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.*;
+import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -38,9 +40,13 @@ public class GraphDrawer extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
-
         DrawingPanel drawingPanel = new DrawingPanel();
         add(drawingPanel, BorderLayout.CENTER);
+
+        vertexComboBox = new JComboBox<>(); // Initialize vertexComboBox here
+        edgeTypeComboBox = new JComboBox<>(new String[]{"Undirected", "Directed"}); // Initialize edgeTypeComboBox here
+        algorithmComboBox = new JComboBox<>(new String[]{"Depth First Search", "Topological Sort"}); // Initialize algorithmComboBox here
+        algorithmComboBox.addActionListener(e -> updateAlgorithmSelection()); // Add action listener here
 
         JPanel rightPanel = createRightPanel();
         add(rightPanel, BorderLayout.EAST);
@@ -48,39 +54,44 @@ public class GraphDrawer extends JFrame {
         JPanel controlPanel = new JPanel();
         controlPanel.add(new JLabel("<html>Left Click: Add Vertex<br>Right Click: Connect Vertices<br>Middle Click: Delete Vertex/Edge</html>"));
 
-        JLabel edgeTypeLabel = new JLabel("Edge Type:");
-        controlPanel.add(edgeTypeLabel);
-
-        edgeTypeComboBox = new JComboBox<>(new String[]{"Undirected", "Directed"});
-        edgeTypeComboBox.addActionListener(_ -> updateEdgeTypes(Objects.equals(edgeTypeComboBox.getSelectedItem(), "Directed")));
-        controlPanel.add(edgeTypeLabel);
-        controlPanel.add(edgeTypeComboBox);
-
         add(controlPanel, BorderLayout.SOUTH);
     }
+
+
 
     private JPanel createRightPanel() {
         JPanel rightPanel = new JPanel();
         rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
 
+        JLabel edgeTypeLabel = new JLabel("Edge Type:");
+        edgeTypeLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        rightPanel.add(edgeTypeLabel);
+
+        edgeTypeComboBox.setMaximumSize(new Dimension(200, 25));
+        edgeTypeComboBox.setAlignmentX(Component.CENTER_ALIGNMENT);
+        rightPanel.add(edgeTypeComboBox);
+
+        rightPanel.add(Box.createRigidArea(new Dimension(0, 20))); // Add spacing
+
         JLabel algorithmLabel = new JLabel("Select Algorithm:");
         algorithmLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         rightPanel.add(algorithmLabel);
 
-        algorithmComboBox = new JComboBox<>(new String[]{"Depth First Search", "Topological Sort"});
+        algorithmComboBox.setMaximumSize(new Dimension(Integer.MAX_VALUE, vertexComboBox.getPreferredSize().height));
         algorithmComboBox.setAlignmentX(Component.CENTER_ALIGNMENT);
-        algorithmComboBox.addActionListener(e -> updateAlgorithmSelection());
         rightPanel.add(algorithmComboBox);
+
+        rightPanel.add(Box.createRigidArea(new Dimension(0, 20))); // Add spacing
 
         JLabel vertexLabel = new JLabel("Select Vertex:");
         vertexLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         rightPanel.add(vertexLabel);
 
-        vertexComboBox = new JComboBox<>();
         vertexComboBox.setMaximumSize(new Dimension(120, 25));
         vertexComboBox.setAlignmentX(Component.CENTER_ALIGNMENT);
-        updateVertexComboBox();
         rightPanel.add(vertexComboBox);
+
+        rightPanel.add(Box.createRigidArea(new Dimension(0, 20))); // Add spacing
 
         searchButton = new JButton("Search");
         searchButton.setMaximumSize(new Dimension(200, 25));
@@ -88,8 +99,35 @@ public class GraphDrawer extends JFrame {
         searchButton.addActionListener(e -> searchAlgorithm());
         rightPanel.add(searchButton);
 
+        rightPanel.add(Box.createRigidArea(new Dimension(0, 20))); // Add spacing
+
+        JButton loadLastGraphButton = new JButton("Load Last Graph");
+        loadLastGraphButton.setMaximumSize(new Dimension(200, 25));
+        loadLastGraphButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        loadLastGraphButton.addActionListener(e -> loadLastGraph());
+        rightPanel.add(loadLastGraphButton);
+
+        rightPanel.add(Box.createRigidArea(new Dimension(0, 20))); // Add spacing
+
+        JButton loadGraphButton = new JButton("Load Graph");
+        loadGraphButton.setMaximumSize(new Dimension(200, 25));
+        loadGraphButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        loadGraphButton.addActionListener(e -> loadGraphFromFile());
+        rightPanel.add(loadGraphButton);
+
+        rightPanel.add(Box.createRigidArea(new Dimension(0, 20))); // Add spacing
+
+        JButton exportButton = new JButton("Export Graph");
+        exportButton.setMaximumSize(new Dimension(200, 25));
+        exportButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        exportButton.addActionListener(e -> exportGraph());
+        rightPanel.add(exportButton);
+
         return rightPanel;
     }
+
+
+
 
     private void updateVertexComboBox() {
         vertexComboBox.removeAllItems();
@@ -103,12 +141,12 @@ public class GraphDrawer extends JFrame {
         System.out.println("SelectedItem: " + vertexComboBox.getSelectedItem());
         selectedVertex = getSelectedMarkedVertex();
 
-        if (selectedVertex == null) {
+        if (selectedVertex == null && !selectedAlgorithm.equals("Topological Sort")) {
             JOptionPane.showMessageDialog(this, "Please select a starting vertex.");
             return;
         }
         System.out.println("///     SEARCH      ///");
-        System.out.println("Searching " + selectedVertex.getName() + " using " + selectedAlgorithm);
+        System.out.println("Searching " + (selectedVertex != null ? selectedVertex.getName() : "N/A") + " using " + selectedAlgorithm);
         System.out.println();
         printCurrentState();
 
@@ -121,6 +159,8 @@ public class GraphDrawer extends JFrame {
             AlgorithmTopologicalSort algorithm = new AlgorithmTopologicalSort(parameterArea, this, directedGraph);
             visualizationFramework.init(algorithm, parameterArea, this);
         }
+
+        exportGraphToFile("./src/animate/graph.txt");
     }
 
     private void printCurrentState() {
@@ -139,7 +179,6 @@ public class GraphDrawer extends JFrame {
 
     private class DrawingPanel extends JPanel {
         public DrawingPanel() {
-                    System.out.println("///    Draw Listener       ");
             addMouseListener(new MouseAdapter() {
                 @Override
                 public void mousePressed(MouseEvent e) {
@@ -263,7 +302,7 @@ public class GraphDrawer extends JFrame {
         return selectedVertex;
     }
 
-    public MarkedVertex<VertexColorMarking> getSelectedMarkedVertex(){
+    public MarkedVertex<VertexColorMarking> getSelectedMarkedVertex() {
         for (MarkedVertex<VertexColorMarking> vertex : markedVertices) {
             if (vertex.getName().equals(vertexComboBox.getSelectedItem())) {
                 return vertex;
@@ -282,7 +321,7 @@ public class GraphDrawer extends JFrame {
         }
     }
 
-    private void addDrawnGraphToDirectedGraph(){
+    private void addDrawnGraphToDirectedGraph() {
         for (MarkedVertex<VertexColorMarking> vertex : markedVertices) {
             directedGraph.addVertex(vertex);
         }
@@ -303,11 +342,90 @@ public class GraphDrawer extends JFrame {
         }
     }
 
+
     public void init() {
         parameterArea = new ParameterArea();
-        undirectedGraph = new UndirectedGraph<VertexColorMarking, EdgeColorMarking> ();
+        undirectedGraph = new UndirectedGraph<VertexColorMarking, EdgeColorMarking>();
         directedGraph = new DirectedGraph<VertexColorMarking, EdgeColorMarking>();
 
         setVisible(true);
+    }
+
+    private void exportGraph() {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setCurrentDirectory(new File(System.getProperty("user.dir")));
+        int result = fileChooser.showSaveDialog(this);
+        if (result == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = fileChooser.getSelectedFile();
+            exportGraphToFile(selectedFile.getAbsolutePath());
+        }
+    }
+
+    private void exportGraphToFile(String filePath) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
+            for (MarkedVertex<VertexColorMarking> vertex : markedVertices) {
+                writer.write(vertex.getName() + ";" + vertex.getX() + ";" + vertex.getY());
+                writer.newLine();
+            }
+            for (MarkedEdge<EdgeColorMarking> edge : markedEdges) {
+                writer.write(edge.getName() + ";" + edge.getSource().getName() + ";" + edge.getDestination().getName() + ";" + (edge.isDirected() ? "Directed" : "Undirected"));
+                writer.newLine();
+            }
+            writer.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void loadLastGraph() {
+        String filePath = "./src/animate/graph.txt";
+        loadGraphFromFile(filePath);
+    }
+
+    private void loadGraphFromFile() {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setCurrentDirectory(new File(System.getProperty("user.dir")));
+        int result = fileChooser.showOpenDialog(this);
+        if (result == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = fileChooser.getSelectedFile();
+            loadGraphFromFile(selectedFile.getAbsolutePath());
+        }
+    }
+
+    private void loadGraphFromFile(String filePath) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            markedVertices.clear();
+            markedEdges.clear();
+            while ((line = reader.readLine()) != null) {
+                if (line.startsWith("V")) {
+                    String[] parts = line.split(";");
+                    MarkedVertex<VertexColorMarking> vertex = new MarkedVertex<>(parts[0], Integer.parseInt(parts[1]), Integer.parseInt(parts[2]), vertexColorMarking);
+                    vertexColorMarking.setColor(vertex, Color.BLACK);
+                    markedVertices.add(vertex);
+                } else if (line.startsWith("E")) {
+                    String[] parts = line.split(";");
+                    MarkedVertex<VertexColorMarking> source = getVertexByName(parts[1]);
+                    MarkedVertex<VertexColorMarking> destination = getVertexByName(parts[2]);
+                    boolean isDirected = "Directed".equals(parts[3]);
+                    MarkedEdge<EdgeColorMarking> edge = new MarkedEdge<>(parts[0], source, destination, isDirected, edgeColorMarking);
+                    edgeColorMarking.setColor(edge, Color.BLACK);
+                    markedEdges.add(edge);
+                }
+            }
+            updateVertexComboBox();
+            repaint();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private MarkedVertex<VertexColorMarking> getVertexByName(String name) {
+        for (MarkedVertex<VertexColorMarking> vertex : markedVertices) {
+            if (vertex.getName().equals(name)) {
+                return vertex;
+            }
+        }
+        return null;
     }
 }
