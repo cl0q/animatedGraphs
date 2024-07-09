@@ -78,7 +78,7 @@ public class GraphDrawer extends JFrame {
         vertexComboBox = new JComboBox<>();
         vertexComboBox.setMaximumSize(new Dimension(120, 25));
         vertexComboBox.setAlignmentX(Component.CENTER_ALIGNMENT);
-        updateVertexComboBox();1
+        updateVertexComboBox();
         rightPanel.add(vertexComboBox);
 
         searchButton = new JButton("Search");
