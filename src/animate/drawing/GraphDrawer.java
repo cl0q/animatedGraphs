@@ -168,6 +168,12 @@ public class GraphDrawer extends JFrame {
             return;
         }
 
+        if(Objects.equals(selectedAlgorithm, "Depth First Search") && Objects.equals(edgeTypeComboBox.getSelectedItem(), "Directed")) {
+            JOptionPane.showMessageDialog(this, "Depth First Search wird für gerichtete Graphen nicht unterstützt.", "Fehler", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+
         System.out.println("///     SEARCH      ///");
         System.out.println("Searching " + (selectedVertex != null ? selectedVertex.getName() : "N/A") + " using " + selectedAlgorithm);
         System.out.println();
