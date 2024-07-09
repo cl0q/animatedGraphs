@@ -1,19 +1,21 @@
 package animate;
 
-import graph.Vertex;
+import graph.marking.MarkedVertex;
+import graph.marking.VertexMarking;
+import visualizationElements.Vertex;
 
-public class VertexLogElement extends logging.LogElement{
+public class VertexLogElement<T extends VertexMarking> extends logging.LogElement{
     protected long value;
 
-    protected final Vertex vertex;
+    protected final MarkedVertex<T> vertex;
 
     public VertexLogElement() {
         super();
         value = 0;
-        vertex = null;
+        vertex = new MarkedVertex<>();
     }
 
-    public VertexLogElement(int step, String description, long value, Vertex vertex){
+    public VertexLogElement(int step, String description, long value, MarkedVertex<T> vertex){
         super(step, description);
         this.value=value;
         this.vertex = vertex;
@@ -23,7 +25,11 @@ public class VertexLogElement extends logging.LogElement{
         return value;
     }
 
-    public Vertex getVertex(){
+    public MarkedVertex<T> getMarkedVertex(){
         return vertex;
+    }
+
+    public Vertex getVertex() {
+        return new Vertex(vertex.getX(), vertex.getY(), vertex.getMarking().getColor(vertex));
     }
 }

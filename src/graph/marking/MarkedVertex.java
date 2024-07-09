@@ -16,7 +16,7 @@ public final class MarkedVertex<T extends VertexMarking> extends Vertex implemen
 
     // Die mit dem Knoten verbundene Markierungs-Implementation
     private T marking;
-    private List<Edge> edges = new ArrayList<>();  // List to store edges connected to this vertex
+    private final List<Edge> edges = new ArrayList<>();  // List to store edges connected to this vertex
 
     /**
      * Erzeugt einen neuen markierten Knoten.
@@ -73,6 +73,8 @@ public final class MarkedVertex<T extends VertexMarking> extends Vertex implemen
         MarkedVertex<T> clonedMarkedVertex = new MarkedVertex<>(getName(), getX(), getY(), marking);
         marking.markVertex(clonedMarkedVertex, marking.getColor(this));
         return clonedMarkedVertex;
+    }
+
     public List<Edge> getEdges() {
         return edges;
     }
@@ -83,10 +85,6 @@ public final class MarkedVertex<T extends VertexMarking> extends Vertex implemen
 
     public void removeEdge(Edge edge) {
         edges.remove(edge);
-    }
-
-    public String toString() {
-        return "";
     }
 
     public void drawHere(Graphics g) {

@@ -1,5 +1,7 @@
 package animate;
 
+import graph.DirectedGraph;
+import graph.UndirectedGraph;
 import graph.marking.MarkedEdge;
 import graph.marking.MarkedVertex;
 import graph.marking.EdgeColorMarking;
@@ -12,6 +14,8 @@ import java.util.ArrayList;
 
 public class GraphDrawer extends JFrame {
     private ParameterArea parameterArea;
+    private UndirectedGraph undirectedGraph;
+    private DirectedGraph directedGraph;
     private final VertexColorMarking vertexColorMarking = new VertexColorMarking();
     private final EdgeColorMarking edgeColorMarking = new EdgeColorMarking();
     private final ArrayList<MarkedVertex<VertexColorMarking>> markedVertices = new ArrayList<>();
@@ -31,6 +35,7 @@ public class GraphDrawer extends JFrame {
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
+
 
         DrawingPanel drawingPanel = new DrawingPanel();
         add(drawingPanel, BorderLayout.CENTER);
@@ -92,7 +97,8 @@ public class GraphDrawer extends JFrame {
 
     private void searchAlgorithm() {
         String selectedAlgorithm = (String) algorithmComboBox.getSelectedItem();
-        String selectedVertex = (String) vertexComboBox.getSelectedItem();
+        System.out.println("SelectedItem: " + vertexComboBox.getSelectedItem());;
+        selectedVertex = getSelectedMarkedVertex();
 
         if (selectedVertex == null) {
             JOptionPane.showMessageDialog(this, "Please select a starting vertex.");
@@ -103,10 +109,12 @@ public class GraphDrawer extends JFrame {
         printCurrentState();
 
         if (selectedAlgorithm.equals("Depth First Search")) {
-            AlgorithmDepthSearchRecursive algorithm = new AlgorithmDepthSearchRecursive(parameterArea, this);
+            addDrawnGraphToUndirectedGraph();
+            AlgorithmDepthSearchRecursive algorithm = new AlgorithmDepthSearchRecursive(parameterArea, this, undirectedGraph);
             VisualizationFramerwork.init(algorithm, parameterArea, this);
         } else if (selectedAlgorithm.equals("Topological Sort")) {
-            AlgorithmTopologicalSort algorithm = new AlgorithmTopologicalSort(parameterArea, this);
+            addDrawnGraphToDirectedGraph();
+            AlgorithmTopologicalSort algorithm = new AlgorithmTopologicalSort(parameterArea, this, directedGraph);
             VisualizationFramerwork.init(algorithm, parameterArea, this);
         }
     }
@@ -243,8 +251,44 @@ public class GraphDrawer extends JFrame {
         return names;
     }
 
+    public MarkedVertex<VertexColorMarking> getSelectedVertex() {
+        return selectedVertex;
+    }
+
+    public MarkedVertex<VertexColorMarking> getSelectedMarkedVertex(){
+        for (MarkedVertex<VertexColorMarking> vertex : markedVertices) {
+            if (vertex.getName().equals(vertexComboBox.getSelectedItem())) {
+                return vertex;
+            }
+        }
+        return null;
+    }
+
+    private void addDrawnGraphToUndirectedGraph() {
+        for (MarkedVertex<VertexColorMarking> vertex : markedVertices) {
+            undirectedGraph.addVertex(vertex);
+        }
+
+        for (MarkedEdge<EdgeColorMarking> edge : markedEdges) {
+            undirectedGraph.addEdge(edge);
+        }
+    }
+
+    private void addDrawnGraphToDirectedGraph(){
+        for (MarkedVertex<VertexColorMarking> vertex : markedVertices) {
+            directedGraph.addVertex(vertex);
+        }
+
+        for (MarkedEdge<EdgeColorMarking> edge : markedEdges) {
+            directedGraph.addEdge(edge);
+        }
+    }
+
     public void init() {
         parameterArea = new ParameterArea();
+        undirectedGraph = new UndirectedGraph<VertexColorMarking, EdgeColorMarking> ();
+        directedGraph = new DirectedGraph<VertexColorMarking, EdgeColorMarking>();
+
         setVisible(true);
     }
 }

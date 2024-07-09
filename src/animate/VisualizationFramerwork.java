@@ -15,7 +15,7 @@ public class VisualizationFramerwork {
     public static <T extends logging.Algorithm> void init(T algorithm, ParameterArea parameterArea, GraphDrawer graphDrawer) {
         LogElementList<LogElement> logList = new LogElementList<>();
         DrawHelper drawHelper = new DrawHelper(graphDrawer);
-        DrawArea drawArea = new DrawArea(logList, "visualization", drawHelper);
+        DrawArea drawArea = new DrawArea(logList, "visualization", drawHelper, algorithm);
         TextArea textArea = new TextArea(logList);
         LegendArea legendArea = new LegendArea();
         HybridWindow<DrawArea, TextArea, ParameterArea, T, LogElement, LegendArea> applet = new HybridWindow<>(drawArea, textArea, parameterArea, algorithm, logList, legendArea);

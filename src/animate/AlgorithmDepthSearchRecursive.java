@@ -1,31 +1,37 @@
 package animate;
 
+import graph.UndirectedGraph;
+import graph.marking.EdgeColorMarking;
+import graph.marking.MarkedVertex;
+import graph.marking.VertexColorMarking;
 import logging.LogElementList;
-import testApplication.TestLogElement;
+import visualizationElements.Vertex;
 
 import java.util.Random;
 
 public class AlgorithmDepthSearchRecursive extends logging.Algorithm {
     GraphDrawer graphDrawer;
+    UndirectedGraph<VertexColorMarking, EdgeColorMarking>  undirectedGraph;
+    MarkedVertex<VertexColorMarking> selectedVertexFromComboBox;
 
-    public AlgorithmDepthSearchRecursive(visualization.ParameterArea parameterArea, GraphDrawer graphDrawer) {
+    public AlgorithmDepthSearchRecursive(visualization.ParameterArea parameterArea,
+                                         GraphDrawer graphDrawer,
+                                         UndirectedGraph<VertexColorMarking, EdgeColorMarking> undirectedGraph) {
         super(parameterArea, "AlgorithmDepthSearchRecursive");
         this.graphDrawer = graphDrawer;
+        this.undirectedGraph = undirectedGraph;
     }
 
     @Override
-    public LogElementList run() {
-        LogElementList<TestLogElement> logList = new LogElementList<>();
+    public LogElementList<VertexLogElement<VertexColorMarking>> run() {
+        LogElementList<VertexLogElement<VertexColorMarking>> logList;
 
-        for (int i = 0; i < graphDrawer.getVertexCount(); i++) {
-            logList.add(new VertexLogElement(i, graphDrawer.getVertexNames()[i], randomNumber(0, 3), graphDrawer.getMarkedVertices().get(i)));
-            System.out.println(logList.get(i));
-        }
+        selectedVertexFromComboBox = graphDrawer.getSelectedVertex();
+
+        undirectedGraph.depthSearchRecursive(selectedVertexFromComboBox);
+
+        logList = undirectedGraph.getVertexLogElementList();
+
         return logList;
-    }
-
-    private static int randomNumber(int min, int max) {
-        Random random = new Random();
-        return random.nextInt(max - min) + min;
     }
 }
