@@ -280,4 +280,9 @@ public class UndirectedGraph<T extends VertexMarking, U extends EdgeMarking> ext
 
         return sb.toString();
     }
+
+    public void clearLogList() {
+        graphLogElementList.clear();
+        resetStepCounter();
+    }
 }

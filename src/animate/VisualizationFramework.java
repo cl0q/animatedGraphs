@@ -6,6 +6,10 @@ import logging.LogElementList;
 import visualization.HybridWindow;
 
 import javax.swing.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+
+import static com.sun.java.accessibility.util.AWTEventMonitor.addWindowListener;
 
 public class VisualizationFramework {
 
@@ -30,5 +34,15 @@ public class VisualizationFramework {
         applet.start();
         frame.setSize(1000, 800);
         frame.setVisible(true);
+
+        frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosed(WindowEvent event) {
+                graphDrawer.notifyOnHybridWindowClose();
+                drawArea.resetGraph();
+                logList.clear();
+                drawArea.repaint();
+            }
+        });
     }
 }

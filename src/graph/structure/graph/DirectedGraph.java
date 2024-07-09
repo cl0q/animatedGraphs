@@ -407,4 +407,9 @@ public class DirectedGraph<T extends VertexMarking, U extends EdgeMarking> exten
                 .toList());
         return clonedGraph;
     }
+
+    public void clearLogList() {
+        graphLogElementList.clear();
+        resetStepCounter();
+    }
 }

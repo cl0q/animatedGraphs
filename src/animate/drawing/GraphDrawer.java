@@ -44,9 +44,8 @@ public class GraphDrawer extends JFrame {
      */
     public GraphDrawer() {
         setTitle("GraphDrawer");
-        setSize(800, 600);
+        setSize(1000, 800);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
 
         DrawingPanel drawingPanel = new DrawingPanel();
         add(drawingPanel, BorderLayout.CENTER);
@@ -107,7 +106,12 @@ public class GraphDrawer extends JFrame {
         searchButton = new JButton("Search");
         searchButton.setMaximumSize(new Dimension(200, 25));
         searchButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        searchButton.addActionListener(e -> searchAlgorithm());
+        searchButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                searchAlgorithm();
+            }
+        });
         rightPanel.add(searchButton);
 
         rightPanel.add(Box.createRigidArea(new Dimension(0, 20)));
@@ -561,6 +565,16 @@ public class GraphDrawer extends JFrame {
                         v.getName().equals(name))
                 .findFirst()
                 .orElse(null);
+    }
+
+    public void notifyOnHybridWindowClose() {
+        System.out.println("Hybrid Window closed");
+        directedGraph.clearLogList();
+        directedGraph.clearGraph();
+        undirectedGraph.clearLogList();
+        undirectedGraph.clearGraph();
+
+
     }
 }
 

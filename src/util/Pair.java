@@ -12,7 +12,7 @@ public final class Pair<X, Y> {
     private final Y y; // Second Element
 
     /**
-     * Erzeugt ein leeres Paar.
+     * Erzeugt ein neues leeres Paar.
      */
     public Pair() {
         this.x = null;
@@ -20,7 +20,7 @@ public final class Pair<X, Y> {
     }
 
     /**
-     * Erzeugt ein Paar mit den angegebenen Objekten.
+     * Erzeugt ein neues Paar mit den angegebenen Objekten.
      *
      * @param x das erste Objekt
      * @param y das zweite Objekt

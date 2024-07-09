@@ -147,11 +147,15 @@ public class DrawArea extends visualization.DrawArea {
     }
 
     /**
-     * Setzt den Graphen zurück durch Löschen der Listen.
+     * Setzt den Graphen zurück durch Leeren der Listen.
      */
-    private void resetGraph() {
+    public void resetGraph() {
         vertexes.clear();
         edges.clear();
+    }
+
+    public void clearLogList() {
+        this.logList.clear();
     }
 
     /**

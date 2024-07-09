@@ -297,4 +297,12 @@ public abstract class Graph<T extends VertexMarking, U extends EdgeMarking>  {
                 ", edges=" + edges +
                 '}';
     }
+
+    /**
+     *  Entfernt alle Knoten und Kanten aus dem Graphen.
+     */
+    public void clearGraph() {
+        vertexes.clear();
+        edges.clear();
+    }
 }
