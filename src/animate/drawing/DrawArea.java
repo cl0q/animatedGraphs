@@ -4,7 +4,10 @@ import graph.marking.edge.EdgeColorMarking;
 import graph.marking.vertex.VertexColorMarking;
 import logging.Algorithm;
 import logging.LogElementList;
-import visualizationElements.*;
+import visualizationElements.Edge;
+import visualizationElements.EdgeStyle;
+import visualizationElements.Graph;
+import visualizationElements.Vertex;
 
 import java.awt.*;
 import java.io.Serial;
@@ -28,20 +31,39 @@ public class DrawArea extends visualization.DrawArea {
         super();
     }
 
+    /**
+     * Konstruktor für die Zeichenfläche mit spezifischen Parametern.
+     *
+     * @param logList      die Liste der Protokollelemente
+     * @param drawAreaName der Name der Zeichenfläche
+     * @param drawHelper   der Zeichnungshelfer
+     * @param algorithm    der Algorithmus
+     * @param <T>          der Typ des Algorithmus
+     */
     public <T extends Algorithm> DrawArea(LogElementList<?> logList, String drawAreaName, DrawHelper drawHelper, T algorithm) {
         super(logList, drawAreaName);
         this.drawHelper = drawHelper;
         this.algorithm = algorithm;
     }
 
+    /**
+     * Zeichnet den Graphen.
+     *
+     * @param g das Graphics-Objekt zum Zeichnen
+     */
     @Override
     public void draw(Graphics g) {
-        if(!isInitialized)
+        if (!isInitialized)
             initGraph(g);
         else
             redrawGraph(g);
     }
 
+    /**
+     * Malt die Komponenten dieser Zeichenfläche.
+     *
+     * @param g das Graphics-Objekt zum Malen
+     */
     @Override
     public void paint(Graphics g) {
         super.paint(g);
@@ -82,7 +104,7 @@ public class DrawArea extends visualization.DrawArea {
         }
         redraw(g,
                 ((GraphLogElement<VertexColorMarking, EdgeColorMarking>) this.logList.get())
-                .getGraph());
+                        .getGraph());
     }
 
     /**
@@ -115,7 +137,7 @@ public class DrawArea extends visualization.DrawArea {
     }
 
     /**
-     * Konvertiert einen graph.structure.Vertex in einen visualizationElements.Vertex.
+     * Konvertiert einen graph.Vertex in einen visualizationElements.Vertex.
      *
      * @param vertex der zu konvertierende Vertex
      * @return der konvertierte Vertex
@@ -139,3 +161,4 @@ public class DrawArea extends visualization.DrawArea {
         return algorithm.getTitle();
     }
 }
+
