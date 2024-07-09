@@ -31,8 +31,8 @@ public final class MarkedEdge<T extends EdgeMarking> extends Edge implements Clo
     public MarkedEdge(String s, Vertex n1, Vertex n2, T t) {
         super(s, n1, n2);
         this.marking = t;
-        ((MarkedVertex<VertexColorMarking>) n1).addEdge(this);
-        ((MarkedVertex<VertexColorMarking>) n2).addEdge(this);
+        n1.addEdge(this);
+        n2.addEdge(this);
     }
 
     /**
@@ -47,8 +47,8 @@ public final class MarkedEdge<T extends EdgeMarking> extends Edge implements Clo
     public MarkedEdge(String s, Vertex n1, Vertex n2, boolean isDirected, T t) {
         super(s, n1, n2, isDirected);
         this.marking = t;
-        ((MarkedVertex<VertexColorMarking>) n1).addEdge(this);
-        ((MarkedVertex<VertexColorMarking>) n2).addEdge(this);
+        n1.addEdge(this);
+        n2.addEdge(this);
     }
 
     /**
@@ -77,6 +77,7 @@ public final class MarkedEdge<T extends EdgeMarking> extends Edge implements Clo
         return cloneObj;
     }
 
+    // TODO: comment
     public void drawHere(Graphics g) {
         g.setColor(marking.getColor(this));
         if (getSource() == getDestination()) {
@@ -86,6 +87,7 @@ public final class MarkedEdge<T extends EdgeMarking> extends Edge implements Clo
         }
     }
 
+    // TODO: comment
     private void drawArrow(Graphics g, int x1, int y1, int x2, int y2) {
         int arrowSize = 10;
         double angle = Math.atan2(y2 - y1, x2 - x1);
@@ -102,6 +104,7 @@ public final class MarkedEdge<T extends EdgeMarking> extends Edge implements Clo
         g.drawLine(x2, y2, arrowX2, arrowY2);
     }
 
+    // TODO: comment
     private void drawEdge(Graphics g) {
         int sourceX = getSource().getX();
         int sourceY = getSource().getY();
@@ -110,8 +113,8 @@ public final class MarkedEdge<T extends EdgeMarking> extends Edge implements Clo
 
         int radius = 10; // Adjust the radius according to the vertex size
         double angle = Math.atan2(destY - sourceY, destX - sourceX);
-        destX -= radius * Math.cos(angle);
-        destY -= radius * Math.sin(angle);
+        destX -= (int) (radius * Math.cos(angle));
+        destY -= (int) (radius * Math.sin(angle));
 
         g.drawLine(sourceX, sourceY, destX, destY);
         int midX = (sourceX + destX) / 2;
@@ -123,6 +126,7 @@ public final class MarkedEdge<T extends EdgeMarking> extends Edge implements Clo
         }
     }
 
+    // TODO: comment
     private void drawLoop(Graphics g) {
         int loopSize = 30;
         int loopX = getSource().getX() - 10;
@@ -151,6 +155,7 @@ public final class MarkedEdge<T extends EdgeMarking> extends Edge implements Clo
         }
     }
 
+    // TODO: comment
     private void drawLoopArrow(Graphics g, int loopX, int loopY, int loopSize) {
         int arrowSize = 10;
         double angle = 190;

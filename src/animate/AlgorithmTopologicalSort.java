@@ -5,6 +5,7 @@ import graph.marking.EdgeColorMarking;
 import graph.marking.MarkedVertex;
 import graph.marking.VertexColorMarking;
 import logging.LogElementList;
+import visualization.ParameterArea;
 
 public class AlgorithmTopologicalSort extends logging.Algorithm {
     GraphDrawer graphDrawer;

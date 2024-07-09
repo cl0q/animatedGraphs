@@ -4,8 +4,6 @@ import graph.Edge;
 import graph.Vertex;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Klasse, die einen markierten Knoten in einem Graphen darstellt.
@@ -16,7 +14,6 @@ public final class MarkedVertex<T extends VertexMarking> extends Vertex implemen
 
     // Die mit dem Knoten verbundene Markierungs-Implementation
     private T marking;
-    private final List<Edge> edges = new ArrayList<>();  // List to store edges connected to this vertex
 
     /**
      * Erzeugt einen neuen markierten Knoten.
@@ -66,6 +63,9 @@ public final class MarkedVertex<T extends VertexMarking> extends Vertex implemen
     }
 
     /**
+     * Gibt eine Kopie des markierten Knotens zurück, welche die gleichen Attribute hat
+     * und für den dieselbe Markierung gespeichert wurde.
+     *
      * @return eine Kopie des markierten Knotens
      */
     @Override
@@ -75,18 +75,11 @@ public final class MarkedVertex<T extends VertexMarking> extends Vertex implemen
         return clonedMarkedVertex;
     }
 
-    public List<Edge> getEdges() {
-        return edges;
-    }
-
-    public void addEdge(Edge edge) {
-        edges.add(edge);
-    }
-
-    public void removeEdge(Edge edge) {
-        edges.remove(edge);
-    }
-
+    /**
+     * Zeichnet den markierten Knoten.
+     *
+     * @param g Graphics-Objekt zur Zeichnung
+     */
     public void drawHere(Graphics g) {
         g.setColor(marking.getColor(this));
         g.fillOval(getX() - 10, getY() - 10, 20, 20);

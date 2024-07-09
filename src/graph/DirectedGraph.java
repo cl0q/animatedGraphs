@@ -273,9 +273,9 @@ public class DirectedGraph<T extends VertexMarking, U extends EdgeMarking> exten
 
     /**
      * Liefert eine LogElementList. In dieser befinden sich die VertexLogElemente und EdgeLogElemente, welche die verschiedenen Schritte im TopologicalSort-Algorithmus
-     * mit ihren dazugehörigen Knoten/Kanten und deren Attributen dokumentiert haben.
+     * mit ihren dazugehörigen Knoten/Kanten und deren Attributen dokumentieren.
      *
-     * @return die LogElementList mit den VertexLogElementen und EdgeLogElementen
+     * @return eine LogElementList mit den VertexLogElementen und EdgeLogElementen
      */
     public LogElementList<?> getLogElementList() {
         return logElementList;
