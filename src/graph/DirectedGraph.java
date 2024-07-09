@@ -1,9 +1,11 @@
 package graph;
 
+import animate.DirectedGraphLogElement;
 import animate.EdgeLogElement;
 import animate.VertexLogElement;
 import graph.marking.*;
 import logging.LogElementList;
+import util.Pair;
 
 import java.awt.*;
 import java.util.*;
@@ -20,7 +22,11 @@ public class DirectedGraph<T extends VertexMarking, U extends EdgeMarking> exten
 
     private int stepCounter = 0;
     private int vertexCounter;
+    private int markedVertexCounter = 0;
     private final LogElementList<?> logElementList = new LogElementList<>();
+    private final LogElementList<DirectedGraphLogElement<T, U>> directedGraphLogElementList = new LogElementList<>();
+    private List<String> workingOrderArray = new ArrayList<>();
+    private List<Pair<MarkedVertex<T>, Integer>> valueCache = new ArrayList<>();
 
     /**
      * Erzeugt einen neuen gerichteten Graphen.
@@ -194,10 +200,8 @@ public class DirectedGraph<T extends VertexMarking, U extends EdgeMarking> exten
                 }
             }
         }
-        Collections.reverse(sortedList); // Liste umkehren, um die richtige Reihenfolge zu erhalten
-        System.out.println(sortedList.stream()
-                .map(MarkedVertex::getName)
-                .collect(Collectors.joining(", ")));
+        Collections.reverse(sortedList);// Liste umkehren, um die richtige Reihenfolge zu erhalten
+        printWorkingOrderArray();
         return sortedList;
     }
 
@@ -238,7 +242,9 @@ public class DirectedGraph<T extends VertexMarking, U extends EdgeMarking> exten
         stack.remove(vertex); // Knoten vom Stack entfernen
         sortedList.add(vertex); // Knoten zur sortierten Liste hinzufügen
         markVertex(vertex, VertexMarking.FINISHED_COLOR, "Finished", vertexCounter--);
+        workingOrderArray.add(vertex.getName());
         countStep();
+        markedVertexCounter++;
         return false;
     }
 
@@ -261,8 +267,12 @@ public class DirectedGraph<T extends VertexMarking, U extends EdgeMarking> exten
     private void markVertex(MarkedVertex<T> vertex, Color color, String state) {
         vertex.getMarking().markVertex(vertex, color);
         logElementList.add(new VertexLogElement<>(getStepCounter(),
-                "[ Vector ] " + state + ": " + vertex.getName(), 0, vertex.clone()));
+                "[ 00 ] " + state + ": " + vertex.getName(), 0, vertex.clone()));
         countStep();
+    }
+
+    private void logGraph() {
+        directedGraphLogElementList.add(this.clone());
     }
 
     /**
@@ -276,7 +286,7 @@ public class DirectedGraph<T extends VertexMarking, U extends EdgeMarking> exten
     private void markVertex(MarkedVertex<T> vertex, MarkedVertex<T> predecessor, Color color, String state) {
         vertex.getMarking().markVertex(vertex, color);
         logElementList.add(new VertexLogElement<>(getStepCounter(),
-                "[ Vector ] " + state + ": " + vertex.getName(), 0, vertex.clone()));
+                "[ " + predecessor.getName() + " ] " + state + ": " + vertex.getName(), 0, vertex.clone()));
         countStep();
     }
 
@@ -291,7 +301,8 @@ public class DirectedGraph<T extends VertexMarking, U extends EdgeMarking> exten
     private void markVertex(MarkedVertex<T> vertex, Color color, String state, int value) {
         vertex.getMarking().markVertex(vertex, color);
         logElementList.add(new VertexLogElement<>(getStepCounter(),
-                "[ Vector ] " + state + ": " + vertex.getName(), value, vertex.clone()));
+                "[ " + vertex.getName() +" ] " + state + ": " + vertex.getName(), value, vertex.clone()));
+        valueCache.add(new Pair<>(vertex, value));
         countStep();
     }
 
@@ -307,7 +318,8 @@ public class DirectedGraph<T extends VertexMarking, U extends EdgeMarking> exten
     private void markVertex(MarkedVertex<T> vertex, MarkedVertex<T> predecessor, Color color, String state, int value) {
         vertex.getMarking().markVertex(vertex, color);
         logElementList.add(new VertexLogElement<>(getStepCounter(),
-                "[ Vector ] " + state + ": " + vertex.getName(), value, vertex.clone()));
+                "[ " + predecessor.getName() + " : " + value + " ] " + state + ": " + vertex.getName(), value, vertex.clone()));
+        valueCache.add(new Pair<>(vertex, value));
         countStep();
     }
 
@@ -321,7 +333,7 @@ public class DirectedGraph<T extends VertexMarking, U extends EdgeMarking> exten
     private void markEdge(MarkedEdge<U> edge, Color color, String state) {
         edge.getMarking().markEdge(edge, color);
         logElementList.add(new EdgeLogElement<>(getStepCounter(),
-                "[ Vector ] " + state + ": " + edge.getName(), 0, edge.clone()));
+                "[ " + edge.getName() +" ] " + state + ": " + edge.getName(), 0, edge.clone()));
         countStep();
     }
 
@@ -336,7 +348,7 @@ public class DirectedGraph<T extends VertexMarking, U extends EdgeMarking> exten
     private void markEdge(MarkedEdge<U> edge, Color color, String state, int value) {
         edge.getMarking().markEdge(edge, color);
         logElementList.add(new EdgeLogElement<>(getStepCounter(),
-                "[ Vector ] " + state + ": " + edge.getName(), value, edge.clone()));
+                "[ " + edge.getName() +" ] " + state + ": " + edge.getName(), value, edge.clone()));
         countStep();
     }
 
@@ -348,6 +360,10 @@ public class DirectedGraph<T extends VertexMarking, U extends EdgeMarking> exten
      */
     public LogElementList<?> getLogElementList() {
         return logElementList;
+    }
+
+    public LogElementList<DirectedGraphLogElement<T, U>> getDirectedGraphLogElementList() {
+        return directedGraphLogElementList;
     }
 
     /**
@@ -369,5 +385,55 @@ public class DirectedGraph<T extends VertexMarking, U extends EdgeMarking> exten
      */
     private void countStep() {
         stepCounter++;
+    }
+
+    private void printWorkingOrderArray() {
+        System.out.println("///     Working Order TopologicalSort     ///");
+        if(workingOrderArray.size() == markedVertexCounter)
+            for(int i=0; i<workingOrderArray.size(); i++) {
+                System.out.print(workingOrderArray.get(i) + ", ");
+            }
+        System.out.println();
+    }
+
+    public ArrayList<String> getWorkingOrderArray() {
+        return (ArrayList<String>) workingOrderArray;
+    }
+
+    public String workingOrderArrayToString() {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < workingOrderArray.size(); i++) {
+            String s = workingOrderArray.get(i);
+            int value = valueCache.stream()
+                    .filter(p -> p.getFirst().getName().equals(s))
+                    .findFirst().orElseThrow().getSecond();
+
+            sb.append(s).append(" : ").append(value);
+            if (i < workingOrderArray.size() - 1) {
+                sb.append(", ");
+            }
+        }
+
+        return sb.toString();
+    }
+
+    public void setValueCache(List<Pair<MarkedVertex<T>, Integer>> valueCache) {
+        this.valueCache = valueCache;
+    }
+
+    @Override
+    public DirectedGraph<T, U> clone() {
+        try {
+            DirectedGraph<T, U> clonedGraph = (DirectedGraph<T, U>) super.clone();
+
+            clonedGraph.setName(getName());
+            this.getAllVertexes().forEach(v -> clonedGraph.addVertex(v.clone()));
+            this.getAllEdges().forEach(e -> clonedGraph.addEdge(e.clone()));
+
+            return clonedGraph;
+        } catch (CloneNotSupportedException e) {
+            System.err.println(e.getMessage());
+        }
+        return null;
     }
 }

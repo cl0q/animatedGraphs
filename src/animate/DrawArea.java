@@ -1,6 +1,9 @@
 package animate;
 
+import graph.DirectedGraph;
+import graph.marking.*;
 import logging.Algorithm;
+import logging.LogElement;
 import logging.LogElementList;
 import util.Pair;
 import visualizationElements.*;
@@ -8,6 +11,7 @@ import visualizationElements.*;
 import java.awt.*;
 import java.io.Serial;
 import java.util.Vector;
+import java.util.stream.Collectors;
 
 public class DrawArea extends visualization.DrawArea {
 
@@ -131,7 +135,28 @@ public class DrawArea extends visualization.DrawArea {
 
             Graph graph = new Graph(vertexes, edges, isDirected, EdgeStyle.Direct);
             graph.draw(g);
+        } else if(obj instanceof DirectedGraphLogElement<?,?> directedGraphLogElement) {
+            DirectedGraph<?,?> directedGraph = directedGraphLogElement.getDirectedGraph();
+
+            vertexes.clear();
+            edges.clear();
+
+            vertexes.addAll(directedGraph.getAllVertexes()
+                    .stream()
+                    .map(v -> new Vertex(v.getX(), v.getY(), v.getMarking().getColor(v)))
+                    .toList());
+            edges.addAll(directedGraph.getAllEdges()
+                    .stream()
+                    .map(e -> new Edge(convertVertex(e.getSource()), convertVertex(e.getDestination()), e.getName(), e.getMarking().getColor(e)))
+                    .toList());
+
+            Graph graph = new Graph(vertexes, edges, isDirected, EdgeStyle.Direct);
+            graph.draw(g);
         }
+    }
+
+    private visualizationElements.Vertex convertVertex(graph.Vertex vertex) {
+        return new visualizationElements.Vertex(vertex.getX(), vertex.getY(), vertex.getName());
     }
 
     /**

@@ -1,8 +1,11 @@
 package graph.marking;
 
+import graph.Edge;
 import graph.Vertex;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Klasse, die einen markierten Knoten in einem Graphen darstellt.
@@ -13,6 +16,7 @@ public final class MarkedVertex<T extends VertexMarking> extends Vertex implemen
 
     // Die mit dem Knoten verbundene implementierung der Markierung
     private T marking;
+    private final List<Edge> edges = new ArrayList<>();  // List to store edges connected to this vertex
 
     /**
      * Erzeugt einen neuen markierten Knoten.
@@ -43,6 +47,10 @@ public final class MarkedVertex<T extends VertexMarking> extends Vertex implemen
     public MarkedVertex(String name, int x, int y, T t) {
         super(name, x, y);
         this.marking = t;
+    }
+
+    public MarkedVertex(String name){
+        super(name);
     }
 
     /**
@@ -79,6 +87,18 @@ public final class MarkedVertex<T extends VertexMarking> extends Vertex implemen
      *
      * @param g Graphics-Objekt zur Zeichnung
      */
+    public List<Edge> getEdges() {
+        return edges;
+    }
+
+    public void addEdge(Edge edge) {
+        edges.add(edge);
+    }
+
+    public void removeEdge(Edge edge) {
+        edges.remove(edge);
+    }
+
     public void drawHere(Graphics g) {
         g.setColor(marking.getColor(this));
         g.fillOval(getX() - 10, getY() - 10, 20, 20);

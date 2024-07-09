@@ -26,7 +26,7 @@ public class visualizationFramework {
         frame.pack();
         applet.init();
         applet.start();
-        frame.setSize(800, 600);
+        frame.setSize(1000, 800);
         frame.setVisible(true);
     }
 }
