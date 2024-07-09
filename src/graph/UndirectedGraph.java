@@ -101,7 +101,7 @@ public class UndirectedGraph<T extends VertexMarking, U extends EdgeMarking> ext
     }
 
     /**
-     * Führt eine Tiefensuche rekursiv durch.
+     * Führt eine Tiefensuche mithilfe von Stapeln durch.
      *
      * @param start der Startknoten
      * @return eine Liste der besuchten Knoten
@@ -109,42 +109,50 @@ public class UndirectedGraph<T extends VertexMarking, U extends EdgeMarking> ext
     public Vector<MarkedVertex<T>> depthSearchRecursive(MarkedVertex<T> start) {
         Vector<MarkedVertex<T>> visited = new Vector<>();
         Stack<MarkedVertex<T>> stack = new Stack<>();
+        visited.add(start); // Startknoten als besucht markieren
         stack.push(start); // Startknoten auf den Stack legen
         markVertex(start, VertexMarking.STARTING_COLOR);
         logGraph("[ " + start.getName() +" ] : Start");
-        depthSearchRecursive(stack, visited); // Rekursive Tiefensuche starten
-        System.out.println("Visited: " + visited);
-        printWorkingOrderArray();
 
+        while(!stack.empty()) {
+            MarkedVertex<T> vertex = stack.pop(); // Knoten vom Stack nehmen
+            markVertex(vertex, VertexMarking.FINISHED_COLOR);
+            logGraph("[ " + vertex.getName() + " ] : Finished");
+            markedVertexCounter++;
+            workingOrderArray.add(vertex.getName());
+            for (MarkedVertex<T> neighbor : getNeighbours(vertex)) {
+                if(!visited.contains(neighbor)) {
+                    markVertex(neighbor, vertex, VertexMarking.NEIGHBOR_COLOR);
+                    logGraph("[ " + vertex.getName() + " ] :  Neighbor " + neighbor.getName());
+                    // Alle Nachbarn des Knotens durchlaufen
+                    visited.add(neighbor); // Nachbar als besucht markieren
+                    stack.push(neighbor); // Nachbar auf den Stack legen
+                    markVertex(neighbor, vertex, VertexMarking.FINISHED_COLOR);
+                    logGraph("[ " + vertex.getName() + " ] : Finished neighbor " + neighbor.getName());
+                }
+            }
+        }
+        printWorkingOrderArray();
         return visited;
     }
 
     /**
-     * Hilfsmethode für die rekursive Tiefensuche.
+     * Führt eine rekursive Tiefensuche.
      *
-     * @param stack der Stack mit den zu besuchenden Knoten
+     * @param vertex der als Nächstes zu besuchende Knoten
      * @param visited die Liste der besuchten Knoten
      */
-    private void depthSearchRecursive(Stack<MarkedVertex<T>> stack, Vector<MarkedVertex<T>> visited) {
-        if (!stack.isEmpty()) { // Solange der Stack nicht leer ist
-            MarkedVertex<T> vertex = stack.pop(); // Knoten vom Stack nehmen
-            if (!visited.contains(vertex)) { // Wenn der Knoten noch nicht besucht wurde
-                markVertex(vertex, VertexMarking.CURRENT_COLOR);
-                logGraph("[ " + vertex.getName() +" ] : Visiting");
-
-                visited.add(vertex);// Knoten als besucht markieren
-                for (MarkedVertex<T> neighbor : getNeighbours(vertex)) { // Alle Nachbarn des Knotens durchlaufen
-                    if (!visited.contains(neighbor)) { // Wenn der Nachbar noch nicht besucht wurde
-                        stack.push(neighbor); // Nachbar auf den Stack legen
-                        markVertex(neighbor, vertex, VertexMarking.NEIGHBOR_COLOR);
-                        logGraph("[ " + vertex.getName() + " ] : Neighbor " + neighbor.getName());
-                    }
-                }
-                markVertex(vertex, VertexMarking.FINISHED_COLOR);
-                logGraph("[ " + vertex.getName() + " ] : Finished");
-                markedVertexCounter++;
-                workingOrderArray.add(vertex.getName());
-                depthSearchRecursive(stack, visited); // Rekursiver Aufruf für den nächsten Knoten
+    private void depthSearchRecursiveAlgo(MarkedVertex<T> vertex, Vector<MarkedVertex<T>> visited) {
+        if(!visited.contains(vertex)) {
+            visited.add(vertex);
+            markVertex(vertex, VertexMarking.CURRENT_COLOR);
+            logGraph("[ " + vertex.getName() + " ] : Visiting");
+            markedVertexCounter++;
+            workingOrderArray.add(vertex.getName());
+            for (MarkedVertex<T> neighbor : getNeighbours(vertex)) { // Alle Nachbarn des Knotens durchlaufen
+                markVertex(neighbor, VertexMarking.NEIGHBOR_COLOR);
+                logGraph("[ " + vertex.getName() + " ] :  Neighbor " + neighbor.getName());
+                depthSearchRecursiveAlgo(neighbor, visited);
             }
         }
     }
