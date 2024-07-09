@@ -5,6 +5,8 @@ import graph.marking.*;
 import logging.LogElementList;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Stack;
 import java.util.Vector;
 
@@ -18,6 +20,8 @@ public class UndirectedGraph<T extends VertexMarking, U extends EdgeMarking> ext
 
     private String name;
     private int stepCounter = 0; // Zähler der Schritte für das LogElement
+    private int markedVertexCounter = 0;
+    private List<String> workingOrderArray = new ArrayList<>();
 
     public final LogElementList<VertexLogElement<T>> vertexLogElementList = new LogElementList<>();
 
@@ -112,7 +116,17 @@ public class UndirectedGraph<T extends VertexMarking, U extends EdgeMarking> ext
         stack.push(start); // Startknoten auf den Stack legen
         markVertex(start, VertexMarking.STARTING_COLOR, "Start");
         depthSearchRecursive(stack, visited); // Rekursive Tiefensuche starten
-        System.out.println("Visited" + visited);
+
+        /*for(int i=0; i<visited.size(); i++) {
+            workingOrderArray.add(visited.get(i).getName());
+        }
+
+        for(int i=0; i<workingOrderArray.size(); i++) {
+            System.out.println(workingOrderArray.get(i));
+        }*/
+
+        printWorkingOrderArray();
+
         return visited;
     }
 
@@ -136,6 +150,8 @@ public class UndirectedGraph<T extends VertexMarking, U extends EdgeMarking> ext
                     }
                 }
                 markVertex(vertex, VertexMarking.FINISHED_COLOR, "Finished");
+                markedVertexCounter++;
+                workingOrderArray.add(vertex.getName());
                 depthSearchRecursive(stack, visited); // Rekursiver Aufruf für den nächsten Knoten
             }
         }
@@ -151,7 +167,7 @@ public class UndirectedGraph<T extends VertexMarking, U extends EdgeMarking> ext
     private void markVertex(MarkedVertex<T> vertex, Color color, String state) {
         vertex.getMarking().markVertex(vertex, color);
         vertexLogElementList.add(new VertexLogElement<>(getStepCounter(),
-                "[ Vector ] " + state + ": " + vertex.getName(), 0, vertex.clone()));
+                "[ " + vertex.clone().getName() + " ] " + state + ": " + vertex.getName(), 0, vertex.clone()));
         countStep();
     }
 
@@ -184,5 +200,26 @@ public class UndirectedGraph<T extends VertexMarking, U extends EdgeMarking> ext
      */
     private void countStep() {
         stepCounter++;
+    }
+
+    private void printWorkingOrderArray() {
+        System.out.println("///     Working Order DepthFirstSearch     ///");
+        if(workingOrderArray.size() == markedVertexCounter)
+            for(int i=0; i<workingOrderArray.size(); i++) {
+                System.out.print(workingOrderArray.get(i) + ", ");
+            }
+        System.out.println();
+    }
+
+    public ArrayList<String> getWorkingOrderArray() {
+        return (ArrayList<String>) workingOrderArray;
+    }
+
+    public String workingOrderArrayToString() {
+        StringBuilder sb = new StringBuilder();
+        for (String s : workingOrderArray) {
+            sb.append(s).append(", ");
+        }
+        return sb.toString();
     }
 }

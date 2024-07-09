@@ -30,6 +30,9 @@ public class AlgorithmDepthSearchRecursive extends logging.Algorithm {
 
         undirectedGraph.depthSearchRecursive(selectedVertexFromComboBox);
 
+        undirectedGraph.vertexLogElementList.add(new VertexLogElement<>(9999, "[" + title + " done!] : " + undirectedGraph.workingOrderArrayToString(), 0,
+                new MarkedVertex<>()));
+
         logList = undirectedGraph.getVertexLogElementList();
 
         return logList;

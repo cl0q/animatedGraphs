@@ -49,6 +49,10 @@ public final class MarkedVertex<T extends VertexMarking> extends Vertex implemen
         this.marking = t;
     }
 
+    public MarkedVertex(String name){
+        super(name);
+    }
+
     /**
      * @return die mit dem Knoten verbundene Markierung
      */

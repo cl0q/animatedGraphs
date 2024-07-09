@@ -31,7 +31,7 @@ public class GraphDrawer extends JFrame {
     JComboBox<String> edgeTypeComboBox; // Changed visibility to package-private for access in DrawHelper
 
     public GraphDrawer() {
-        setTitle("Graph Drawing Application");
+        setTitle("GraphDrawer");
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
@@ -67,6 +67,7 @@ public class GraphDrawer extends JFrame {
 
         algorithmComboBox = new JComboBox<>(new String[]{"Depth First Search", "Topological Sort"});
         algorithmComboBox.setAlignmentX(Component.CENTER_ALIGNMENT);
+        algorithmComboBox.addActionListener(e -> updateAlgorithmSelection());
         rightPanel.add(algorithmComboBox);
 
         JLabel vertexLabel = new JLabel("Select Vertex:");
@@ -76,7 +77,7 @@ public class GraphDrawer extends JFrame {
         vertexComboBox = new JComboBox<>();
         vertexComboBox.setMaximumSize(new Dimension(120, 25));
         vertexComboBox.setAlignmentX(Component.CENTER_ALIGNMENT);
-        updateVertexComboBox();
+        updateVertexComboBox();1
         rightPanel.add(vertexComboBox);
 
         searchButton = new JButton("Search");
@@ -104,8 +105,9 @@ public class GraphDrawer extends JFrame {
             JOptionPane.showMessageDialog(this, "Please select a starting vertex.");
             return;
         }
-
-        System.out.println("Searching " + selectedVertex + " using " + selectedAlgorithm);
+        System.out.println("///     SEARCH      ///");
+        System.out.println("Searching " + selectedVertex.getName() + " using " + selectedAlgorithm);
+        System.out.println();
         printCurrentState();
 
         if (selectedAlgorithm.equals("Depth First Search")) {
@@ -120,6 +122,7 @@ public class GraphDrawer extends JFrame {
     }
 
     private void printCurrentState() {
+        System.out.println("///     Drawn Graph     ///");
         System.out.println("Vertices:");
         for (MarkedVertex<VertexColorMarking> v : markedVertices) {
             System.out.println(v.getName() + " (" + v.getX() + ", " + v.getY() + ")");
@@ -129,10 +132,12 @@ public class GraphDrawer extends JFrame {
         for (MarkedEdge<EdgeColorMarking> e : markedEdges) {
             System.out.println(e.getName() + " from " + e.getSource().getName() + " to " + e.getDestination().getName() + " (Directed: " + e.isDirected() + ")");
         }
+        System.out.println();
     }
 
     private class DrawingPanel extends JPanel {
         public DrawingPanel() {
+                    System.out.println("///    Draw Listener       ");
             addMouseListener(new MouseAdapter() {
                 @Override
                 public void mousePressed(MouseEvent e) {
@@ -167,6 +172,7 @@ public class GraphDrawer extends JFrame {
                     }
                 }
             });
+            System.out.println();
         }
 
         private MarkedVertex<VertexColorMarking> findVertex(int x, int y) {
@@ -281,6 +287,17 @@ public class GraphDrawer extends JFrame {
 
         for (MarkedEdge<EdgeColorMarking> edge : markedEdges) {
             directedGraph.addEdge(edge);
+        }
+    }
+
+    private void updateAlgorithmSelection() {
+        String selectedAlgorithm = (String) algorithmComboBox.getSelectedItem();
+        if ("Topological Sort".equals(selectedAlgorithm)) {
+            vertexComboBox.setEnabled(false);
+            vertexComboBox.setBackground(Color.GRAY);
+        } else {
+            vertexComboBox.setEnabled(true);
+            vertexComboBox.setBackground(Color.WHITE);
         }
     }
 

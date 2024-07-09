@@ -18,7 +18,9 @@ import java.util.List;
 public class DirectedGraph<T extends VertexMarking, U extends EdgeMarking> extends Graph<T, U> {
 
     private int stepCounter = 0;
+    private int markedVertexCounter = 0;
     private final LogElementList<?> logElementList = new LogElementList<>();
+    private List<String> workingOrderArray = new ArrayList<>();
 
     /**
      * Erzeugt einen neuen gerichteten Graphen.
@@ -189,7 +191,8 @@ public class DirectedGraph<T extends VertexMarking, U extends EdgeMarking> exten
                 }
             }
         }
-        Collections.reverse(sortedList); // Liste umkehren, um die richtige Reihenfolge zu erhalten
+        Collections.reverse(sortedList);// Liste umkehren, um die richtige Reihenfolge zu erhalten
+        printWorkingOrderArray();
         return sortedList;
     }
 
@@ -230,7 +233,9 @@ public class DirectedGraph<T extends VertexMarking, U extends EdgeMarking> exten
         stack.remove(vertex); // Knoten vom Stack entfernen
         sortedList.add(vertex); // Knoten zur sortierten Liste hinzufügen
         markVertex(vertex, VertexMarking.FINISHED_COLOR, "Finished");
+        workingOrderArray.add(vertex.getName());
         countStep();
+        markedVertexCounter++;
         return false;
     }
 
@@ -300,5 +305,18 @@ public class DirectedGraph<T extends VertexMarking, U extends EdgeMarking> exten
      */
     private void countStep() {
         stepCounter++;
+    }
+
+    private void printWorkingOrderArray() {
+        System.out.println("///     Working Order TopologicalSort     ///");
+        if(workingOrderArray.size() == markedVertexCounter)
+            for(int i=0; i<workingOrderArray.size(); i++) {
+                System.out.print(workingOrderArray.get(i) + ", ");
+            }
+        System.out.println();
+    }
+
+    public ArrayList<String> getWorkingOrderArray() {
+        return (ArrayList<String>) workingOrderArray;
     }
 }
