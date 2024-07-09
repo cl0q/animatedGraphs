@@ -21,7 +21,7 @@ public class visualizationFramework {
         HybridWindow<DrawArea, TextArea, ParameterArea, T, LogElement, LegendArea> applet = new HybridWindow<>(drawArea, textArea, parameterArea, algorithm, logList, legendArea);
 
         JFrame frame = new JFrame("Visualize " + algorithm.getTitle());
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.getContentPane().add(applet);
         frame.pack();
         applet.init();
