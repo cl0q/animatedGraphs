@@ -1,8 +1,8 @@
-package animate;
+package animate.drawing;
 
-import graph.Graph;
-import graph.marking.EdgeMarking;
-import graph.marking.VertexMarking;
+import graph.structure.graph.Graph;
+import graph.marking.edge.EdgeMarking;
+import graph.marking.vertex.VertexMarking;
 
 public class GraphLogElement <T extends VertexMarking, U extends EdgeMarking> extends logging.LogElement {
 

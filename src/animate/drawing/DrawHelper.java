@@ -1,7 +1,7 @@
-package animate;
+package animate.drawing;
 
-import graph.Edge;
-import graph.Vertex;
+import graph.structure.Edge;
+import graph.structure.Vertex;
 
 import java.awt.*;
 import java.util.HashMap;

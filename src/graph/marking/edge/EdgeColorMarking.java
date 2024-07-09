@@ -1,6 +1,7 @@
-package graph.marking;
+package graph.marking.edge;
 
-import graph.Edge;
+import graph.marking.Marking;
+import graph.structure.Edge;
 
 import java.awt.*;
 import java.util.*;
@@ -20,7 +21,7 @@ public final class EdgeColorMarking extends EdgeMarking {
 
     @Override
     public void unmarkEdge(Edge edge) {
-        setColor(edge, DEFAULT_COLOR);
+        setColor(edge, Marking.DEFAULT_COLOR);
         markedEdges.remove(edge);
     }
 

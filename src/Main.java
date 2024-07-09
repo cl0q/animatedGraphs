@@ -1,4 +1,4 @@
-import animate.GraphDrawer;
+import animate.drawing.GraphDrawer;
 
 public class Main {
 

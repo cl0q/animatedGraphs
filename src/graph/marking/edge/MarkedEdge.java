@@ -1,7 +1,7 @@
-package graph.marking;
+package graph.marking.edge;
 
-import graph.Edge;
-import graph.Vertex;
+import graph.structure.Edge;
+import graph.structure.Vertex;
 
 import java.awt.*;
 import java.util.ArrayList;

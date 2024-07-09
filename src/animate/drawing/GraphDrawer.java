@@ -1,17 +1,19 @@
-package animate;
+package animate.drawing;
 
-import graph.DirectedGraph;
-import graph.UndirectedGraph;
-import graph.marking.MarkedEdge;
-import graph.marking.MarkedVertex;
-import graph.marking.EdgeColorMarking;
-import graph.marking.VertexColorMarking;
+import animate.algorithm.AlgorithmDepthSearchRecursive;
+import animate.algorithm.AlgorithmTopologicalSort;
+import animate.VisualizationFramework;
+import graph.structure.graph.DirectedGraph;
+import graph.structure.graph.UndirectedGraph;
+import graph.marking.edge.MarkedEdge;
+import graph.marking.vertex.MarkedVertex;
+import graph.marking.edge.EdgeColorMarking;
+import graph.marking.vertex.VertexColorMarking;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
-import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -155,14 +157,14 @@ public class GraphDrawer extends JFrame {
         if (Objects.equals(selectedAlgorithm, "Depth First Search")) {
             addDrawnGraphToUndirectedGraph();
             AlgorithmDepthSearchRecursive algorithm = new AlgorithmDepthSearchRecursive(parameterArea, this, undirectedGraph);
-            visualizationFramework.init(algorithm, parameterArea, this);
+            VisualizationFramework.init(algorithm, parameterArea, this);
         } else if (Objects.equals(selectedAlgorithm, "Topological Sort")) {
             addDrawnGraphToDirectedGraph();
             AlgorithmTopologicalSort algorithm = new AlgorithmTopologicalSort(parameterArea, this, directedGraph);
-            visualizationFramework.init(algorithm, parameterArea, this);
+            VisualizationFramework.init(algorithm, parameterArea, this);
         }
 
-        exportGraphToFile("./src/animate/graph.txt");
+        exportGraphToFile("./src/animate/resources/graph.txt");
     }
 
     private void printCurrentState() {
@@ -381,7 +383,7 @@ public class GraphDrawer extends JFrame {
     }
 
     private void loadLastGraph() {
-        String filePath = "./src/animate/graph.txt";
+        String filePath = "./src/animate/resources/graph.txt";
         loadGraphFromFile(filePath);
     }
 

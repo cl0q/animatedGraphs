@@ -1,6 +1,7 @@
-package graph.marking;
+package graph.marking.edge;
 
-import graph.Edge;
+import graph.marking.Marking;
+import graph.structure.Edge;
 
 import java.awt.*;
 import java.util.Set;

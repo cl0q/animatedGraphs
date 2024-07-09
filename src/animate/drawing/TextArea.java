@@ -1,4 +1,4 @@
-package animate;
+package animate.drawing;
 
 import logging.LogElement;
 import logging.LogElementList;

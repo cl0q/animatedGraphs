@@ -1,4 +1,4 @@
-package animate;
+package animate.drawing;
 
 import javax.swing.*;
 import java.io.Serial;

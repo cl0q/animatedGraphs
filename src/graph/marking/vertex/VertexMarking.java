@@ -1,6 +1,7 @@
-package graph.marking;
+package graph.marking.vertex;
 
-import graph.Vertex;
+import graph.marking.Marking;
+import graph.structure.Vertex;
 
 import java.awt.*;
 import java.util.Set;

@@ -1,7 +1,7 @@
-package animate;
+package animate.drawing;
 
-import graph.marking.EdgeColorMarking;
-import graph.marking.VertexColorMarking;
+import graph.marking.edge.EdgeColorMarking;
+import graph.marking.vertex.VertexColorMarking;
 import logging.Algorithm;
 import logging.LogElementList;
 import visualizationElements.*;
@@ -91,7 +91,7 @@ public class DrawArea extends visualization.DrawArea {
      * @param g Graphics-Objekt zur Zeichnung
      * @param graph der gezeichnet werden soll
      */
-    private void redraw(Graphics g, graph.Graph<?, ?> graph) {
+    private void redraw(Graphics g, graph.structure.graph.Graph<?, ?> graph) {
         resetGraph();
 
         vertexes.addAll(graph.getAllVertexes()
@@ -115,12 +115,12 @@ public class DrawArea extends visualization.DrawArea {
     }
 
     /**
-     * Konvertiert einen graph.Vertex in einen visualizationElements.Vertex.
+     * Konvertiert einen graph.structure.Vertex in einen visualizationElements.Vertex.
      *
      * @param vertex der zu konvertierende Vertex
      * @return der konvertierte Vertex
      */
-    private visualizationElements.Vertex convertVertex(graph.Vertex vertex) {
+    private visualizationElements.Vertex convertVertex(graph.structure.Vertex vertex) {
         return new visualizationElements.Vertex(vertex.getX(), vertex.getY(), vertex.getName());
     }
 

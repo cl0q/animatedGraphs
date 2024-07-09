@@ -1,0 +1,16 @@
+graph
+V0;170;269
+V1;400;162
+V2;513;269
+V3;351;381
+V4;147;427
+V5;307;256
+E0;V0;V4;Undirected
+E1;V4;V5;Undirected
+E2;V5;V0;Undirected
+E3;V0;V1;Undirected
+E4;V1;V3;Undirected
+E5;V3;V5;Undirected
+E6;V5;V2;Undirected
+E7;V2;V4;Undirected
+E8;V2;V1;Undirected

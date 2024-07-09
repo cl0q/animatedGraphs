@@ -1,9 +1,10 @@
-package animate;
+package animate.algorithm;
 
-import graph.DirectedGraph;
-import graph.marking.EdgeColorMarking;
-import graph.marking.MarkedVertex;
-import graph.marking.VertexColorMarking;
+import animate.drawing.GraphDrawer;
+import animate.drawing.GraphLogElement;
+import graph.structure.graph.DirectedGraph;
+import graph.marking.edge.EdgeColorMarking;
+import graph.marking.vertex.VertexColorMarking;
 import logging.LogElementList;
 
 public class AlgorithmTopologicalSort extends logging.Algorithm {

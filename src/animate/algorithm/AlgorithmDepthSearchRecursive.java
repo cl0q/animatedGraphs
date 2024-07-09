@@ -1,9 +1,11 @@
-package animate;
+package animate.algorithm;
 
-import graph.UndirectedGraph;
-import graph.marking.EdgeColorMarking;
-import graph.marking.MarkedVertex;
-import graph.marking.VertexColorMarking;
+import animate.drawing.GraphDrawer;
+import animate.drawing.GraphLogElement;
+import graph.structure.graph.UndirectedGraph;
+import graph.marking.edge.EdgeColorMarking;
+import graph.marking.vertex.MarkedVertex;
+import graph.marking.vertex.VertexColorMarking;
 import logging.LogElementList;
 
 public class AlgorithmDepthSearchRecursive extends logging.Algorithm {

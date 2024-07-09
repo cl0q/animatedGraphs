@@ -1,7 +1,11 @@
-package graph;
+package graph.structure.graph;
 
-import animate.GraphLogElement;
+import animate.drawing.GraphLogElement;
 import graph.marking.*;
+import graph.marking.edge.EdgeMarking;
+import graph.marking.edge.MarkedEdge;
+import graph.marking.vertex.MarkedVertex;
+import graph.marking.vertex.VertexMarking;
 import logging.LogElementList;
 import util.Pair;
 

@@ -1,9 +1,9 @@
-package graph;
+package graph.structure.graph;
 
-import graph.marking.EdgeMarking;
-import graph.marking.MarkedEdge;
-import graph.marking.MarkedVertex;
-import graph.marking.VertexMarking;
+import graph.marking.edge.EdgeMarking;
+import graph.marking.edge.MarkedEdge;
+import graph.marking.vertex.MarkedVertex;
+import graph.marking.vertex.VertexMarking;
 
 import java.util.Vector;
 
