@@ -220,9 +220,13 @@ public class UndirectedGraph<T extends VertexMarking, U extends EdgeMarking> ext
 
     public String workingOrderArrayToString() {
         StringBuilder sb = new StringBuilder();
-        for (String s : workingOrderArray) {
-            sb.append(s).append(", ");
+        for(int i = 0; i < workingOrderArray.size(); i++) {
+            sb.append(workingOrderArray.get(i));
+            if (i < workingOrderArray.size() - 1) {
+                sb.append(", ");
+            }
         }
+
         return sb.toString();
     }
 }

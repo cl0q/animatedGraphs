@@ -1,5 +1,6 @@
 package graph.marking;
 
+import graph.Edge;
 import graph.Vertex;
 
 import java.awt.*;

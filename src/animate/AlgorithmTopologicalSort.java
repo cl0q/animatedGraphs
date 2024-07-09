@@ -30,6 +30,9 @@ public class AlgorithmTopologicalSort extends logging.Algorithm {
         directedGraph.topSort();
 
         logList = directedGraph.getLogElementList();
+        logList = directedGraph.getDirectedGraphLogElementList();
+
+        //directedGraph.getLogElementList().add(new VertexLogElement<>(9999, "[" + title + " done!] : " + directedGraph.workingOrderArrayToString(), 0, ((VertexLogElement<VertexColorMarking>)logList.getLast()).getMarkedVertex().clone()));
 
         return logList;
     }
