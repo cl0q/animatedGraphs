@@ -18,6 +18,7 @@ import java.util.List;
 public class DirectedGraph<T extends VertexMarking, U extends EdgeMarking> extends Graph<T, U> {
 
     private int stepCounter = 0;
+    private int vertexCounter;
     private final LogElementList<?> logElementList = new LogElementList<>();
 
     /**
@@ -207,10 +208,12 @@ public class DirectedGraph<T extends VertexMarking, U extends EdgeMarking> exten
         stack.push(vertex); // Knoten auf den Stack legen
         markVertex(vertex, VertexMarking.CURRENT_COLOR, "Visiting");
 
+        // Initialisierung der Kantennummern
+        vertexCounter = getAllVertexes().size();
+
         for (MarkedEdge<U> edge : getOutgoingEdges(vertex)) { // Alle ausgehenden Kanten des Knotens durchlaufen
             MarkedVertex<T> neighbor = (MarkedVertex<T>) edge.getDestination();
-            markEdge(edge, EdgeMarking.EDGE_VISISTED_COLOR, "Traverse");
-            markVertex(neighbor, VertexMarking.NEIGHBOR_COLOR, "Neighbor");
+            markEdge(edge, EdgeMarking.EDGE_VISISTED_COLOR, "Traverse", vertexCounter--);
             if (stack.contains(neighbor)) { // Wenn der Nachbar bereits auf dem Stack ist, wurde ein Zyklus gefunden
                 for(MarkedVertex<T> v : stack) {
                     markVertex(v, VertexMarking.CYCLE_COLOR, "Cycle");
@@ -221,6 +224,7 @@ public class DirectedGraph<T extends VertexMarking, U extends EdgeMarking> exten
                 return true;
             }
             if (!visited.contains(neighbor)) { // Wenn der Nachbar noch nicht besucht wurde
+                markVertex(neighbor, VertexMarking.NEIGHBOR_COLOR, "Neighbor");
                 if (topologicalSortAlgorithm(neighbor, visited, stack, sortedList)) { // Rekursiver Aufruf für den Nachbarn
                     return true;
                 }
@@ -268,6 +272,20 @@ public class DirectedGraph<T extends VertexMarking, U extends EdgeMarking> exten
         edge.getMarking().markEdge(edge, color);
         logElementList.add(new EdgeLogElement<>(getStepCounter(),
                 "[ Vector ] " + state + ": " + edge.getName(), 0, edge.clone()));
+        countStep();
+    }
+
+    /**
+     * Markiert einen Knoten mit einer Farbe und fügt ihn der Log-Liste mit seinem Zustand hinzu.
+     *
+     * @param edge der zu markierende Knoten
+     * @param color die Farbe, mit der der Knoten markiert werden soll
+     * @param state der Zustand des Knotens
+     */
+    private void markEdge(MarkedEdge<U> edge, Color color, String state, int value) {
+        edge.getMarking().markEdge(edge, color);
+        logElementList.add(new EdgeLogElement<>(getStepCounter(),
+                "[ Vector ] " + state + ": " + edge.getName(), value, edge.clone()));
         countStep();
     }
 

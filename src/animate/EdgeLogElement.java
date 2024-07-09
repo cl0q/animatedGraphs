@@ -7,6 +7,7 @@ import visualizationElements.Edge;
 
 /**
  * LogElement, das eine markierten Kante enthält.
+ *
  * @param <U> die Implementierung der Markierung, die mit der Kante verbunden ist
  */
 public class EdgeLogElement<U extends EdgeMarking> extends logging.LogElement{
@@ -60,11 +61,11 @@ public class EdgeLogElement<U extends EdgeMarking> extends logging.LogElement{
      * @return die markierte Kante als konvertierte visualizationElements.Edge
      */
     public Edge getEdge() {
-        return new Edge(convertVertex(edge.getSource()), convertVertex(edge.getDestination()), edge.getName(), edge.getMarking().getColor(edge));
+        return new Edge(convertVertex(edge.getSource()), convertVertex(edge.getDestination()), edge.getName() + ": " + value, edge.getMarking().getColor(edge));
     }
 
     /**
-     * Konvertiert einen graph.Vertex in einrn visualizationElements.Vertex.
+     * Konvertiert einen graph.Vertex in einen visualizationElements.Vertex.
      *
      * @param vertex der zu konvertierende Vertex
      * @return der konvertierte Vertex
