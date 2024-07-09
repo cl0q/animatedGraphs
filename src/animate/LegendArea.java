@@ -7,9 +7,14 @@ public class LegendArea extends visualization.LegendArea {
 
     public LegendArea() {
         super();
-        setPreferredSize(new Dimension(150, 200)); // Adjust the height to accommodate the additional entry
+        setPreferredSize(new Dimension(150, 200));
     }
 
+    /**
+     * Initialisiert LegendArea mit Knoten und Kanten für die Visualisierung.
+     * @param g das Graph Objekt
+     *
+     */
     @Override
     public void initialize(Graphics g) {
         setBorder(BorderFactory.createTitledBorder("LegendArea"));

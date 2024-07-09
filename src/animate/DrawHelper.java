@@ -13,36 +13,49 @@ public class DrawHelper {
 
     private final GraphDrawer graphDrawer;
 
+    /**
+     * Konstruktor für DrawHelper.
+     *
+     * @param graphDrawer der Zeichner für den Graphen
+     */
     public DrawHelper(GraphDrawer graphDrawer) {
         this.graphDrawer = graphDrawer;
     }
 
+    /**
+     * Setzt die Knoten und Kanten des Graphen.
+     *
+     * @param vertexes die Liste der Knoten (Vertices)
+     * @param edges die Liste der Kanten (Edges)
+     * @return true, wenn der Graph gerichtet ist, sonst false
+     */
     public boolean setGraph(Vector<visualizationElements.Vertex> vertexes, Vector<visualizationElements.Edge> edges) {
-        // Map to track corresponding visualization vertices
         Map<String, visualizationElements.Vertex> vertexMap = new HashMap<>();
 
-        // Convert graph vertices to visualization vertices and populate the map
+        // Hinzufügen der markierten Knoten
         for (Vertex vertex : graphDrawer.getMarkedVertices()) {
             visualizationElements.Vertex visVertex = new visualizationElements.Vertex(vertex.getX(), vertex.getY(), vertex.getName(), Color.BLACK);
             vertexes.add(visVertex);
             vertexMap.put(vertex.getName(), visVertex);
-            System.out.println("Vertex " + vertex.getName() + " added" + " at " + vertex.getX() + " " + vertex.getY());
+            System.out.println("Vertex " + vertex.getName() + " hinzugefügt bei " + vertex.getX() + " " + vertex.getY());
         }
 
-        // Convert graph edges to visualization edges
+        // Hinzufügen der markierten Kanten
         for (Edge edge : graphDrawer.getMarkedEdges()) {
             visualizationElements.Vertex source = vertexMap.get(edge.getSource().getName());
             visualizationElements.Vertex destination = vertexMap.get(edge.getDestination().getName());
 
+            // Überprüfen, ob die Quell- und Zielknoten vorhanden sind
             if (source != null && destination != null) {
                 visualizationElements.Edge visEdge = new visualizationElements.Edge(source, destination, edge.getName(), Color.BLACK);
                 edges.add(visEdge);
-                System.out.println("Edge " + edge.getName() + " added" + " from " + edge.getSource().getName() + " to " + edge.getDestination().getName());
+                System.out.println("Edge " + edge.getName() + " hinzugefügt von " + edge.getSource().getName() + " zu " + edge.getDestination().getName());
             } else {
-                System.err.println("Error: Source or Destination vertex not found for edge " + edge.getName());
+                System.err.println("Fehler: Quell- oder Zielknoten nicht gefunden für Kante " + edge.getName());
             }
         }
 
+        // Überprüfen, ob der Graph gerichtet ist
         return Objects.equals(graphDrawer.edgeTypeComboBox.getSelectedItem(), "Directed");
     }
 }
