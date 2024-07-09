@@ -38,6 +38,9 @@ public abstract class EdgeMarking extends Marking {
      */
     public abstract Set<Edge> getMarkedEdges();
 
+    /**
+     * @return eine String-Repräsentation des Kantenmarkierens
+     */
     public String toString() {
         return "EdgeMarking{" +
                 "marked='" + getMarkedEdges() + '\'' +

@@ -10,7 +10,6 @@ public class AlgorithmTopologicalSort extends logging.Algorithm {
 
     final GraphDrawer graphDrawer;
     final DirectedGraph<VertexColorMarking, EdgeColorMarking> directedGraph;
-    MarkedVertex<VertexColorMarking> selectedVertexFromComboBox;
 
     public AlgorithmTopologicalSort(visualization.ParameterArea parameterArea,
                                     GraphDrawer graphDrawer,
@@ -24,16 +23,17 @@ public class AlgorithmTopologicalSort extends logging.Algorithm {
     public LogElementList<?> run() {
         LogElementList<?> logList;
 
-        // TODO: Check if necessary since topSort() is a void method
-        selectedVertexFromComboBox = graphDrawer.getSelectedVertex(); // Wählt den Knoten aus, von dem aus der Algorithmus starten soll
-
         directedGraph.topSort();
 
-        logList = directedGraph.getLogElementList();
-        logList = directedGraph.getDirectedGraphLogElementList();
+        logList = directedGraph.getGraphLogElementList();
 
-        //directedGraph.getLogElementList().add(new VertexLogElement<>(9999, "[" + title + " done!] : " + directedGraph.workingOrderArrayToString(), 0, ((VertexLogElement<VertexColorMarking>)logList.getLast()).getMarkedVertex().clone()));
-
+        directedGraph.getGraphLogElementList().add(new GraphLogElement<>(9999,
+                "[" + title + " done!] : " + directedGraph.workingOrderArrayToString(),
+                0,
+                ((GraphLogElement<VertexColorMarking, EdgeColorMarking>)logList
+                        .getLast())
+                        .getGraph()
+                        .clone()));
         return logList;
     }
 }

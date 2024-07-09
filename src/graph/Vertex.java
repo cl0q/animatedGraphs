@@ -14,7 +14,7 @@ public abstract class Vertex {
     private final List<Edge> edges;  // List to store edges connected to this vertex
 
     /**
-     * Erzeugt einen neuen Knoten.
+     * Erzeugt einen Knoten.
      */
     public Vertex() {
         this.name = "";
@@ -24,7 +24,7 @@ public abstract class Vertex {
     }
 
     /**
-     * Erzeugt einen neuen Knoten mit einem Namen.
+     * Erzeugt einen Knoten mit einem Namen.
      *
      * @param s der Name des Knotens
      */
@@ -36,7 +36,7 @@ public abstract class Vertex {
     }
 
     /**
-     * Erzeugt einen neuen Knoten mit einem Namen, x-Koordinate und y-Koordinate.
+     * Erzeugt einen Knoten mit einem Namen, x-Koordinate und y-Koordinate.
      *
      * @param name der Name des Knotens
      * @param x Koordinate des Knotens im Graphen
@@ -50,7 +50,7 @@ public abstract class Vertex {
     }
 
     /**
-     * Erzeugt einen neuen Knoten mit einem Namen, x-Koordinate, y-Koordinate und verbundenen Kanten.
+     * Erzeugt einen Knoten mit einem Namen, x-Koordinate, y-Koordinate und verbundenen Kanten.
      *
      * @param name der Name des Knotens
      * @param x Koordinate des Knotens im Graphen
