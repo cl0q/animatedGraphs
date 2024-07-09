@@ -4,6 +4,7 @@ import logging.LogElement;
 import logging.LogElementList;
 
 public class TextArea extends visualization.TextArea{
+
     public TextArea() {
         super();
     }

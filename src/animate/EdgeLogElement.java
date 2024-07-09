@@ -12,7 +12,7 @@ import visualizationElements.Edge;
  */
 public class EdgeLogElement<U extends EdgeMarking> extends logging.LogElement{
 
-    protected long value;
+    protected final long value;
 
     protected final MarkedEdge<U> edge;
 

@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class GraphDrawer extends JFrame {
+
     private ParameterArea parameterArea;
     private UndirectedGraph<VertexColorMarking, EdgeColorMarking> undirectedGraph;
     private DirectedGraph<VertexColorMarking, EdgeColorMarking> directedGraph;
@@ -29,7 +30,7 @@ public class GraphDrawer extends JFrame {
     private JComboBox<String> vertexComboBox;
     private JButton searchButton;
     private JComboBox<String> algorithmComboBox;
-    JComboBox<String> edgeTypeComboBox; // Changed visibility to package-private for access in DrawHelper
+    protected final JComboBox<String> edgeTypeComboBox; // Changed visibility to package-private for access in DrawHelper
 
     public GraphDrawer() {
         setTitle("GraphDrawer");
@@ -99,7 +100,7 @@ public class GraphDrawer extends JFrame {
 
     private void searchAlgorithm() {
         String selectedAlgorithm = (String) algorithmComboBox.getSelectedItem();
-        System.out.println("SelectedItem: " + vertexComboBox.getSelectedItem());;
+        System.out.println("SelectedItem: " + vertexComboBox.getSelectedItem());
         selectedVertex = getSelectedMarkedVertex();
 
         if (selectedVertex == null) {
@@ -114,11 +115,11 @@ public class GraphDrawer extends JFrame {
         if (Objects.equals(selectedAlgorithm, "Depth First Search")) {
             addDrawnGraphToUndirectedGraph();
             AlgorithmDepthSearchRecursive algorithm = new AlgorithmDepthSearchRecursive(parameterArea, this, undirectedGraph);
-            VisualizationFramerwork.init(algorithm, parameterArea, this);
+            visualizationFramework.init(algorithm, parameterArea, this);
         } else if (Objects.equals(selectedAlgorithm, "Topological Sort")) {
             addDrawnGraphToDirectedGraph();
             AlgorithmTopologicalSort algorithm = new AlgorithmTopologicalSort(parameterArea, this, directedGraph);
-            VisualizationFramerwork.init(algorithm, parameterArea, this);
+            visualizationFramework.init(algorithm, parameterArea, this);
         }
     }
 

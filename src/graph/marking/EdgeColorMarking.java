@@ -10,7 +10,7 @@ import java.util.*;
  */
 public final class EdgeColorMarking extends EdgeMarking {
 
-    // Set der markierten Kanten
+    // Set den markierten Kanten
     private final Set<Edge> markedEdges = new HashSet<>();
 
     @Override

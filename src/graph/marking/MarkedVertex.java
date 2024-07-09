@@ -1,6 +1,5 @@
 package graph.marking;
 
-import graph.Edge;
 import graph.Vertex;
 
 import java.awt.*;
@@ -14,7 +13,7 @@ import java.util.List;
  */
 public final class MarkedVertex<T extends VertexMarking> extends Vertex implements Cloneable {
 
-    // Die mit dem Knoten verbundene Markierungs-Implementation
+    // Die mit dem Knoten verbundene implementierung der Markierung
     private T marking;
     private final List<Edge> edges = new ArrayList<>();  // List to store edges connected to this vertex
 

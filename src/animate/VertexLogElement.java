@@ -11,7 +11,7 @@ import visualizationElements.Vertex;
  */
 public class VertexLogElement<T extends VertexMarking> extends logging.LogElement {
 
-    protected long value;
+    protected final long value;
 
     protected final MarkedVertex<T> vertex;
 
