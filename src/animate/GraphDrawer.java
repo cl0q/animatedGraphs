@@ -45,7 +45,6 @@ public class GraphDrawer extends JFrame {
 
         vertexComboBox = new JComboBox<>(); // Initialize vertexComboBox here
         edgeTypeComboBox = new JComboBox<>(new String[]{"Undirected", "Directed"}); // Initialize edgeTypeComboBox here
-        edgeTypeComboBox.addActionListener(e -> updateEdgeTypeSelection()); // Add action listener here
         algorithmComboBox = new JComboBox<>(new String[]{"Depth First Search", "Topological Sort"}); // Initialize algorithmComboBox here
         algorithmComboBox.addActionListener(e -> updateAlgorithmSelection()); // Add action listener here
 
@@ -339,54 +338,10 @@ public class GraphDrawer extends JFrame {
         if ("Topological Sort".equals(selectedAlgorithm)) {
             vertexComboBox.setEnabled(false);
             vertexComboBox.setBackground(Color.GRAY);
-            if (Objects.equals(edgeTypeComboBox.getSelectedItem(), "Undirected")) {
-                JOptionPane.showMessageDialog(this, "Topologische Sortierung wird für ungerichtete Graphen nicht unterstützt.", "Fehler", JOptionPane.ERROR_MESSAGE);
-                algorithmComboBox.setSelectedIndex(0); // Reset to Depth First Search
-                vertexComboBox.setEnabled(true);
-                vertexComboBox.setBackground(Color.WHITE);
-            }
         } else {
             vertexComboBox.setEnabled(true);
             vertexComboBox.setBackground(Color.WHITE);
         }
-        updateComboBoxes();
-    }
-
-    private void updateEdgeTypeSelection() {
-        updateComboBoxes();
-    }
-
-    private void updateComboBoxes() {
-        String selectedEdgeType = (String) edgeTypeComboBox.getSelectedItem();
-        String selectedAlgorithm = (String) algorithmComboBox.getSelectedItem();
-
-        algorithmComboBox.removeAllItems();
-        edgeTypeComboBox.removeAllItems();
-
-        if ("Directed".equals(selectedEdgeType)) {
-            algorithmComboBox.addItem("Topological Sort");
-            if (!"Depth First Search".equals(selectedAlgorithm)) {
-                algorithmComboBox.addItem("Depth First Search");
-            }
-        } else {
-            algorithmComboBox.addItem("Depth First Search");
-            if (!"Topological Sort".equals(selectedAlgorithm)) {
-                algorithmComboBox.addItem("Topological Sort");
-            }
-        }
-
-        if ("Topological Sort".equals(selectedAlgorithm)) {
-            edgeTypeComboBox.addItem("Directed");
-            edgeTypeComboBox.setSelectedItem("Directed");
-        } else {
-            edgeTypeComboBox.addItem("Undirected");
-            if (!"Directed".equals(selectedEdgeType)) {
-                edgeTypeComboBox.addItem("Directed");
-            }
-        }
-
-        algorithmComboBox.setSelectedItem(selectedAlgorithm);
-        edgeTypeComboBox.setSelectedItem(selectedEdgeType);
     }
 
     public void init() {
@@ -482,3 +437,4 @@ public class GraphDrawer extends JFrame {
         return null;
     }
 }
+
