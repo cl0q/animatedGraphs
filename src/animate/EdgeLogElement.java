@@ -1,22 +1,24 @@
 package animate;
 
-import graph.Edge;
+import graph.Vertex;
+import graph.marking.EdgeMarking;
+import graph.marking.MarkedEdge;
+import visualizationElements.Edge;
 
-public class EdgeLogElement extends logging.LogElement{
+public class EdgeLogElement<U extends EdgeMarking> extends logging.LogElement{
     protected long value;
 
-    protected final Edge edge;
+    protected final MarkedEdge<U> edge;
 
     public EdgeLogElement() {
         super();
         value = 0;
-        edge = null;
+        edge = new MarkedEdge<>();
     }
 
-    public EdgeLogElement(int step, String description, long value, Edge edge){
-        this.step=step;
-        this.description=description;
-        this.value=value;
+    public EdgeLogElement(int step, String description, long value, MarkedEdge<U> edge){
+        super(step, description);
+        this.value = value;
         this.edge = edge;
     }
 
@@ -24,7 +26,15 @@ public class EdgeLogElement extends logging.LogElement{
         return value;
     }
 
-    public Edge getVertex(){
+    public MarkedEdge<U> getMarkedEdge(){
         return edge;
+    }
+
+    public Edge getEdge() {
+        return new Edge(convertVertex(edge.getSource()), convertVertex(edge.getDestination()), edge.getName(), edge.getMarking().getColor(edge));
+    }
+
+    private visualizationElements.Vertex convertVertex(Vertex vertex) {
+        return new visualizationElements.Vertex(vertex.getX(), vertex.getY(), vertex.getName());
     }
 }

@@ -19,7 +19,7 @@ public class UndirectedGraph<T extends VertexMarking, U extends EdgeMarking> ext
     private String name;
     private int stepCounter = 0; // Zähler der Schritte für das LogElement
 
-    public final LogElementList<VertexLogElement> vertexLogElementList = new LogElementList<>();
+    public final LogElementList<VertexLogElement<T>> vertexLogElementList = new LogElementList<>();
 
     public UndirectedGraph() {
         super();
@@ -112,6 +112,7 @@ public class UndirectedGraph<T extends VertexMarking, U extends EdgeMarking> ext
         stack.push(start); // Startknoten auf den Stack legen
         markVertex(start, VertexMarking.STARTING_COLOR, "Start");
         depthSearchRecursive(stack, visited); // Rekursive Tiefensuche starten
+        System.out.println("Visited" + visited);
         return visited;
     }
 
@@ -145,12 +146,12 @@ public class UndirectedGraph<T extends VertexMarking, U extends EdgeMarking> ext
      *
      * @param vertex der zu markierende Knoten
      * @param color die Farbe, mit der der Knoten markiert werden soll
-     * @param desc der Zustand des Knotens
+     * @param state der Zustand des Knotens
      */
-    private void markVertex(MarkedVertex<T> vertex, Color color, String desc) {
+    private void markVertex(MarkedVertex<T> vertex, Color color, String state) {
         vertex.getMarking().markVertex(vertex, color);
-        vertexLogElementList.add(new VertexLogElement(getStepCounter(),
-                "[ Vector ] " + desc + ": " + vertex.getName(), 0, vertex.clone()));
+        vertexLogElementList.add(new VertexLogElement<>(getStepCounter(),
+                "[ Vector ] " + state + ": " + vertex.getName(), 0, vertex.clone()));
         countStep();
     }
 
@@ -160,14 +161,14 @@ public class UndirectedGraph<T extends VertexMarking, U extends EdgeMarking> ext
      *
      * @return die LogElementList mit den VertexLogElementen
      */
-    public LogElementList<VertexLogElement> getVertexLogElementList() {
+    public LogElementList<VertexLogElement<T>> getVertexLogElementList() {
         return vertexLogElementList;
     }
 
     /**
      * @return die aktuelle Schrittzahl
      */
-    private int getStepCounter() {
+    public int getStepCounter() {
         return stepCounter;
     }
 
@@ -175,7 +176,7 @@ public class UndirectedGraph<T extends VertexMarking, U extends EdgeMarking> ext
      * Setzt die Schrittzahl zurück.
      */
     private void resetStepCounter() {
-        this.stepCounter = 1;
+        this.stepCounter = 0;
     }
 
     /**

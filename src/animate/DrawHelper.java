@@ -2,11 +2,15 @@ package animate;
 
 import graph.Edge;
 import graph.Vertex;
+import graph.marking.MarkedVertex;
+import graph.marking.VertexColorMarking;
+import graph.marking.VertexMarking;
 import logging.LogElementList;
 
 import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Vector;
 
 public class DrawHelper {
@@ -15,52 +19,6 @@ public class DrawHelper {
 
     public DrawHelper(GraphDrawer graphDrawer) {
         this.graphDrawer = graphDrawer;
-    }
-
-    public Vector<visualizationElements.Vertex> redraw(LogElementList<logging.LogElement> loglist) {
-        Vector<visualizationElements.Vertex> tempVertex = new Vector<>();
-
-        if (!loglist.isInitialized()) {
-            System.err.println("Log list not initialized");
-            return tempVertex;
-        }
-
-        System.out.println("Log list size: " + loglist.size());
-        for (int i = 0; i < loglist.size(); i++) {
-            VertexLogElement logElement = (VertexLogElement) loglist.get(i);
-            Vertex graphVertex = graphDrawer.getMarkedVertices().get(i);
-            int posX = graphVertex.getX();
-            int posY = graphVertex.getY();
-            String marking = graphVertex.getName();
-            Color color;
-
-            switch ((int) logElement.getValue()) {
-                case 0: // GRAY, unvisited
-                    color = Color.GRAY;
-                    System.out.println("Vertex " + i + " is unvisited");
-                    break;
-                case 1: // RED, visited
-                    color = Color.RED;
-                    System.out.println("Vertex " + i + " is visited");
-                    break;
-                case 2: // YELLOW, current
-                    color = Color.YELLOW;
-                    System.out.println("Vertex " + i + " is current");
-                    break;
-                case 3: // GREEN, finished
-                    color = Color.GREEN;
-                    System.out.println("Vertex " + i + " is finished");
-                    break;
-                default:
-                    color = Color.BLACK;
-                    System.err.println("Unknown state for vertex " + i);
-                    break;
-            }
-
-            tempVertex.add(new visualizationElements.Vertex(posX, posY, marking, color));
-        }
-
-        return tempVertex;
     }
 
     public boolean setGraph(Vector<visualizationElements.Vertex> vertexes, Vector<visualizationElements.Edge> edges) {
@@ -89,6 +47,6 @@ public class DrawHelper {
             }
         }
 
-        return graphDrawer.edgeTypeComboBox.getSelectedItem().equals("Directed");
+        return Objects.equals(graphDrawer.edgeTypeComboBox.getSelectedItem(), "Directed");
     }
 }

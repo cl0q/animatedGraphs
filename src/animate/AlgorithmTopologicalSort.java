@@ -1,31 +1,34 @@
 package animate;
 
+import graph.DirectedGraph;
+import graph.marking.EdgeColorMarking;
+import graph.marking.MarkedVertex;
+import graph.marking.VertexColorMarking;
 import logging.LogElementList;
-import testApplication.TestLogElement;
-
-import java.util.Random;
 
 public class AlgorithmTopologicalSort extends logging.Algorithm {
     GraphDrawer graphDrawer;
+    DirectedGraph<VertexColorMarking, EdgeColorMarking> directedGraph;
+    MarkedVertex<VertexColorMarking> selectedVertexFromComboBox;
 
-    public AlgorithmTopologicalSort(visualization.ParameterArea parameterArea, GraphDrawer graphDrawer) {
+    public AlgorithmTopologicalSort(visualization.ParameterArea parameterArea,
+                                    GraphDrawer graphDrawer,
+                                    DirectedGraph<VertexColorMarking, EdgeColorMarking> directedGraph) {
         super(parameterArea, "AlgorithmTopologicalSort");
         this.graphDrawer = graphDrawer;
+        this.directedGraph = directedGraph;
     }
 
     @Override
-    public LogElementList run() {
-        LogElementList<TestLogElement> logList = new LogElementList<>();
+    public LogElementList<?> run() {
+        LogElementList<?> logList;
 
-        for (int i = 0; i < graphDrawer.getVertexCount(); i++) {
-            logList.add(new VertexLogElement(i, graphDrawer.getVertexNames()[i], randomNumber(0, 3), graphDrawer.getMarkedVertices().get(i)));
-            System.out.println(logList.get(i));
-        }
+        selectedVertexFromComboBox = graphDrawer.getSelectedVertex();
+
+        directedGraph.topSort();
+
+        logList = directedGraph.getLogElementList();
+
         return logList;
-    }
-
-    private static int randomNumber(int min, int max) {
-        Random random = new Random();
-        return random.nextInt(max - min) + min;
     }
 }
