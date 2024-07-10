@@ -269,25 +269,6 @@ public abstract class Graph<T extends VertexMarking, U extends EdgeMarking>  {
     }
 
     /**
-     * Erzeugt eine Kopie des gerichteten Graphen. Es werden Kopien der Knoten/Kanten erzeugt sowie des ValueCaches
-     * und in den erzeugten Graphen eingefügt.
-     *
-     * @return einen Klon des gerichteten Graphen
-     */
-    public Graph<T, U> clone() {
-        DirectedGraph<T, U> clonedGraph = new DirectedGraph<>();
-
-        clonedGraph.setName(getName());
-        this.getAllVertexes()
-                .forEach(v ->
-                        clonedGraph.addVertex(v.clone())); // Clone, da wir den jetzigen Zustand (Farbe) speichern wollen
-        this.getAllEdges()
-                .forEach(e ->
-                        clonedGraph.addEdge(e.clone())); // Clone, da wir den jetzigen Zustand (Farbe) speichern wollen
-        return clonedGraph;
-    }
-
-    /**
      * @return eine String-Repräsentation des Graphen
      */
     public String toString() {
@@ -296,13 +277,5 @@ public abstract class Graph<T extends VertexMarking, U extends EdgeMarking>  {
                 ", vertexes=" + vertexes +
                 ", edges=" + edges +
                 '}';
-    }
-
-    /**
-     *  Entfernt alle Knoten und Kanten aus dem Graphen.
-     */
-    public void clearGraph() {
-        vertexes.clear();
-        edges.clear();
     }
 }
