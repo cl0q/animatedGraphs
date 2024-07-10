@@ -1,15 +1,10 @@
 package graph.structure.graph;
 
-import animate.drawing.GraphLogElement;
-import graph.marking.*;
 import graph.marking.edge.EdgeMarking;
 import graph.marking.edge.MarkedEdge;
 import graph.marking.vertex.MarkedVertex;
 import graph.marking.vertex.VertexMarking;
-import logging.LogElementList;
-import util.Pair;
 
-import java.awt.*;
 import java.util.*;
 import java.util.List;
 
@@ -20,13 +15,6 @@ import java.util.List;
  * @param <U> implementierende Klasse der Kantenmarkierung
  */
 public class DirectedGraph<T extends VertexMarking, U extends EdgeMarking> extends Graph<T, U> {
-
-    private int stepCounter = 0;
-    private int vertexCounter;
-    private int markedVertexCounter = 0;
-    private final LogElementList<GraphLogElement<T, U>> graphLogElementList = new LogElementList<>();
-    private List<String> workingOrderArray = new ArrayList<>();
-    private List<Pair<MarkedVertex<T>, Integer>> valueCache = new ArrayList<>();
 
     /**
      * Erzeugt einen gerichteten Graphen.
@@ -189,16 +177,7 @@ public class DirectedGraph<T extends VertexMarking, U extends EdgeMarking> exten
         Set<MarkedVertex<T>> visited = new HashSet<>();
         Stack<MarkedVertex<T>> stack = new Stack<>();
 
-        // Initialisierung der Kantennummern
-        vertexCounter = getAllVertexes().size();
-
-        logGraph("Base Graph");
-
         for (MarkedVertex<T> vertex : getAllVertexes()) {
-            if (getAllVertexes().indexOf(vertex) == 0) {
-                markVertex(vertex, Marking.STARTING_COLOR);
-                logGraph("[ " + vertex.getName() + " ] : Start");
-            }
             if (!visited.contains(vertex)) { // Wenn der Knoten noch nicht besucht wurde
                 if (topologicalSortAlgorithm(vertex, visited, stack, sortedList)) { // Topologische Sortierung starten
                     return null; // Leere Liste zurückgeben, wenn ein Zyklus gefunden wurde
@@ -206,7 +185,6 @@ public class DirectedGraph<T extends VertexMarking, U extends EdgeMarking> exten
             }
         }
         Collections.reverse(sortedList);// Liste umkehren, um die richtige Reihenfolge zu erhalten
-        printWorkingOrderArray();
         return sortedList;
     }
 
@@ -222,49 +200,21 @@ public class DirectedGraph<T extends VertexMarking, U extends EdgeMarking> exten
     private boolean topologicalSortAlgorithm(MarkedVertex<T> vertex, Set<MarkedVertex<T>> visited, Stack<MarkedVertex<T>> stack, List<MarkedVertex<T>> sortedList) {
         visited.add(vertex); // Knoten als besucht markieren
         stack.push(vertex); // Knoten auf den Stack legen
-        markVertex(vertex, Marking.CURRENT_COLOR);
-        logGraph("[ " + vertex.getName() + " ] : Traverse");
 
         for (MarkedEdge<U> edge : getOutgoingEdges(vertex)) { // Alle ausgehenden Kanten des Knotens durchlaufen
             MarkedVertex<T> neighbor = (MarkedVertex<T>) edge.getDestination();
-            markEdge(edge, Marking.EDGE_VISISTED_COLOR);
-            logGraph("[ " + edge.getName() + " ] : Traverse");
             if (stack.contains(neighbor)) { // Wenn der Nachbar bereits auf dem Stack ist, wurde ein Zyklus gefunden
-                boolean marking = false; // Wird benötigt, um nur die Kanten im Zyklus einzufärben
-                for (MarkedVertex<T> v : stack) {
-                    if (v.equals(neighbor)) {
-                        marking = true;
-                    }
-                    if (marking) {
-                        markVertex(v, Marking.CYCLE_COLOR);
-                        // Mark edges in the cycle
-                        for (MarkedEdge<U> cycleEdge : getOutgoingEdges(v)) {
-                            if (stack.contains(cycleEdge.getDestination())) {
-                                markEdge(cycleEdge, Marking.CYCLE_COLOR);
-                            }
-                        }
-                    }
-                }
-                logGraph("Cycle detected!");
                 System.out.println("Cycle detected!");
                 return true;
             }
             if (!visited.contains(neighbor)) { // Wenn der Nachbar noch nicht besucht wurde
-                markVertex(neighbor, Marking.NEIGHBOR_COLOR);
-                logGraph("[ " + vertex.getName() + " ] : Neighbor " + neighbor.getName());
                 if (topologicalSortAlgorithm(neighbor, visited, stack, sortedList)) { // Rekursiver Aufruf für den Nachbarn
                     return true;
                 }
             }
         }
-
         stack.remove(vertex); // Knoten vom Stack entfernen
         sortedList.add(vertex); // Knoten zur sortierten Liste hinzufügen
-        markVertex(vertex, Marking.FINISHED_COLOR, vertexCounter--);
-        logGraph("[ " + vertex.getName() + " ] : Finished");
-        workingOrderArray.add(vertex.getName());
-        countStep();
-        markedVertexCounter++;
         return false;
     }
 
@@ -275,141 +225,5 @@ public class DirectedGraph<T extends VertexMarking, U extends EdgeMarking> exten
      */
     public boolean hasCycle() {
         return topSort() == null;
-    }
-
-    /**
-     * Markiert einen Knoten mit einer Farbe.
-     *
-     * @param vertex der zu markierende Knoten
-     * @param color  die Farbe, mit der der Knoten markiert werden soll
-     */
-    private void markVertex(MarkedVertex<T> vertex, Color color) {
-        vertex.getMarking().markVertex(vertex, color);
-    }
-
-    /**
-     * Speichert den Zustand des jetzigen Graphen als GraphLogElement in der LogElementListe.
-     *
-     * @param state der neue Zustand des Graphen
-     */
-    private void logGraph(String state) {
-        graphLogElementList.add(new GraphLogElement<>(getStepCounter(),
-                state, 0, this.clone()));
-        countStep();
-    }
-
-    /**
-     * Markiert einen Knoten mit einer Farbe.
-     *
-     * @param vertex      der zu markierende Knoten
-     * @param color       die Farbe, mit der der Knoten markiert werden soll
-     * @param value       der Wert des Knotens
-     */
-    private void markVertex(MarkedVertex<T> vertex, Color color, int value) {
-        vertex.getMarking().markVertex(vertex, color);
-        valueCache.add(new Pair<>(vertex, value));
-    }
-
-    /**
-     * Markiert eine Kante mit einer Farbe.
-     *
-     * @param edge  die zu markierende Kante
-     * @param color die Farbe, mit der die Kante markiert werden soll
-     */
-    private void markEdge(MarkedEdge<U> edge, Color color) {
-        edge.getMarking().markEdge(edge, color);
-    }
-
-    /**
-     * Liefert eine LogElementList. In dieser befinden sich die DirectedGraphLogElemente, welche die verschiedenen Schritte im TopologicalSort-Algorithmus
-     * mit ihren dazugehörigen Knoten/Kanten und deren Attributen dokumentieren.
-     *
-     * @return eine LogElementList mit den DirectedGraphLogElemente
-     */
-    public LogElementList<GraphLogElement<T, U>> getGraphLogElementList() {
-        return graphLogElementList;
-    }
-
-    /**
-     * @return die aktuelle Schrittzahl
-     */
-    private int getStepCounter() {
-        return stepCounter;
-    }
-
-    /**
-     * Setzt die Schrittzahl zurück.
-     */
-    private void resetStepCounter() {
-        this.stepCounter = 1;
-    }
-
-    /**
-     * Erhöht die Schrittzahl um 1.
-     */
-    private void countStep() {
-        stepCounter++;
-    }
-
-    private void printWorkingOrderArray() {
-        System.out.println("///     Working Order TopologicalSort     ///");
-        if (workingOrderArray.size() == markedVertexCounter)
-            for (String s : workingOrderArray) {
-                System.out.print(s + ", ");
-            }
-        System.out.println();
-    }
-
-    public ArrayList<String> getWorkingOrderArray() {
-        return (ArrayList<String>) workingOrderArray;
-    }
-
-    public String workingOrderArrayToString() {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < workingOrderArray.size(); i++) {
-            String s = workingOrderArray.get(i);
-            int value = valueCache.stream()
-                    .filter(p -> p.getFirst().getName().equals(s))
-                    .findFirst().orElseThrow().getSecond();
-
-            sb.append(s).append(" : ").append(value);
-            if (i < workingOrderArray.size() - 1) {
-                sb.append(", ");
-            }
-        }
-
-        return sb.toString();
-    }
-
-    /**
-     * Überschreibt den valueCache.
-     *
-     * @param valueCache der neue valueCache
-     */
-    private void setValueCache(List<Pair<MarkedVertex<T>, Integer>> valueCache) {
-        this.valueCache = valueCache;
-    }
-
-    /**
-     * Erzeugt eine Kopie des gerichteten Graphen mit Kopien seiner markierten Kanten und Knoten
-     * sowie einer Kopie seines valueCaches.
-     *
-     * @return eine Kopie des gerichteten Graphen
-     */
-    public DirectedGraph<T, U> clone() {
-        super.clone();
-        DirectedGraph<T, U> clonedGraph = (DirectedGraph<T, U>) super.clone();;
-
-        clonedGraph.setValueCache(this.valueCache
-                .stream()
-                .map(p ->
-                        new Pair<>(p.getFirst(), p.getSecond()))
-                .toList());
-        return clonedGraph;
-    }
-
-    public void clearLogList() {
-        graphLogElementList.clear();
-        resetStepCounter();
     }
 }
