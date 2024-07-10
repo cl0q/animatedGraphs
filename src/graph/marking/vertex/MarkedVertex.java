@@ -3,7 +3,6 @@ package graph.marking.vertex;
 import graph.structure.Edge;
 import graph.structure.Vertex;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +11,7 @@ import java.util.List;
  *
  * @param <T> die Implementation der Markierung, die mit dem Knoten verbunden ist
  */
-public final class MarkedVertex<T extends VertexMarking> extends Vertex implements Cloneable {
+public final class MarkedVertex<T extends VertexMarking> extends Vertex {
 
     // Die mit dem Knoten verbundene implementierung der Markierung
     private T marking;
@@ -45,7 +44,7 @@ public final class MarkedVertex<T extends VertexMarking> extends Vertex implemen
      * @param t die mit dem Knoten verbundene Markierung
      */
     public MarkedVertex(String name, int x, int y, T t) {
-        super(name, x, y);
+        super(name);
         this.marking = t;
     }
 
@@ -67,53 +66,5 @@ public final class MarkedVertex<T extends VertexMarking> extends Vertex implemen
      */
     public void setMarking(T marking) {
         this.marking = marking;
-    }
-
-    /**
-     * Erzeugt eine Kopie des markierten Knotens, welche die gleichen Attribute hat
-     * und für den dieselbe Markierung gespeichert wurde.
-     *
-     * @return eine Kopie des markierten Knotens
-     */
-    @Override
-    public MarkedVertex<T> clone() {
-        MarkedVertex<T> clonedMarkedVertex = (MarkedVertex<T>)super.clone();
-        clonedMarkedVertex.setMarking(marking);
-        marking.markVertex(clonedMarkedVertex, marking.getColor(this));
-        return clonedMarkedVertex;
-    }
-
-    /**
-     * @return eine Liste der Kanten, die mit dem Knoten verbunden sind
-     */
-    public List<Edge> getEdges() {
-        return edges;
-    }
-
-    /**
-     * Fügt eine Kante zu den Kanten hinzu, die mit dem Knoten verbunden sind.
-     * @param edge die Kante, welche hinzugefügt werden soll
-     */
-    public void addEdge(Edge edge) {
-        edges.add(edge);
-    }
-
-    /**
-     * Entfernt eine Kante aus den Kanten, die mit dem Knoten verbunden sind.
-     * @param edge die Kante, welche entfernt werden soll
-     */
-    public void removeEdge(Edge edge) {
-        edges.remove(edge);
-    }
-
-    /**
-     * Zeichnet den markierten Knoten.
-     * @param g Graphics-Objekt zur Zeichnung
-     */
-    public void drawHere(Graphics g) {
-        g.setColor(marking.getColor(this));
-        g.fillOval(getX() - 10, getY() - 10, 20, 20);
-        g.setColor(Color.WHITE);
-        g.drawString(getName(), getX() - 10 + 4, getY() + 4);
     }
 }
