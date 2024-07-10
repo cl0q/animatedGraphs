@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * Implementation eines Knoten.
  */
-public abstract class Vertex implements Cloneable {
+public abstract class Vertex {
 
     private String name;
     private int x;
@@ -148,24 +148,5 @@ public abstract class Vertex implements Cloneable {
      */
     public void removeEdge(Edge edge) {
         edges.remove(edge);
-    }
-
-    /**
-     * Erzeugt eine Kopie des Knotens mit seinen Attributen.
-     *
-     * @return Kopie des Knotens
-     */
-    @Override
-    public Vertex clone() {
-        try {
-            Vertex clonedVertex = (Vertex)super.clone();
-            clonedVertex.setName(name);
-            clonedVertex.setX(x);
-            clonedVertex.setY(y);
-            this.edges.forEach(clonedVertex::addEdge);
-            return clonedVertex;
-        } catch (CloneNotSupportedException e) {
-            throw new AssertionError();
-        }
     }
 }
