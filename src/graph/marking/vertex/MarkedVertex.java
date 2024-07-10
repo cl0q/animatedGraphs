@@ -1,10 +1,6 @@
 package graph.marking.vertex;
 
-import graph.structure.Edge;
 import graph.structure.Vertex;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Klasse, die einen markierten Knoten in einem Graphen darstellt.
@@ -15,7 +11,6 @@ public final class MarkedVertex<T extends VertexMarking> extends Vertex {
 
     // Die mit dem Knoten verbundene implementierung der Markierung
     private T marking;
-    private final List<Edge> edges = new ArrayList<>();  // List to store edges connected to this vertex
 
     /**
      * Erzeugt einen markierten Knoten.
