@@ -13,7 +13,7 @@ import java.util.Vector;
  * @param <T> implementierende Klasse der Knotenmarkierung
  * @param <U> implementierende Klasse der Kantenmarkierung
  */
-public abstract class Graph<T extends VertexMarking, U extends EdgeMarking>  {
+public abstract class Graph<T extends VertexMarking, U extends EdgeMarking> implements Cloneable {
 
     private String name;
     private final Vector<MarkedVertex<T>> vertexes;
